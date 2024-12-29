@@ -3,10 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.3.0",
+    "@mui/material": "^6.3.0",
+    "@mui/x-data-grid": "^7.23.5",
     "cra-template": "1.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-scripts": "5.0.1"
+    "react-router-dom": "^7.1.1",
+    "react-scripts": "5.0.1",
+    "react-toastify": "^11.0.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -31,5 +38,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
   }
 }
