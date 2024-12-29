@@ -7,10 +7,10 @@ import { columns , rows } from '../data/doctorsDataTable';
 
 export default function Doctors() {
   return (
-    <div className='flex h-full flex-col gap-4'>
-       <div className='bg-white custom-shadow rounded-md py-4 px-3 flex items-center justify-between'>
-         <h1 className='text-gray-600 text-lg font-medium'>Doctors Details</h1>
-         <button className='p-2 bg-themeblue text-white rounded-md'>Add New Doctor</button>
+    <div className='flex h-full flex-col gap-3 md:gap-4'>
+       <div className='bg-white custom-shadow rounded-md md:py-4 py-3 px-3 flex items-center justify-between'>
+         <h1 className='text-gray-600 text-base md:text-lg font-medium'>Doctors Details</h1>
+         <button className='p-2 bg-themeblue md:text-base text-sm text-white rounded-md'>Add New Doctor</button>
        </div>
        <div className='h-full py-4 px-3 custom-shadow rounded-md bg-white'>
          <Box sx={{height:"100%",
