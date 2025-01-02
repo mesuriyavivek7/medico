@@ -25,7 +25,7 @@ export default function Dashboard() {
   const navigate = useNavigate()
 
   const isActive = (pathname) =>{
-    return location.pathname === pathname
+    return location.pathname.includes(pathname)
   }
 
   const handleNavigate = (pathname) =>{
@@ -112,32 +112,32 @@ export default function Dashboard() {
       <div className="w-full relative flex md:mt-24 mt-20">
         {/* Sidebar For Web screen */}
         <div className={`${isMenuOpen?"w-72":"w-28"} z-40 md:block hidden transition-all duration-300 shadow-lg bg-white`}>
-            <div onClick={()=>handleNavigate('/')} className={`group flex ${isActive("/dashboard") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
-               <span className={`${isActive('/dashboard') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><DashboardOutlinedIcon style={{fontSize:'1.5rem'}}></DashboardOutlinedIcon></span>
-               {isMenuOpen && <span className={`${isActive("/dashboard") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>Dashboard</span>}
+            <div onClick={()=>handleNavigate('/admin/dashboard')} className={`group flex ${isActive("dashboard") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('dashboard') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><DashboardOutlinedIcon style={{fontSize:'1.5rem'}}></DashboardOutlinedIcon></span>
+               {isMenuOpen && <span className={`${isActive("dashboard") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>Dashboard</span>}
             </div>
-            <div onClick={()=>handleNavigate('doctors')} className={`group flex ${isActive("/dashboard/doctors") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
-               <span className={`${isActive('/dashboard/doctors') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><LocalHospitalOutlinedIcon style={{fontSize:'1.5rem'}}></LocalHospitalOutlinedIcon></span>
-               {isMenuOpen && <span className={`${isActive("/dashboard/doctors") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>Doctors</span>}
+            <div onClick={()=>handleNavigate('doctors')} className={`group flex ${isActive("doctors") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('doctors') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><LocalHospitalOutlinedIcon style={{fontSize:'1.5rem'}}></LocalHospitalOutlinedIcon></span>
+               {isMenuOpen && <span className={`${isActive("doctors") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>Doctors</span>}
             </div>
-            <div onClick={()=>handleNavigate('chemist')} className={`group flex ${isActive("/dashboard/chemist") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
-               <span className={`${isActive('/dashboard/chemist') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ScienceOutlinedIcon style={{fontSize:'1.5rem'}}></ScienceOutlinedIcon></span>
-               {isMenuOpen && <span className={`${isActive("/dashboard/chemist") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Chemist</span>}
+            <div onClick={()=>handleNavigate('chemist')} className={`group flex ${isActive("chemist") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('chemist') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ScienceOutlinedIcon style={{fontSize:'1.5rem'}}></ScienceOutlinedIcon></span>
+               {isMenuOpen && <span className={`${isActive("chemist") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Chemist</span>}
             </div>
         </div>
         {/* sidebar for mobile screen */}
-        <div className={`${isMenuOpen?"-left-full":"-left-0"} z-40 w-64 left-0 bottom-0 top-0 md:hidden absolute transition-all duration-300 shadow-lg bg-white`}>
-            <div onClick={()=>handleNavigate('/')} className={`group flex ${isActive("/dashboard") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
-               <span className={`${isActive('/dashboard') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><DashboardOutlinedIcon style={{fontSize:'1.5rem'}}></DashboardOutlinedIcon></span>
-               <span className={`${isActive("/dashboard") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>Dashboard</span>
+        <div className={`${isMenuOpen?"-left-96":"left-0"} z-40 w-64 left-0 bottom-0 top-0 md:hidden absolute transition-all duration-300 shadow-lg bg-white`}>
+            <div onClick={()=>handleNavigate('/admin')} className={`group flex ${isActive("dashboard") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('dashboard') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><DashboardOutlinedIcon style={{fontSize:'1.5rem'}}></DashboardOutlinedIcon></span>
+               <span className={`${isActive("dashboard") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>Dashboard</span>
             </div>
-            <div onClick={()=>handleNavigate('doctors')} className={`group flex ${isActive("/dashboard/doctors") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
-               <span className={`${isActive('/dashboard/doctors') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><LocalHospitalOutlinedIcon style={{fontSize:'1.5rem'}}></LocalHospitalOutlinedIcon></span>
-               <span className={`${isActive("/dashboard/doctors") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>Doctors</span>
+            <div onClick={()=>handleNavigate('doctors')} className={`group flex ${isActive("doctors") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('doctors') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><LocalHospitalOutlinedIcon style={{fontSize:'1.5rem'}}></LocalHospitalOutlinedIcon></span>
+               <span className={`${isActive("doctors") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>Doctors</span>
             </div>
-            <div onClick={()=>handleNavigate('chemist')} className={`group flex ${isActive("/dashboard/chemist") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
-               <span className={`${isActive('/dashboard/chemist') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ScienceOutlinedIcon style={{fontSize:'1.5rem'}}></ScienceOutlinedIcon></span>
-               <span className={`${isActive("/dashboard/chemist") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Chemist</span>
+            <div onClick={()=>handleNavigate('chemist')} className={`group flex ${isActive("chemist") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('chemist') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ScienceOutlinedIcon style={{fontSize:'1.5rem'}}></ScienceOutlinedIcon></span>
+               <span className={`${isActive("chemist") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Chemist</span>
             </div>
         </div>
         {/* Outlate */}
