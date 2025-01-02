@@ -1,83 +1,99 @@
 export const columns = [
     {
-        field:'id',
-        headerClassName:'super-app-theme--header',
-        headerName:'Sr No.',
-        width:100,
+      field: 'id',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'Sr No.',
+      flex: 0.5, // Proportional width
+      minWidth: 80, // Minimum width to prevent shrinking
     },
     {
-        field:'drname',
-        headerClassName:'super-app-theme--header',
-        headerName:'Dr. Name',
-        width:200
+      field: 'drname',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'Dr. Name',
+      flex: 1,
+      minWidth: 150,
     },
     {
-        field:'class',
-        headerClassName:'super-app-theme--header',
-        headerName:'Class',
-        width:160
+      field: 'class',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'Class',
+      flex: 0.8,
+      minWidth: 120,
     },
     {
-        field:'speciality',
-        headerClassName:'super-app-theme--header',
-        headerName:'Speciality',
-        width:200
+      field: 'speciality',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'Speciality',
+      flex: 1,
+      minWidth: 150,
     },
     {
-        field:'qualification',
-        headerClassName:'super-app-theme--header',
-        headerName:'Qualification',
-        width:200
+      field: 'qualification',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'Qualification',
+      flex: 1,
+      minWidth: 150,
     },
     {
-        field:'mobile',
-        headerClassName:'super-app-theme--header',
-        headerName:'Mobile No',
-        width:200
+      field: 'mobile',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'Mobile No',
+      flex: 1,
+      minWidth: 150,
     },
     {
-       field:'dob',
-       headerClassName:'super-app-theme--header',
-       headerName:'DOB',
-       width:200
+      field: 'dob',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'DOB',
+      flex: 1,
+      minWidth: 150,
     },
     {
-        field:'gender',
-        headerClassName:'super-app-theme--header',
-        headerName:'Gender',
-        width:160
+      field: 'gender',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'Gender',
+      flex: 0.8,
+      minWidth: 120,
     },
     {
-        field:'routename',
-        headerClassName:'super-app-theme--header',
-        headerName:'Route Name',
-        width:200
+      field: 'routename',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'Route Name',
+      flex: 1.2,
+      minWidth: 150,
     },
     {
-        field:'address',
-        headerClassName:'super-app-theme--header',
-        headerName:'Address',
-        width:300
+      field: 'address',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'Address',
+      flex: 2,
+      minWidth: 200,
     },
     {
-        field:'pincode',
-        headerClassName:'super-app-theme--header',
-        headerName:'Pincode',
-        width:180
+      field: 'pincode',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'Pincode',
+      flex: 0.8,
+      minWidth: 120,
     },
     {
-        field:'action',
-        headerClassName:'super-app-theme--header',
-        headerName:'Action',
-        width:250,
-        renderCell: (params) =>(
-          <div className="flex gap-4 items-center w-full h-full">
-             <button className="bg-blue-500 hover:bg-blue-600 flex justify-center items-center rounded-md text-white w-20 h-8">Edit</button>
-             <button className="bg-red-500 hover:bg-red-600 flex justify-center items-center rounded-md text-white w-20 h-8">Delete</button>
-          </div>
-        )
-    }
-]
+      field: 'action',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'Action',
+      flex: 1.5,
+      minWidth: 200,
+      renderCell: (params) => (
+        <div className="flex gap-4 items-center w-full h-full">
+          <button className="bg-blue-500 md:text-base text-sm hover:bg-blue-600 flex justify-center items-center rounded-md text-white md:w-20 w-16 h-6 md:h-8">
+            Edit
+          </button>
+          <button className="bg-red-500 md:text-base text-sm hover:bg-red-600 flex justify-center items-center rounded-md text-white md:w-20 w-16 h-6 md:h-8">
+            Delete
+          </button>
+        </div>
+      ),
+    },
+  ];
 
 
 export const rows = [

@@ -11,6 +11,9 @@ import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./components/Dashboard";
 import MyDashboard from "./pages/MyDashboard";
 import Doctors from "./pages/Doctors";
+import AddNewDoc from "./pages/AddNewDoc";
+import Chemist from "./pages/Chemist";
+import AddNewChemist from "./pages/AddNewChemist";
 
 function App() {
   const AppRouter = createBrowserRouter(
@@ -28,7 +31,7 @@ function App() {
         element:<ResetPassword></ResetPassword>
       },
       {
-        path:'/dashboard',
+        path:'/admin',
         element:<Dashboard></Dashboard>,
         children:[
           {
@@ -37,7 +40,19 @@ function App() {
           },
           {
             path:'doctors',
-            element:<Doctors></Doctors>
+            element:<Doctors></Doctors>,
+          },
+          {
+            path:'doctors/addnew',
+            element:<AddNewDoc></AddNewDoc>
+          },
+          {
+            path:'chemist',
+            element:<Chemist></Chemist>
+          },
+          {
+            path:'chemist/addnew',
+            element:<AddNewChemist></AddNewChemist>
           }
         ]
       }
