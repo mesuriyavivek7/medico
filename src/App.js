@@ -1,6 +1,9 @@
-import React from "react";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
+import { useSelector, useDispatch } from "react-redux";
+import { loginStart, loginSuccess, loginFailure } from "./redux/actions/authActions";
+import axios from 'axios'
 
 //importing General components
 import Login from "./pages/Login";
@@ -14,8 +17,39 @@ import Doctors from "./pages/Doctors";
 import AddNewDoc from "./pages/AddNewDoc";
 import Chemist from "./pages/Chemist";
 import AddNewChemist from "./pages/AddNewChemist";
+import Employee from "./pages/Employee";
+import AddNewEmp from "./pages/AddNewEmp";
+import Profile from "./pages/Profile";
+
+// ProtectedRoute Component
+const ProtectedRoute = ({ children }) => {
+  const { user } = useSelector((state) => state.auth);
+
+  if (!user) {
+    return <Navigate to="/" />;
+  }
+
+  return children;
+};
 
 function App() {
+  const { user, loading } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  //vallidate user 
+  useEffect(()=>{
+    const validateUser = async () =>{
+       dispatch(loginStart())
+       try{
+         const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/user/verify_token`,{api_token:user.api_tokn})
+         dispatch(loginSuccess(response.data))
+       }catch(err){
+         console.log(err)
+         dispatch(loginFailure("Validation failed"))
+       }
+    }
+  },[dispatch])
+
   const AppRouter = createBrowserRouter(
     [
       {
@@ -32,27 +66,75 @@ function App() {
       },
       {
         path:'/admin',
-        element:<Dashboard></Dashboard>,
+        element:(
+          <ProtectedRoute>
+            <Dashboard></Dashboard>
+          </ProtectedRoute>
+        ),
         children:[
           {
             path:'dashboard',
-            element:<MyDashboard></MyDashboard>
+            element:(
+              <ProtectedRoute>
+                <MyDashboard></MyDashboard>
+              </ProtectedRoute>
+            )
           },
           {
             path:'doctors',
-            element:<Doctors></Doctors>,
+            element:(
+              <ProtectedRoute>
+                <Doctors></Doctors>
+              </ProtectedRoute>
+            ),
           },
           {
             path:'doctors/addnew',
-            element:<AddNewDoc></AddNewDoc>
+            element:(
+              <ProtectedRoute>
+                <AddNewDoc></AddNewDoc>
+              </ProtectedRoute>
+            )
           },
           {
             path:'chemist',
-            element:<Chemist></Chemist>
+            element:(
+              <ProtectedRoute>
+                <Chemist></Chemist>
+              </ProtectedRoute>
+            )
           },
           {
             path:'chemist/addnew',
-            element:<AddNewChemist></AddNewChemist>
+            element:(
+              <ProtectedRoute>
+                <AddNewChemist></AddNewChemist>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'employee',
+            element:(
+              <ProtectedRoute>
+                <Employee></Employee>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'employee/addnew',
+            element:(
+              <ProtectedRoute>
+                <AddNewEmp></AddNewEmp>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'profile',
+            element:(
+              <ProtectedRoute>
+                <Profile></Profile>
+              </ProtectedRoute>
+            )
           }
         ]
       }

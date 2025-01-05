@@ -87,72 +87,72 @@ export default function AddNewChemist() {
            <h1 className='text-gray-800 text-base md:text-lg font-medium'>Add New Chemist</h1>
         </div>
       </div>
-      <div className='md:py-6 md:px-4 bg-white rounded-md custom-shadow grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 py-3 px-3'>
+      <div className='md:py-6 md:px-4 bg-white rounded-md custom-shadow grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 py-3 px-3'>
          <div className='flex flex-col gap-2'>
              <label htmlFor='chemistname' className='font-medium text-gray-700'>Chemist Name <span className='text-red-500'>*</span></label>
-             <input value={formData.chemistname} onChange={handleChange} name='chemistname' type='text' id='chemistname' className='bg-lightgray p-2 rounded-md outline-none border' placeholder='Ex. jode toe'></input>
+             <input value={formData.chemistname} onChange={handleChange} name='chemistname' type='text' id='chemistname' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. jode toe'></input>
              {errors.chemistname && <span className='text-sm text-red-500'>{errors.chemistname}</span>}
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='email' className='font-medium text-gray-700'>Email <span className='text-red-500'>*</span></label>
-             <input value={formData.email} onChange={handleChange} name='email' type='email' id='email' className='bg-lightgray p-2 rounded-md outline-none border' placeholder='Ex. jode toe'></input>
+             <input value={formData.email} onChange={handleChange} name='email' type='email' id='email' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. test@example.com'></input>
              {errors.email && <span className='text-sm text-red-500'>{errors.email}</span>}
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='mobileno' className='font-medium text-gray-700'>Mobile No <span className='text-red-500'>*</span></label>
-             <input value={formData.mobileno} onChange={handleChange} name='mobileno' type='text' id='mobileno' className='bg-lightgray p-2 rounded-md outline-none border' placeholder='Ex. jode toe'></input>
+             <input value={formData.mobileno} onChange={handleChange} name='mobileno' type='text' id='mobileno' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. 73653...'></input>
              {errors.mobileno && <span className='text-sm text-red-500'>{errors.mobileno}</span>}
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='fax' className='font-medium text-gray-700'>Fax </label>
-             <input value={formData.fax} onChange={handleChange} name='fax' type='text' id='fax' className='bg-lightgray p-2 rounded-md outline-none border' placeholder='Ex. jode toe'></input>
+             <input value={formData.fax} onChange={handleChange} name='fax' type='text' id='fax' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. (010) 8272'></input>
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='address1' className='font-medium text-gray-700'>Address Line 1 <span className='text-red-500'>*</span></label>
-             <input value={formData.address1} onChange={handleChange} name='address1' type='text' id='address1' className='bg-lightgray p-2 rounded-md outline-none border' placeholder='Ex. jode toe'></input>
+             <input value={formData.address1} onChange={handleChange} name='address1' type='text' id='address1' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. 402 - Tax'></input>
              {errors.address1 && <span className='text-sm text-red-500'>{errors.address1}</span>}
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='address2' className='font-medium text-gray-700'>Address Line 2 </label>
-             <input value={formData.address2} onChange={handleChange} name='address2' type='text' id='address2' className='bg-lightgray p-2 rounded-md outline-none border' placeholder='Ex. jode toe'></input>
+             <input value={formData.address2} onChange={handleChange} name='address2' type='text' id='address2' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. Near Simahall'></input>
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='pincode' className='font-medium text-gray-700'>Pincode <span className='text-red-500'>*</span></label>
-             <input value={formData.pincode} onChange={handleChange} name='pincode' type='text' id='pincode' className='bg-lightgray p-2 rounded-md outline-none border' placeholder='Ex. jode toe'></input>
+             <input value={formData.pincode} onChange={handleChange} name='pincode' type='text' id='pincode' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. 762522'></input>
              {errors.pincode && <span className='text-sm text-red-500'>{errors.pincode}</span>}
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='routename' className='font-medium text-gray-700'>Route name <span className='text-red-500'>*</span></label>
-             <input value={formData.routename} onChange={handleChange} name='routename' type='text' id='routename' className='bg-lightgray p-2 rounded-md outline-none border' placeholder='Ex. jode toe'></input>
+             <input value={formData.routename} onChange={handleChange} name='routename' type='text' id='routename' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. Jabalpur'></input>
              {errors.routename && <span className='text-sm text-red-500'>{errors.routename}</span>}
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='chemistarea' className='font-medium text-gray-700'>Chemist Area <span className='text-red-500'>*</span></label>
-             <input value={formData.chemistarea} onChange={handleChange} name='chemistarea' type='text' id='chemistarea' className='bg-lightgray p-2 rounded-md outline-none border' placeholder='Ex. jode toe'></input>
+             <input value={formData.chemistarea} onChange={handleChange} name='chemistarea' type='text' id='chemistarea' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. Jabalpur'></input>
              {errors.chemistarea && <span className='text-sm text-red-500'>{errors.chemistarea}</span>}
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='phone' className='font-medium text-gray-700'>Phone </label>
-             <input value={formData.phone} onChange={handleChange} name='phone' type='text' id='phone' className='bg-lightgray p-2 rounded-md outline-none border' placeholder='Ex. jode toe'></input>
+             <input value={formData.phone} onChange={handleChange} name='phone' type='text' id='phone' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. 87252...'></input>
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='contactperson' className='font-medium text-gray-700'>Contact Person <span className='text-red-500'>*</span></label>
-             <input value={formData.contactperson} onChange={handleChange} name='contactperson' type='text' id='contactperson' className='bg-lightgray p-2 rounded-md outline-none border' placeholder='Ex. jode toe'></input>
+             <input value={formData.contactperson} onChange={handleChange} name='contactperson' type='text' id='contactperson' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. Tom Jode'></input>
              {errors.contactperson && <span className='text-sm text-red-500'>{errors.contactperson}</span>}
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='visitfreq' className='font-medium text-gray-700'>Visit Frequency <span className='text-red-500'>*</span></label>
-             <input value={formData.visitfreq} onChange={handleChange} name='visitfreq' type='number' id='visitfreq' className='bg-lightgray p-2 rounded-md outline-none border' placeholder='Ex. jode toe'></input>
+             <input value={formData.visitfreq} onChange={handleChange} name='visitfreq' type='number' id='visitfreq' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. 3'></input>
              {errors.visitfreq && <span className='text-sm text-red-500'>{errors.visitfreq}</span>}
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='dob' className='font-medium text-gray-700'>Date of Birth <span className='text-red-500'>*</span></label>
-             <input value={formData.dob} onChange={handleChange} name='dob' type='date' id='dob' className='bg-lightgray p-2 rounded-md outline-none border' placeholder='Ex. jode toe'></input>
+             <input value={formData.dob} onChange={handleChange} name='dob' type='date' id='dob' className='p-2 outline-none border-b-2 border-gray-200'></input>
              {errors.dob && <span className='text-sm text-red-500'>{errors.dob}</span>}
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='chemisttype' className='font-medium text-gray-700'>Chemist Type <span className='text-red-500'>*</span></label>
-             <input value={formData.chemisttype} onChange={handleChange} name='chemisttype' type='text' id='chemisttype' className='bg-lightgray p-2 rounded-md outline-none border' placeholder='Ex. jode toe'></input>
+             <input value={formData.chemisttype} onChange={handleChange} name='chemisttype' type='text' id='chemisttype' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. Bio'></input>
              {errors.chemisttype && <span className='text-sm text-red-500'>{errors.chemisttype}</span>}
          </div>
       </div>

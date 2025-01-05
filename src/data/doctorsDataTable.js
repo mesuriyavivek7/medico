@@ -1,3 +1,7 @@
+//importing icons
+import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+
 export const columns = [
     {
       field: 'id',
@@ -83,12 +87,12 @@ export const columns = [
       flex: 1.5,
       minWidth: 200,
       renderCell: (params) => (
-        <div className="flex gap-4 items-center w-full h-full">
-          <button className="bg-blue-500 md:text-base text-sm hover:bg-blue-600 flex justify-center items-center rounded-md text-white md:w-20 w-16 h-6 md:h-8">
-            Edit
+        <div className="flex gap-3 items-center w-full h-full">
+          <button className="bg-blue-500 md:text-base text-sm hover:bg-blue-600 flex justify-center items-center rounded-md text-white md:w-10 w-12 h-6 md:h-7">
+            <BorderColorOutlinedIcon style={{fontSize:'1.2rem'}}></BorderColorOutlinedIcon>
           </button>
-          <button className="bg-red-500 md:text-base text-sm hover:bg-red-600 flex justify-center items-center rounded-md text-white md:w-20 w-16 h-6 md:h-8">
-            Delete
+          <button className="bg-red-500 md:text-base text-sm hover:bg-red-600 flex justify-center items-center rounded-md text-white md:w-10 w-12 h-6 md:h-7">
+            <DeleteOutlineOutlinedIcon style={{fontSize:'1.2rem'}}></DeleteOutlineOutlinedIcon>
           </button>
         </div>
       ),
