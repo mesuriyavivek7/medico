@@ -45,7 +45,7 @@ const handleNextAction = async () =>{
         <div className="flex items-center gap-2">
           <img className="md:w-24 w-12 h-12 md:h-24" src={Logo} alt="logo" />
           <span className="text-themeblue text-3xl md:text-4xl font-semibold">
-            Medico
+            Elvira
           </span>
         </div>
         <div className="flex flex-col gap-1 md:gap-2 items-center">

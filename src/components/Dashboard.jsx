@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 //importing images
 import LOGO from "../assets/logo.png";
@@ -18,6 +19,7 @@ import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNone
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
 import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 
 export default function Dashboard() {
 
@@ -34,6 +36,8 @@ export default function Dashboard() {
 
   const [isMenuOpen,setIsMenuOpen] = useState(true)
   const [isProfileOpen,setIsProfileOpen] = useState(false)
+
+  console.log(isMenuOpen)
 
   const popupRef = useRef(null)
 
@@ -60,7 +64,7 @@ export default function Dashboard() {
       <div className="fixed bg-white z-40 top-0 right-0 left-0 md:h-24 h-20 flex items-center">
         <div className={`${isMenuOpen?"md:w-72":"md:w-28"} w-28 duration-300 transition-all px-5 h-full flex items-center gap-2`}>
           <img className="w-14 h-14" alt="logo" src={LOGO}></img>
-          {isMenuOpen && <h1 className="text-themeblue md:block hidden text-3xl transition-all duration-300 font-semibold">MEDICO</h1>}
+          {isMenuOpen && <h1 className="text-themeblue md:block hidden text-3xl transition-all duration-300 font-semibold">Elvira</h1>}
         </div>
         <div className="flex justify-between px-2 md:px-8 h-full w-full items-center">
           <div className="flex items-center gap-3">
@@ -99,7 +103,7 @@ export default function Dashboard() {
               </div>
               {isProfileOpen && 
                <div ref={popupRef} className="absolute z-40 w-36 md:w-48 shadow rounded-md border bg-white top-[120%] right-0 flex flex-col ">
-                 <div className="flex hover:bg-lightgray p-2 items-center gap-2 text-gray-500"><span className="text-blue-500"><AccountCircleIcon></AccountCircleIcon></span> Profile</div>
+                 <Link to="/admin/profile"><div className="flex hover:bg-lightgray p-2 items-center gap-2 text-gray-500"><span className="text-blue-500"><AccountCircleIcon></AccountCircleIcon></span> Profile</div></Link>
                  <div className="flex hover:bg-lightgray p-2 items-center gap-2 text-gray-500"><span className="text-red-500"><LogoutIcon></LogoutIcon></span> Logout</div>
               </div>
               }
@@ -124,9 +128,13 @@ export default function Dashboard() {
                <span className={`${isActive('chemist') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ScienceOutlinedIcon style={{fontSize:'1.5rem'}}></ScienceOutlinedIcon></span>
                {isMenuOpen && <span className={`${isActive("chemist") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Chemist</span>}
             </div>
+            <div onClick={()=>handleNavigate('employee')} className={`group flex ${isActive("employee") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('employee') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><PersonOutlineIcon style={{fontSize:'1.5rem'}}></PersonOutlineIcon></span>
+               {isMenuOpen && <span className={`${isActive("employee") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Employee</span>}
+            </div>
         </div>
         {/* sidebar for mobile screen */}
-        <div className={`${isMenuOpen?"-left-96":"left-0"} z-40 w-64 left-0 bottom-0 top-0 md:hidden absolute transition-all duration-300 shadow-lg bg-white`}>
+        <div className={`${isMenuOpen?"-left-96":"left-0"} z-40 w-64 bottom-0 top-0 md:hidden absolute transition-all duration-300 shadow-lg bg-white`}>
             <div onClick={()=>handleNavigate('/admin')} className={`group flex ${isActive("dashboard") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
                <span className={`${isActive('dashboard') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><DashboardOutlinedIcon style={{fontSize:'1.5rem'}}></DashboardOutlinedIcon></span>
                <span className={`${isActive("dashboard") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>Dashboard</span>
@@ -138,6 +146,10 @@ export default function Dashboard() {
             <div onClick={()=>handleNavigate('chemist')} className={`group flex ${isActive("chemist") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
                <span className={`${isActive('chemist') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ScienceOutlinedIcon style={{fontSize:'1.5rem'}}></ScienceOutlinedIcon></span>
                <span className={`${isActive("chemist") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Chemist</span>
+            </div>
+            <div onClick={()=>handleNavigate('employee')} className={`group flex ${isActive("employee") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('employee') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><PersonOutlineIcon style={{fontSize:'1.5rem'}}></PersonOutlineIcon></span>
+               <span className={`${isActive("employee") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Employee</span>
             </div>
         </div>
         {/* Outlate */}
