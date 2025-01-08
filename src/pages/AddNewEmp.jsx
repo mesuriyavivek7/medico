@@ -1,20 +1,26 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
+import { useSelector } from 'react-redux';
 
 //Importing icons
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined';
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+
 import { Link } from 'react-router-dom';
 
 //Importing images
 import IMG1 from '../assets/asset5.png'
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
+import axios from 'axios';
 
 export default function AddNewEmp() {
-
+  const { user } = useSelector((state) => state.auth);
   const [previewImage,setPreviewImage] = useState(null)
   const [imageFile,setImageFile] = useState(null)
 
+  const [showPassword,setShowPassword] = useState(false)
 
   const fileTypes = ['image/png', 'image/jpeg', 'image/jpg']
 
@@ -33,18 +39,21 @@ export default function AddNewEmp() {
   }
 
   const [formData , setFormData ] = useState({
-    empcode:'',
-    roleid:'',
-    empname:'',
+    password:'',
+    userId:0,
+    username:'',
+    isAdmin:true,
+    firstName:'',
+    lastName:'',
+    gender:'',
+    dob:'',
+    panCard:'',
     email:'',
-    mobileno:'',
-    address:'',
-    area:'',
-    city:'',
-    state:'',
-    country:'',
-    joiningdate:'',
-    qualification:''
+    phoneNumber:'',
+    roleId:0,
+    createdBy:0,
+    joiningDate:'',
+    id:0
   })
 
   const [errors,setErrors] = useState({})
@@ -58,22 +67,18 @@ export default function AddNewEmp() {
    let newErrors = {}
    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-   if(!formData.empcode) newErrors.empcode = "Please enter empcode."
-   if(!formData.roleid) newErrors.roleid = "Please enter roleid."
-   if(!formData.empname) newErrors.empname = "Please enter empname."
+   if(!formData.firstName) newErrors.firstName="Please enter firstname."
+   if(!formData.lastName) newErrors.lastName="Please enter lastname."
+   if(!formData.username) newErrors.username="Please enter username."
    if(!formData.email) newErrors.email = "Please enter email address."
    else if(!emailRegex.test(formData.email)) newErrors.email = "Invalid email address."
-   if(!formData.mobileno) newErrors.mobileno = "Please enter mobileno."
-   else if(formData.mobileno.length!==10) newErrors.mobileno = "Invalid mobile no."
-   if(!formData.address) newErrors.address = "Please enter address."
-   if(!formData.area) newErrors.area = "Please enter area."
-   if(!formData.city) newErrors.city = "Please enter city name."
-   if(!formData.state) newErrors.state = "Please enter state name."
-   if(!formData.country) newErrors.country = "Please enter country name."
-   if(!formData.joiningdate) newErrors.joiningdate = "Please enter joining date."
-   if(!formData.qualification) newErrors.qualification = "Please enter qualification."
-   if(!imageFile) newErrors.image = "Please upload profile picture."
-   
+   if(!formData.phoneNumber) newErrors.phoneNumber = "Please enter mobileno."
+   else if(formData.phoneNumber.length!==10) newErrors.phoneNumber = "Invalid mobile no."
+   if(!formData.joiningDate) newErrors.joiningDate = "Please enter joining date."
+   if(!formData.dob) newErrors.dob="Please enter date of birth."
+   if(!formData.panCard) newErrors.panCard="Please enter pancard."
+   if(!formData.gender) newErrors.gender="Please enter gender."
+   if(!formData.password) newErrors.password="Please enter password."
    setErrors(newErrors)
 
    return Object.keys(newErrors).length===0
@@ -87,24 +92,35 @@ export default function AddNewEmp() {
   const handleSubmit = async () =>{
    if(validateData()){
     try{
+      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/UpdateUser`,formData,
+      {
+        headers: {
+          'Content-Type': 'application/json', // Ensure the content type is JSON
+          Authorization: `Bearer ${user.api_token}` // Include Bearer token if required
+        }
+      })
       setImageFile(null)
       setPreviewImage(null)
       setFormData({
-        empcode:'',
-        roleid:'',
-        empname:'',
+        password:'',
+        userId:0,
+        username:'',
+        isAdmin:true,
+        firstName:'',
+        lastName:'',
+        gender:'',
+        dob:'',
+        panCard:'',
         email:'',
-        mobileno:'',
-        address:'',
-        area:'',
-        city:'',
-        state:'',
-        country:'',
-        joiningdate:'',
-        qualification:''
+        phoneNumber:'',
+        roleId:0,
+        createdBy:0,
+        joiningDate:'',
+        id:0
       })
       toast.success("New Emplyee added.")
     }catch(err){
+       console.log(err)
        toast.error("Something went wrong while saving data.")
     }
    }
@@ -119,7 +135,7 @@ export default function AddNewEmp() {
         </div>
       </div>
     <div className='md:py-6 md:px-4 bg-white rounded-md custom-shadow py-3 px-3'>
-       <div className='grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8'>
+       <div className='grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8'>
         <div className='flex flex-col gap-2 items-center'>
            <div className='group overflow-hidden relative rounded-full w-36 h-36 flex justify-center items-center border'>
               <img src={previewImage?previewImage:IMG1} className="w-full h-full" alt='person'></img>
@@ -133,66 +149,62 @@ export default function AddNewEmp() {
         </div>
         <div className='flex flex-col gap-5'>
           <div className='flex flex-col gap-2'>
-             <label htmlFor='empcode' className='font-medium text-gray-700'>Emp. Code <span className='text-red-500'>*</span></label>
-             <input name='empcode' onChange={handleChange} type='text' value={formData.empcode} id='empcode' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. 636352'></input>
-             {errors.empcode && <span className='text-sm text-red-400'>{errors.empcode}</span>}
-          </div>
-          <div className='flex flex-col gap-2'>
-             <label htmlFor='roleid' className='font-medium text-gray-700'>Role Id <span className='text-red-500'>*</span></label>
-             <input name='roleid' onChange={handleChange} type='text' value={formData.roleid} id='roleid' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. 636353'></input>
-             {errors.roleid && <span className='text-sm text-red-400'>{errors.roleid}</span>}
-          </div>
-        </div>
-         <div className='flex flex-col gap-2'>
-             <label htmlFor='empname' className='font-medium text-gray-700'>Emp. Name <span className='text-red-500'>*</span></label>
-             <input name='empname' onChange={handleChange} type='text' value={formData.empname} id='empname' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. Jode Doe'></input>
-             {errors.empname && <span className='text-sm text-red-400'>{errors.empname}</span>}
+             <label htmlFor='firstName' className='font-medium text-gray-700'>Firstname <span className='text-red-500'>*</span></label>
+             <input name='firstName' onChange={handleChange} type='text' value={formData.firstName} id='firstName' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. Jode'></input>
+             {errors.firstName && <span className='text-sm text-red-400'>{errors.firstName}</span>}
          </div>
          <div className='flex flex-col gap-2'>
-             <label htmlFor='email' className='font-medium text-gray-700'>Email <span className='text-red-500'>*</span></label>
-             <input name='email' onChange={handleChange} type='text' value={formData.email} id='empname' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. test@example.com'></input>
+             <label htmlFor='lastName' className='font-medium text-gray-700'>Lastname <span className='text-red-500'>*</span></label>
+             <input name='lastName' onChange={handleChange} type='text' value={formData.lastName} id='lastName' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. Doe'></input>
+             {errors.lastName && <span className='text-sm text-red-400'>{errors.lastName}</span>}
+         </div>
+        </div>
+        <div className='flex flex-col gap-2'>
+             <label htmlFor='username' className='font-medium text-gray-700'>Username <span className='text-red-500'>*</span></label>
+             <input name='username' onChange={handleChange} type='text' value={formData.username} id='username' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. MyUser'></input>
+             {errors.username && <span className='text-sm text-red-400'>{errors.username}</span>}
+         </div>
+         <div className='flex flex-col gap-2'>
+             <label htmlFor='phoneNumber' className='font-medium text-gray-700'>Mobile No <span className='text-red-500'>*</span></label>
+             <input name='phoneNumber' onChange={handleChange} type='number' value={formData.phoneNumber} id='phoneNumber' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. 72626...'></input>
+             {errors.phoneNumber && <span className='text-sm text-red-400'>{errors.phoneNumber}</span>}
+         </div>
+         <div className='flex flex-col gap-2'>
+             <label htmlFor='email' className='font-medium text-gray-700'>Mobile No <span className='text-red-500'>*</span></label>
+             <input name='email' onChange={handleChange} type='text' value={formData.email} id='email' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. test@example.com'></input>
              {errors.email && <span className='text-sm text-red-400'>{errors.email}</span>}
          </div>
          <div className='flex flex-col gap-2'>
-             <label htmlFor='mobileno' className='font-medium text-gray-700'>Mobile No <span className='text-red-500'>*</span></label>
-             <input name='mobileno' onChange={handleChange} type='number' value={formData.mobileno} id='mobileno' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. 72626...'></input>
-             {errors.mobileno && <span className='text-sm text-red-400'>{errors.mobileno}</span>}
+             <label htmlFor='dob' className='font-medium text-gray-700'>Date of birth <span className='text-red-500'>*</span></label>
+             <input name='dob' onChange={handleChange} type='date' value={formData.dob} id='dob' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.joiningDate && <span className='text-sm text-red-400'>{errors.dob}</span>}
+         </div>
+         <div className='relative flex flex-col gap-2'>
+             <label htmlFor='password' className='font-medium text-gray-700'>Password <span className='text-red-500'>*</span></label>
+             <input name='password' onChange={handleChange} type={showPassword?"text":"password"} value={formData.password} id='password' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. 6df53'></input>
+             <span onClick={()=>setShowPassword(!showPassword)} className='cursor-pointer absolute top-10 text-gray-700 right-2'>{showPassword?<RemoveRedEyeOutlinedIcon style={{fontSize:'1.2rem'}}></RemoveRedEyeOutlinedIcon>:<VisibilityOffOutlinedIcon style={{fontSize:'1.2rem'}}></VisibilityOffOutlinedIcon>}</span>
+             {errors.password && <span className='text-sm text-red-400'>{errors.password}</span>}
          </div>
          <div className='flex flex-col gap-2'>
-             <label htmlFor='address' className='font-medium text-gray-700'>Address <span className='text-red-500'>*</span></label>
-             <input name='address' onChange={handleChange} type='text' value={formData.address} id='address' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. 402 - Lake Street'></input>
-             {errors.address && <span className='text-sm text-red-400'>{errors.address}</span>}
+             <label htmlFor='gender' className='font-medium text-gray-700'>Gender <span className='text-red-500'>*</span></label>
+             <select name='gender' id='gender' value={formData.gender} onChange={handleChange} className='p-2 outline-none border-2 border-gray-200'>
+               <option value={''}>--- Select Gender ---</option>
+               <option value={'M'}>Male</option>
+               <option value={'F'}>Female</option>
+             </select>
+             {errors.gender && <span className='text-sm text-red-400'>{errors.gender}</span>}
          </div>
          <div className='flex flex-col gap-2'>
-             <label htmlFor='area' className='font-medium text-gray-700'>Area <span className='text-red-500'>*</span></label>
-             <input name='area' onChange={handleChange} type='text' value={formData.area} id='area' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. Vastrapur'></input>
-             {errors.area && <span className='text-sm text-red-400'>{errors.area}</span>}
+             <label htmlFor='joiningDate' className='font-medium text-gray-700'>Joining Date <span className='text-red-500'>*</span></label>
+             <input name='joiningDate' onChange={handleChange} type='date' value={formData.joiningDate} id='joiningDate' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.joiningDate && <span className='text-sm text-red-400'>{errors.joiningDate}</span>}
          </div>
          <div className='flex flex-col gap-2'>
-             <label htmlFor='city' className='font-medium text-gray-700'>City <span className='text-red-500'>*</span></label>
-             <input name='city' onChange={handleChange} type='text' value={formData.city} id='city' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. Ahmedabad'></input>
-             {errors.city && <span className='text-sm text-red-400'>{errors.city}</span>}
+             <label htmlFor='panCard' className='font-medium text-gray-700'>Pancard <span className='text-red-500'>*</span></label>
+             <input name='panCard' onChange={handleChange} type='text' value={formData.panCard} placeholder='Ex. AFZPK7190K' id='panCard' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.panCard && <span className='text-sm text-red-400'>{errors.panCard}</span>}
          </div>
-         <div className='flex flex-col gap-2'>
-             <label htmlFor='state' className='font-medium text-gray-700'>State <span className='text-red-500'>*</span></label>
-             <input name='state' onChange={handleChange} type='text' value={formData.state} id='state' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. Gujarat'></input>
-             {errors.state && <span className='text-sm text-red-400'>{errors.state}</span>}
-         </div>
-         <div className='flex flex-col gap-2'>
-             <label htmlFor='country' className='font-medium text-gray-700'>Country <span className='text-red-500'>*</span></label>
-             <input name='country' onChange={handleChange} type='text' value={formData.country} id='country' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. India'></input>
-             {errors.country && <span className='text-sm text-red-400'>{errors.country}</span>}
-         </div>
-         <div className='flex flex-col gap-2'>
-             <label htmlFor='joiningdate' className='font-medium text-gray-700'>Joining Date <span className='text-red-500'>*</span></label>
-             <input name='joiningdate' onChange={handleChange} type='date' value={formData.joiningdate} id='country' className='p-2 outline-none border-b-2 border-gray-200'></input>
-             {errors.joiningdate && <span className='text-sm text-red-400'>{errors.joiningdate}</span>}
-         </div>
-         <div className='flex flex-col gap-2'>
-             <label htmlFor='qualification' className='font-medium text-gray-700'>Qualification <span className='text-red-500'>*</span></label>
-             <input name='qualification' onChange={handleChange} type='text' value={formData.qualification} id='country' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. B.E'></input>
-             {errors.qualification && <span className='text-sm text-red-400'>{errors.qualification}</span>}
-         </div>
+
       </div>
      </div>
       <div className='flex place-content-end bg-white custom-shadow rounded-md py-3 px-3 md:py-4 md:px-4'>

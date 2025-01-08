@@ -1,7 +1,7 @@
 import { LOGIN_FETCH_START, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT } from "../types";
 
 const initialState = {
-    user: null || sessionStorage.getItem("user"),
+    user: null || JSON.parse(sessionStorage.getItem("user")),
     loading:false,
     error:null
 }
@@ -16,7 +16,7 @@ const authReducer = (state = initialState, action) => {
             }
         
         case LOGIN_SUCCESS:
-            sessionStorage.setItem("user",action.payload)
+            sessionStorage.setItem("user",JSON.stringify(action.payload))
             return {
                 user:action.payload,
                 loading:false,
@@ -24,6 +24,7 @@ const authReducer = (state = initialState, action) => {
             }
 
         case LOGIN_FAILURE:
+            sessionStorage.removeItem('user')
             return {
                 user:null,
                 ...state,

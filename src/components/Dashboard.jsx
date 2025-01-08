@@ -37,6 +37,9 @@ export default function Dashboard() {
   const [isMenuOpen,setIsMenuOpen] = useState(true)
   const [isProfileOpen,setIsProfileOpen] = useState(false)
 
+  const [infoUpdatePopUp,setInfoUpdatePopUp] = useState(false)
+  const [passUpdatePopUp,setPassUpdatePopUp] = useState(false)
+
   console.log(isMenuOpen)
 
   const popupRef = useRef(null)

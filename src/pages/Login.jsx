@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import {
   loginStart,
   loginSuccess,
-  loginFailure,
 } from "../redux/actions/authActions";
 import axios from "axios";
 
@@ -66,7 +65,7 @@ export default function Login() {
             password: formData.password,
           }
         );
-        console.log(response.data);
+
         dispatch(loginSuccess(response.data));
         setFormData({ email: "", password: "" });
         navigate('/admin/dashboard')

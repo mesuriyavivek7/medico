@@ -1,97 +1,105 @@
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import axios from 'axios';
+
+
+const formateDate = (dateString)=>{
+  const date = new Date(dateString);
+
+  const options = { month: 'short', day: 'numeric', year: 'numeric' };
+  return date.toLocaleDateString('en-US', options).replace(',', '');
+}
 
 export const columns = [
   {
-    field: 'id',
+    field: 'srno',
     headerClassName: 'super-app-theme--header',
     headerName: 'Sr No.',
     flex: 0.5, // Proportional width
     minWidth: 80, // Minimum width to prevent shrinking
   },
   {
-    field: 'empid',
-    headerClassName: 'super-app-theme--header',
-    headerName: 'Emp Code',
-    flex: 0.5, // Proportional width
-    minWidth: 100, // Minimum width to prevent shrinking
-  },
-  {
-    field: 'roleid',
+    field: 'roleID',
     headerClassName: 'super-app-theme--header',
     headerName: 'Role Id',
     flex: 0.5, // Proportional width
     minWidth: 100, // Minimum width to prevent shrinking
   },
   {
+    field: 'username',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Username',
+    flex: 0.5, // Proportional width
+    minWidth: 140, // Minimum width to prevent shrinking
+  },
+  {
     field: 'empname',
     headerClassName: 'super-app-theme--header',
     headerName: 'Emp Name',
     flex: 0.5, // Proportional width
-    minWidth: 120, // Minimum width to prevent shrinking
+    minWidth: 150, // Minimum width to prevent shrinking
+    renderCell:(params)=>(
+      <div className='w-full h-full flex items-center'>
+         <span>{params.row.firstName} {params.row.lastName}</span>
+      </div>
+    )
   },
   {
     field: 'email',
     headerClassName: 'super-app-theme--header',
     headerName: 'Email',
     flex: 0.5, // Proportional width
-    minWidth: 150, // Minimum width to prevent shrinking
+    minWidth: 200, // Minimum width to prevent shrinking
   },
   {
-    field: 'mobileno',
+    field: 'gender',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Gender',
+    flex: 0.5, // Proportional width
+    minWidth: 120, // Minimum width to prevent shrinking
+    renderCell:(params)=>(
+      <div className='flex w-full items-center h-full'>
+        <span>{params.row.gender==="M"||params.row.gender==="m"?"Male":"Female"}</span>
+      </div>
+    )
+  },
+  {
+    field: 'phoneNumber',
     headerClassName: 'super-app-theme--header',
     headerName: 'Mobile No',
     flex: 0.5, // Proportional width
-    minWidth: 110, // Minimum width to prevent shrinking
+    minWidth: 140, // Minimum width to prevent shrinking
   },
   {
-    field: 'address',
-    headerClassName: 'super-app-theme--header',
-    headerName: 'Address',
-    flex: 0.5, // Proportional width
-    minWidth: 100, // Minimum width to prevent shrinking
+     field:'dob',
+     headerClassName: 'super-app-theme--header',
+     headerName: 'Date of birth',
+     flex: 0.5, // Proportional width
+     minWidth: 140, // Minimum width to prevent shrinking
+     renderCell:(params)=>(
+      <div className='flex w-full h-full items-center'>
+         <span>{formateDate(params.value)}</span>
+      </div>
+     )
   },
   {
-    field: 'area',
-    headerClassName: 'super-app-theme--header',
-    headerName: 'Area',
-    flex: 0.5, // Proportional width
-    minWidth: 150, // Minimum width to prevent shrinking
-  },
-  {
-    field: 'city',
-    headerClassName: 'super-app-theme--header',
-    headerName: 'City',
-    flex: 0.5, // Proportional width
-    minWidth: 120, // Minimum width to prevent shrinking
-  },
-  {
-    field: 'state',
-    headerClassName: 'super-app-theme--header',
-    headerName: 'State',
-    flex: 0.5, // Proportional width
-    minWidth: 100, // Minimum width to prevent shrinking
-  },
-  {
-    field: 'country',
-    headerClassName: 'super-app-theme--header',
-    headerName: 'Country',
-    flex: 0.5, // Proportional width
-    minWidth: 110, // Minimum width to prevent shrinking
-  },
-  {
-    field: 'joiningdate',
+    field: 'joiningDate',
     headerClassName: 'super-app-theme--header',
     headerName: 'Joining Date',
     flex: 0.5, // Proportional width
     minWidth: 120, // Minimum width to prevent shrinking
+    renderCell:(params)=>(
+      <div className='w-full h-full flex items-center'>
+         <span>{formateDate(params.value)}</span>
+      </div>
+    )
   },
   {
-    field: 'qualification',
+    field: 'panCard',
     headerClassName: 'super-app-theme--header',
-    headerName: 'Qualification',
+    headerName: 'Pancard',
     flex: 0.5, // Proportional width
-    minWidth: 130, // Minimum width to prevent shrinking
+    minWidth: 140, // Minimum width to prevent shrinking
   },
   {
     field: 'action',
@@ -112,51 +120,16 @@ export const columns = [
   },
 ]
 
-export const rows = [
-    {
-        id:1,
-        empid:'1242',
-        roleid:'7226',
-        empname:'Raj Mishra',
-        email:'raj@gmail.com',
-        state:'Gujarat',
-        mobileno:'6714212212',
-        address:'402 - Het park',
-        area:'Gurukul Road',
-        city:'Ahmedabad',
-        country:'India',
-        joiningdate:'09-01-2023',
-        qualification:'Bsc Nursing'
-    },
-    {
-        id:2,
-        empid:'1242',
-        roleid:'7226',
-        empname:'Raj Mishra',
-        email:'raj@gmail.com',
-        state:'Gujarat',
-        mobileno:'6714212212',
-        address:'402 - Het park',
-        area:'Gurukul Road',
-        city:'Ahmedabad',
-        country:'India',
-        joiningdate:'09-01-2023',
-        qualification:'Bsc Nursing'
-    },
-    {
-        id:3,
-        empid:'1242',
-        roleid:'7226',
-        empname:'Raj Mishra',
-        email:'raj@gmail.com',
-        state:'Gujarat',
-        mobileno:'6714212212',
-        address:'402 - Het park',
-        area:'Gurukul Road',
-        city:'Ahmedabad',
-        country:'India',
-        joiningdate:'09-01-2023',
-        qualification:'Bsc Nursing'
-    }
- 
-]
+export const fetchAllUsers = async (token)=>{
+  try{
+    const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/User/GetAllUsers`,{
+      headers: {
+        'Content-Type': 'application/json', // Ensure the content type is JSON
+        Authorization: `Bearer ${token}` // Include Bearer token if required
+      }
+    })
+    return response.data.data
+  }catch(err){
+    throw err
+  }
+}

@@ -18,7 +18,7 @@ export default function Chemist() {
           Chemist Details
         </h1>
         <div className="flex items-center gap-3">
-          <div className="bg-gray-100 p-1.5 rounded-md flex gap-1 items-center">
+          <div className="bg-gray-100 p-1.5 rounded-md hidden md:flex gap-1 items-center">
             <span>
               <SearchIcon></SearchIcon>
             </span>
@@ -28,11 +28,11 @@ export default function Chemist() {
               type="text"
             ></input>
           </div>
-          <span className="cursor-pointer w-9 h-9 bg-gray-200 flex justify-center items-center rounded-md">
+          <span className="cursor-pointer md:w-9 md:h-9 w-8 h-8 border border-slate-200 flex justify-center items-center rounded-md">
             <AutorenewIcon></AutorenewIcon>
           </span>
           <Link to={"/admin/chemist/addnew"}>
-            <button className="p-2 bg-themeblue md:text-base text-sm text-white rounded-md">
+            <button className="md:p-2 p-1.5 bg-themeblue md:text-base text-sm text-white rounded-md">
               Add New Chemist
             </button>
           </Link>

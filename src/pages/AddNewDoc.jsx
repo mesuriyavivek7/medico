@@ -1,26 +1,38 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
+import { useSelector } from 'react-redux';
 
 //Importing icons
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 export default function AddNewDoc() {
-
+  const { user } = useSelector((state) => state.auth);
   const [errors,setErrors] = useState({})
    
   const [formData,setFormData] = useState({
-     drname:'',
-     class:'',
-     speciality:'',
-     qualification:'',
-     mobileno:'',
-     dob:'',
-     gender:'',
-     routename:'',
-     address:'',
-     pincode:'',
+    drName:'',
+    drCode:0,
+    className:'',
+    speciality:'',
+    qualification:'',
+    gender:'',
+    routeName:'',
+    addressLine1:'',
+    addressLine2:'',
+    pinCode:'',
+    doctorArea:'',
+    vfreq:'',
+    mobileNo:'',
+    phone:'',
+    dob:'',
+    isActive:1,
+    createdBy:2
   })
+
+
+  console.log('formdata---->',formData)
 
   const handleChange = (e) =>{
     const {name, value} = e.target
@@ -30,17 +42,21 @@ export default function AddNewDoc() {
   const validateData = () =>{
     let newErrors = {}
     
-    if(!formData.drname) newErrors.drname = "Dr.name is required."
-    if(!formData.class) newErrors.class = "Class is required."
+    if(!formData.drName) newErrors.drname = "Dr.name is required."
+    if(!formData.className) newErrors.class = "Class is required."
     if(!formData.speciality) newErrors.speciality = 'Speciality is required.'
     if(!formData.qualification) newErrors.qualification = 'Qualification is required.'
-    if(!formData.mobileno) newErrors.mobileno = "Mobile number is required."
-    else if(formData.mobileno.length!==10) newErrors.mobileno = "Invalid mobile number."
+    if(!formData.phone) newErrors.phone = "Phone is required."
+    if(!formData.mobileNo) newErrors.mobileno = "Mobile number is required."
+    else if(formData.mobileNo.length!==10) newErrors.mobileno = "Invalid mobile number."
     if(!formData.gender) newErrors.gender = "Gender is required."
+    if(!formData.doctorArea) newErrors.doctorArea="Doctor area is required."
     if(!formData.dob) newErrors.dob = "Date of Birth is required."
-    if(!formData.routename) newErrors.routename = "Routename is required."
-    if(!formData.address) newErrors.address = "Addres is required."
-    if(!formData.pincode) newErrors.pincode = "Pincode is required."
+    if(!formData.routeName) newErrors.routename = "Routename is required."
+    if(!formData.addressLine1) newErrors.addressLine1 = "Address Line 1 is required."
+    if(!formData.vfreq) newErrors.vfreq="Visiting freq is required."
+    if(!formData.addressLine2) newErrors.addressLine2 = "Address Line 2 is required."
+    if(!formData.pinCode) newErrors.pincode = "Pincode is required."
 
     setErrors(newErrors)
 
@@ -51,18 +67,32 @@ export default function AddNewDoc() {
   const handleSubmit = async () =>{
     if(validateData()){
      try{
+        const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/Doctor/AddDoctor`,formData,{
+          headers: {
+            'Content-Type': 'application/json', // Ensure the content type is JSON
+            Authorization: `Bearer ${user.api_token}` // Include Bearer token if required
+          }
+        })
+        console.log(response.data)
         setFormData(
           {
-            drname:'',
-            class:'',
+            drName:'',
+            drCode:0,
+            className:'',
             speciality:'',
             qualification:'',
-            mobileno:'',
-            dob:'',
             gender:'',
-            routename:'',
-            address:'',
-            pincode:''
+            routeName:'',
+            addressLine1:'',
+            addressLine2:'',
+            pinCode:'',
+            doctorArea:'',
+            vfreq:'',
+            mobileNo:'',
+            phone:'',
+            dob:'',
+            isActive:1,
+            createdBy:2
           }
         )
         toast.success("Successfully Added.")
@@ -83,13 +113,13 @@ export default function AddNewDoc() {
       </div>
       <div className='md:py-6 md:px-4 bg-white rounded-md custom-shadow grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 py-3 px-3'>
          <div className='flex flex-col gap-2'>
-             <label htmlFor='name' className='font-medium text-gray-700'>Dr. Name <span className='text-red-500'>*</span></label>
-             <input name='drname' onChange={handleChange} type='text' value={formData.drname} id='name' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. jode toe'></input>
+             <label htmlFor='drName' className='font-medium text-gray-700'>Dr. Name <span className='text-red-500'>*</span></label>
+             <input name='drName' onChange={handleChange} type='text' value={formData.drName} id='drName' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. jode toe'></input>
              {errors.drname && <span className='text-sm text-red-400'>{errors.drname}</span>}
          </div>
          <div className='flex flex-col gap-2'>
-             <label htmlFor='class' className='font-medium text-gray-700'>Class <span className='text-red-500'>*</span></label>
-             <input name='class' onChange={handleChange} type='text' value={formData.class} id='class' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. +A'></input>
+             <label htmlFor='className' className='font-medium text-gray-700'>Class <span className='text-red-500'>*</span></label>
+             <input name='className' onChange={handleChange} type='text' value={formData.className} id='className' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. +A'></input>
              {errors.class && <span className='text-sm text-red-400'>{errors.class}</span>}
          </div>
          <div className='flex flex-col gap-2'>
@@ -99,12 +129,12 @@ export default function AddNewDoc() {
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='qualification' className='font-medium text-gray-700'>Qualification <span className='text-red-500'>*</span></label>
-             <input name='qualification' onChange={handleChange} type='text' value={formData.qualification} id='qualification' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. Ms.Ortho'></input>
+             <input name='qualification' onChange={handleChange} type='text' value={formData.qualification} id='qualification' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. M.D'></input>
              {errors.qualification && <span className='text-sm text-red-400'>{errors.qualification}</span>}
          </div>
          <div className='flex flex-col gap-2'>
-             <label htmlFor='mobileno' className='font-medium text-gray-700'>Mobile No <span className='text-red-500'>*</span></label>
-             <input name='mobileno' onChange={handleChange} type='number' value={formData.mobileno} id='mobileno' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. 9878767676'></input>
+             <label htmlFor='mobileNo' className='font-medium text-gray-700'>Mobile No <span className='text-red-500'>*</span></label>
+             <input name='mobileNo' onChange={handleChange} type='number' value={formData.mobileNo} id='mobileNo' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. 9878767676'></input>
              {errors.mobileno && <span className='text-sm text-red-400'>{errors.mobileno}</span>}
          </div>
          <div className='flex flex-col gap-2'>
@@ -116,25 +146,45 @@ export default function AddNewDoc() {
              <label htmlFor='gender' className='font-medium text-gray-700'>Gender <span className='text-red-500'>*</span></label>
              <select name='gender' onChange={handleChange} id='gender' className='p-2 outline-none border-2 border-gray-200' value={formData.gender}>
                <option value={''}>---- Select Gender ----</option>
-               <option value={'male'}>Male</option>
-               <option value={'female'}>Female</option>
+               <option value={'M'}>Male</option>
+               <option value={'F'}>Female</option>
              </select>
              {errors.gender && <span className='text-sm text-red-400'>{errors.gender}</span>}
          </div>
          <div className='flex flex-col gap-2'>
-             <label htmlFor='routename' className='font-medium text-gray-700'>Route Name <span className='text-red-500'>*</span></label>
-             <input name='routename' onChange={handleChange} type='text' placeholder='Ex. Jabalpur' value={formData.routename} id='routename' className='p-2 outline-none border-b-2 border-gray-200'></input>
-             {errors.routename && <span className='text-sm text-red-400'>{errors.routename}</span>}
+             <label htmlFor='phone' className='font-medium text-gray-700'>Phone <span className='text-red-500'>*</span></label>
+             <input name='phone' onChange={handleChange} type='number' placeholder='Ex. (101) 76223' value={formData.phone} id='phone' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.phone && <span className='text-sm text-red-400'>{errors.phone}</span>}
          </div>
          <div className='flex flex-col gap-2'>
-             <label htmlFor='address' className='font-medium text-gray-700'>Address <span className='text-red-500'>*</span></label>
-             <input name='address' onChange={handleChange} type='text' placeholder='Ex. Home Science Road..' value={formData.address} id='address' className='p-2 outline-none border-b-2 border-gray-200'></input>
-             {errors.address && <span className='text-sm text-red-400'>{errors.address}</span>}
+             <label htmlFor='routeName' className='font-medium text-gray-700'>Route Name <span className='text-red-500'>*</span></label>
+             <input name='routeName' onChange={handleChange} type='text' placeholder='Ex. S.g Highway' value={formData.routeName} id='routeName' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.routeName && <span className='text-sm text-red-400'>{errors.routeName}</span>}
          </div>
          <div className='flex flex-col gap-2'>
-             <label htmlFor='pincode' className='font-medium text-gray-700'>Pincode <span className='text-red-500'>*</span></label>
-             <input name='pincode' onChange={handleChange} type='text' placeholder='Ex. 534232' value={formData.pincode} id='pincode' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             <label htmlFor='addressLine1' className='font-medium text-gray-700'>Addres Line 1<span className='text-red-500'>*</span></label>
+             <input name='addressLine1' onChange={handleChange} type='text' placeholder='Ex. 301 - Sham Apartment' value={formData.addressLine1} id='addressLine1' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.addressLine1 && <span className='text-sm text-red-400'>{errors.addressLine1}</span>}
+         </div>
+         <div className='flex flex-col gap-2'>
+             <label htmlFor='addressLine2' className='font-medium text-gray-700'>Address Line 2 <span className='text-red-500'>*</span></label>
+             <input name='addressLine2' onChange={handleChange} type='text' placeholder='Ex. Home Science Road..' value={formData.addressLine2} id='address' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.addressLine2 && <span className='text-sm text-red-400'>{errors.addressLine2}</span>}
+         </div>
+         <div className='flex flex-col gap-2'>
+             <label htmlFor='pinCode' className='font-medium text-gray-700'>Pincode <span className='text-red-500'>*</span></label>
+             <input name='pinCode' onChange={handleChange} type='text' placeholder='Ex. 534232' value={formData.pinCode} id='pinCode' className='p-2 outline-none border-b-2 border-gray-200'></input>
              {errors.pincode && <span className='text-sm text-red-400'>{errors.pincode}</span>}
+         </div>
+         <div className='flex flex-col gap-2'>
+             <label htmlFor='doctorArea' className='font-medium text-gray-700'>Doctor Area <span className='text-red-500'>*</span></label>
+             <input name='doctorArea' onChange={handleChange} type='text' placeholder='Ex. Nehrunagar' value={formData.doctorArea} id='doctorArea' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.doctorArea && <span className='text-sm text-red-400'>{errors.doctorArea}</span>}
+         </div>
+         <div className='flex flex-col gap-2'>
+             <label htmlFor='vfreq' className='font-medium text-gray-700'>Visiting Freq <span className='text-red-500'>*</span></label>
+             <input name='vfreq' onChange={handleChange} type='text' placeholder='Ex. 2' value={formData.vfreq} id='vfreq' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.vfreq && <span className='text-sm text-red-400'>{errors.vfreq}</span>}
          </div>
       </div>
        <div className='flex place-content-end bg-white custom-shadow rounded-md py-3 px-3 md:py-4 md:px-4'>
