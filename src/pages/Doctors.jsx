@@ -15,8 +15,10 @@ import { toast } from 'react-toastify';
 export default function Doctors() {
   const { user } = useSelector((state) => state.auth);
   const [doctors,setDoctors] = useState([])
+  const [loading,setLoading] = useState(false)
 
   const fetchData = async ()=>{
+    setLoading(true)
     try{
       const data = await getDoctors(user.api_token)
       if(data){
@@ -25,6 +27,8 @@ export default function Doctors() {
     }catch(err){
        console.log(err)
        toast.error("Something went wrong while fetching data.")
+    }finally{
+      setLoading(false)
     }
   }
 
@@ -53,6 +57,7 @@ export default function Doctors() {
            <DataGrid
             rows={doctors}
             columns={columns}
+            loading={loading}
             initialState={{
             pagination: {
               paginationModel: {

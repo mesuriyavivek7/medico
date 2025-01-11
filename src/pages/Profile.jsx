@@ -80,8 +80,9 @@ export default function Profile() {
 
   const handleUpdateProfile = async ()=>{
     if(handleValidateUpdateData()){
+     const {password,createdBy,isAdmin,userID,roleID,id,...otherDetails} = updateData
      try{
-       await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/UpdateUser`,updateData,{
+       await axios.put(`${process.env.REACT_APP_API_BASE_URL}/User/${user.user.id}`,otherDetails,{
         headers: {
           'Content-Type': 'application/json', // Ensure the content type is JSON
           Authorization: `Bearer ${user.api_token}` // Include Bearer token if required
@@ -223,11 +224,11 @@ export default function Profile() {
             <h1 className='text-gray-600 text-base md:text-lg font-medium'>Profile</h1>
             <span onClick={fetchUserData} className='cursor-pointer md:w-9 md:h-9 w-8 h-8 border border-slate-200 flex justify-center items-center rounded-md'><AutorenewIcon></AutorenewIcon></span>
         </div>
-        <div className='flex gap-4 items-start'>
-            <div className='w-[28%] flex flex-col gap-2'>
+        <div className='flex md:flex-row flex-col gap-4 items-start'>
+            <div className='w-full md:w-[28%] flex flex-col gap-2'>
                <div className='rounded-md custom-shadow bg-white'>
                  <div className='px-4 py-4 border-b border-gray-200'>
-                   <h1 className='font-semibold'>Personal Information</h1>
+                   <h1 className='font-semibold'>Profile Picture</h1>
                  </div>
                  <div className='px-4 py-3 flex flex-col gap-4'>
                     <div className='flex items-center gap-2'>
@@ -248,7 +249,7 @@ export default function Profile() {
                  </div>
                </div>
             </div>
-            <div className='w-[72%] flex flex-col gap-4'>
+            <div className='w-full md:w-[72%] flex flex-col gap-4'>
                <div className='rounded-md custom-shadow bg-white'>
                   <div className='px-4 py-4 flex justify-between border-b border-gray-200'>
                      <h1 className='font-semibold'>Personal Information</h1>

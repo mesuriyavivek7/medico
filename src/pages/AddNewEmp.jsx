@@ -17,6 +17,7 @@ import axios from 'axios';
 
 export default function AddNewEmp() {
   const { user } = useSelector((state) => state.auth);
+  const [loading,setLoading] = useState(false)
   const [previewImage,setPreviewImage] = useState(null)
   const [imageFile,setImageFile] = useState(null)
 
@@ -40,9 +41,8 @@ export default function AddNewEmp() {
 
   const [formData , setFormData ] = useState({
     password:'',
-    userId:0,
+    userId:1,
     username:'',
-    isAdmin:true,
     firstName:'',
     lastName:'',
     gender:'',
@@ -50,8 +50,8 @@ export default function AddNewEmp() {
     panCard:'',
     email:'',
     phoneNumber:'',
-    roleId:0,
-    createdBy:0,
+    roleId:1,
+    createdBy:1,
     joiningDate:'',
     id:0
   })
@@ -91,8 +91,10 @@ export default function AddNewEmp() {
 
   const handleSubmit = async () =>{
    if(validateData()){
+    setLoading(true)
     try{
-      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/UpdateUser`,formData,
+      console.log(formData)
+      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/AddUser`,formData,
       {
         headers: {
           'Content-Type': 'application/json', // Ensure the content type is JSON
@@ -103,9 +105,8 @@ export default function AddNewEmp() {
       setPreviewImage(null)
       setFormData({
         password:'',
-        userId:0,
+        userId:1,
         username:'',
-        isAdmin:true,
         firstName:'',
         lastName:'',
         gender:'',
@@ -113,8 +114,8 @@ export default function AddNewEmp() {
         panCard:'',
         email:'',
         phoneNumber:'',
-        roleId:0,
-        createdBy:0,
+        roleId:2,
+        createdBy:1,
         joiningDate:'',
         id:0
       })
@@ -122,6 +123,8 @@ export default function AddNewEmp() {
     }catch(err){
        console.log(err)
        toast.error("Something went wrong while saving data.")
+    }finally{
+      setLoading(false)
     }
    }
   }
@@ -164,15 +167,15 @@ export default function AddNewEmp() {
              <input name='username' onChange={handleChange} type='text' value={formData.username} id='username' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. MyUser'></input>
              {errors.username && <span className='text-sm text-red-400'>{errors.username}</span>}
          </div>
+        <div className='flex flex-col gap-2'>
+             <label htmlFor='email' className='font-medium text-gray-700'>Email <span className='text-red-500'>*</span></label>
+             <input name='email' onChange={handleChange} type='text' value={formData.email} id='email' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. test@example.com'></input>
+             {errors.email && <span className='text-sm text-red-400'>{errors.email}</span>}
+         </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='phoneNumber' className='font-medium text-gray-700'>Mobile No <span className='text-red-500'>*</span></label>
              <input name='phoneNumber' onChange={handleChange} type='number' value={formData.phoneNumber} id='phoneNumber' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. 72626...'></input>
              {errors.phoneNumber && <span className='text-sm text-red-400'>{errors.phoneNumber}</span>}
-         </div>
-         <div className='flex flex-col gap-2'>
-             <label htmlFor='email' className='font-medium text-gray-700'>Mobile No <span className='text-red-500'>*</span></label>
-             <input name='email' onChange={handleChange} type='text' value={formData.email} id='email' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. test@example.com'></input>
-             {errors.email && <span className='text-sm text-red-400'>{errors.email}</span>}
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='dob' className='font-medium text-gray-700'>Date of birth <span className='text-red-500'>*</span></label>
@@ -208,7 +211,34 @@ export default function AddNewEmp() {
       </div>
      </div>
       <div className='flex place-content-end bg-white custom-shadow rounded-md py-3 px-3 md:py-4 md:px-4'>
-            <button onClick={handleSubmit} className='bg-themeblue p-2 text-white rounded-md hover:bg-blue-800'>Add Employee</button>
+            <button 
+            disabled={loading}
+            onClick={handleSubmit} 
+            className={`p-2 text-white w-36 flex justify-center items-center rounded-md ${loading?"bg-gray-400 cursor-not-allowed":"bg-themeblue hover:bg-blue-800"}`}>
+              {loading && (
+                <svg
+                  className="w-5 h-5 animate-spin mr-2 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              )}
+              {loading ? "Loading..." : "Add Employee"}
+            </button>
        </div>
     </div>
   )

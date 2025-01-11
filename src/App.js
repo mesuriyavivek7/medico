@@ -61,15 +61,27 @@ function App() {
     [
       {
         path:'/',
-        element: <Login></Login>,
+        element: !user ? (
+          <Login/>
+        ) : (
+          <Navigate to="/admin/dashboard"/>
+        ),
       },
       {
         path:'/forget-password',
-        element:<ForgetPassword></ForgetPassword>
+        element: !user ? (
+          <ForgetPassword/>
+        ) : (
+          <Navigate to="/admin/dashboard"/>
+        )
       },
       {
         path:'/reset-password',
-        element:<ResetPassword></ResetPassword>
+        element: !user ? (
+          <ResetPassword/>
+        ) : (
+          <Navigate to="/admin/dashboard"/>
+        )
       },
       {
         path:'/admin',

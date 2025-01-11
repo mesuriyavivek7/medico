@@ -10,6 +10,7 @@ import axios from 'axios';
 export default function AddNewDoc() {
   const { user } = useSelector((state) => state.auth);
   const [errors,setErrors] = useState({})
+  const [loading,setLoading] = useState(false)
    
   const [formData,setFormData] = useState({
     drName:'',
@@ -31,8 +32,6 @@ export default function AddNewDoc() {
     createdBy:2
   })
 
-
-  console.log('formdata---->',formData)
 
   const handleChange = (e) =>{
     const {name, value} = e.target
@@ -66,6 +65,7 @@ export default function AddNewDoc() {
 
   const handleSubmit = async () =>{
     if(validateData()){
+     setLoading(true)
      try{
         const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/Doctor/AddDoctor`,formData,{
           headers: {
@@ -99,6 +99,8 @@ export default function AddNewDoc() {
      }catch(err){
         console.log(err)
         toast.error("Something went wrong.")
+     }finally{
+      setLoading(false)
      }
    }
   }
@@ -153,7 +155,7 @@ export default function AddNewDoc() {
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='phone' className='font-medium text-gray-700'>Phone <span className='text-red-500'>*</span></label>
-             <input name='phone' onChange={handleChange} type='number' placeholder='Ex. (101) 76223' value={formData.phone} id='phone' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             <input name='phone' onChange={handleChange} type='text' placeholder='Ex. (101) 76223' value={formData.phone} id='phone' className='p-2 outline-none border-b-2 border-gray-200'></input>
              {errors.phone && <span className='text-sm text-red-400'>{errors.phone}</span>}
          </div>
          <div className='flex flex-col gap-2'>
@@ -188,7 +190,34 @@ export default function AddNewDoc() {
          </div>
       </div>
        <div className='flex place-content-end bg-white custom-shadow rounded-md py-3 px-3 md:py-4 md:px-4'>
-            <button onClick={handleSubmit} className='bg-themeblue p-2 text-white rounded-md hover:bg-blue-800'>Add Doctor</button>
+            <button 
+            disabled={loading}
+            onClick={handleSubmit} 
+            className={` p-2 w-28 flex justify-center items-center text-white rounded-md  ${loading?"bg-gray-400 cursor-not-allowed":"bg-themeblue hover:bg-blue-800"}`}>
+              {loading && (
+                <svg
+                  className="w-5 h-5 animate-spin mr-2 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              )}
+              {loading ? "Loading..." : "Add Doctor"}
+            </button>
        </div>
     </div>
   )
