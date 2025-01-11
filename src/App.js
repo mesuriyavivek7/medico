@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import { useSelector, useDispatch } from "react-redux";
-import { loginStart, loginSuccess, loginFailure } from "./redux/actions/authActions";
+import { loginStart, loginFailure } from "./redux/actions/authActions";
 import axios from 'axios'
 
 //importing General components
@@ -24,7 +24,6 @@ import Profile from "./pages/Profile";
 // ProtectedRoute Component
 const ProtectedRoute = ({ children }) => {
   const { user } = useSelector((state) => state.auth);
-
   if (!user) {
     return <Navigate to="/" />;
   }
@@ -33,36 +32,56 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
-  const { user, loading } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+
+  //Set bearer token
+  useEffect(()=>{
+     const token = user?.api_token
+     if(token){
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+     }
+  },[user])
 
   //vallidate user 
   useEffect(()=>{
     const validateUser = async () =>{
        dispatch(loginStart())
        try{
-         const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/user/verify_token`,{api_token:user.api_tokn})
-         dispatch(loginSuccess(response.data))
+          await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/verify_token`,{api_token:user.api_token})
        }catch(err){
          console.log(err)
          dispatch(loginFailure("Validation failed"))
        }
     }
+    validateUser()
   },[dispatch])
 
   const AppRouter = createBrowserRouter(
     [
       {
         path:'/',
-        element: <Login></Login>,
+        element: !user ? (
+          <Login/>
+        ) : (
+          <Navigate to="/admin/dashboard"/>
+        ),
       },
       {
         path:'/forget-password',
-        element:<ForgetPassword></ForgetPassword>
+        element: !user ? (
+          <ForgetPassword/>
+        ) : (
+          <Navigate to="/admin/dashboard"/>
+        )
       },
       {
         path:'/reset-password',
-        element:<ResetPassword></ResetPassword>
+        element: !user ? (
+          <ResetPassword/>
+        ) : (
+          <Navigate to="/admin/dashboard"/>
+        )
       },
       {
         path:'/admin',

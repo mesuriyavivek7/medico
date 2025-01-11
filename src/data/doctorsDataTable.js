@@ -1,6 +1,15 @@
 //importing icons
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import axios from 'axios';
+
+const formateDate = (dateString)=>{
+  const date = new Date(dateString);
+
+  const options = { month: 'short', day: 'numeric', year: 'numeric' };
+  return date.toLocaleDateString('en-US', options).replace(',', '');
+}
+
 
 export const columns = [
     {
@@ -11,14 +20,14 @@ export const columns = [
       minWidth: 80, // Minimum width to prevent shrinking
     },
     {
-      field: 'drname',
+      field: 'drName',
       headerClassName: 'super-app-theme--header',
       headerName: 'Dr. Name',
       flex: 1,
       minWidth: 150,
     },
     {
-      field: 'class',
+      field: 'className',
       headerClassName: 'super-app-theme--header',
       headerName: 'Class',
       flex: 0.8,
@@ -39,18 +48,16 @@ export const columns = [
       minWidth: 150,
     },
     {
-      field: 'mobile',
-      headerClassName: 'super-app-theme--header',
-      headerName: 'Mobile No',
-      flex: 1,
-      minWidth: 150,
-    },
-    {
       field: 'dob',
       headerClassName: 'super-app-theme--header',
       headerName: 'DOB',
       flex: 1,
       minWidth: 150,
+      renderCell: (params)=>(
+        <div className='flex w-full h-full'>
+          <span>{formateDate(params.row.dob)}</span>
+        </div>
+      )
     },
     {
       field: 'gender',
@@ -60,23 +67,58 @@ export const columns = [
       minWidth: 120,
     },
     {
-      field: 'routename',
+      field: 'routeName',
       headerClassName: 'super-app-theme--header',
       headerName: 'Route Name',
       flex: 1.2,
       minWidth: 150,
     },
     {
-      field: 'address',
+      field: 'addressLine1',
       headerClassName: 'super-app-theme--header',
-      headerName: 'Address',
+      headerName: 'Address Line 1',
       flex: 2,
       minWidth: 200,
     },
     {
-      field: 'pincode',
+      field: 'addressLine2',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'Address Line 2',
+      flex: 2,
+      minWidth: 200,
+    },
+    {
+      field: 'pinCode',
       headerClassName: 'super-app-theme--header',
       headerName: 'Pincode',
+      flex: 0.8,
+      minWidth: 120,
+    },
+    {
+      field: 'doctorArea',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'Docter Area',
+      flex: 0.8,
+      minWidth: 120,
+    },
+    {
+      field: 'vfreq',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'Visiting Freq',
+      flex: 0.8,
+      minWidth: 120,
+    },
+    {
+      field: 'mobileNo',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'Mobile No',
+      flex: 0.8,
+      minWidth: 120,
+    },
+    {
+      field: 'phone',
+      headerClassName: 'super-app-theme--header',
+      headerName: 'Phone',
       flex: 0.8,
       minWidth: 120,
     },
@@ -103,7 +145,7 @@ export const columns = [
 export const rows = [
     {
         id:1,
-        drname:'VISWASH SARMA',
+        drName:'VISWASH SARMA',
         class:'A+',
         speciality:'Ortho',
         qualification:'MS,ORTHO',
@@ -154,3 +196,19 @@ export const rows = [
         pincode:'482002'
     }
 ]
+
+
+export const getDoctors = async (token)=>{
+  try{
+    const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/Doctor/GetAllDoctor`,{
+      headers: {
+        'Content-Type': 'application/json', // Ensure the content type is JSON
+        Authorization: `Bearer ${token}` // Include Bearer token if required
+      }
+    })
+    console.log(response.data)
+    return response.data.data
+  }catch(err){
+   throw err
+  }
+}

@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { logout } from "../redux/actions/authActions";
 
 //importing images
 import LOGO from "../assets/logo.png";
@@ -22,9 +24,10 @@ import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 
 export default function Dashboard() {
-
+  const { user } = useSelector((state) => state.auth);
   const location = useLocation()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const isActive = (pathname) =>{
     return location.pathname.includes(pathname)
@@ -48,6 +51,11 @@ export default function Dashboard() {
     }
   };
 
+  const getName = (name) =>{
+    if(!name) return "Unknown"
+    return String(name).charAt(0).toUpperCase() + String(name).slice(1);
+  }
+
   useEffect(() => {
     // Add event listener for clicks
     document.addEventListener('mousedown', handleClickOutside);
@@ -57,6 +65,11 @@ export default function Dashboard() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  const logoutUser = () =>{
+     dispatch(logout())
+     navigate('/')
+  }
 
   return (
     <div className="flex h-screen bg-lightgray">
@@ -98,13 +111,13 @@ export default function Dashboard() {
                 alt="profile"
               ></img>
               <div className="md:flex hidden flex-col">
-                <h4 className="text-base leading-4 font-bold">Harsh Patel</h4>
-                <h4 className="text-sm">Super Admin</h4>
+                <h4 className="text-base leading-4 font-bold">{getName(user?.user.firstName)}</h4>
+                <h4 className="text-sm">{user?.user.isAdmin?"Admin":"Member"}</h4>
               </div>
               {isProfileOpen && 
                <div ref={popupRef} className="absolute z-40 w-36 md:w-48 shadow rounded-md border bg-white top-[120%] right-0 flex flex-col ">
                  <Link to="/admin/profile"><div className="flex hover:bg-lightgray p-2 items-center gap-2 text-gray-500"><span className="text-blue-500"><AccountCircleIcon></AccountCircleIcon></span> Profile</div></Link>
-                 <div className="flex hover:bg-lightgray p-2 items-center gap-2 text-gray-500"><span className="text-red-500"><LogoutIcon></LogoutIcon></span> Logout</div>
+                 <div onClick={logoutUser} className="flex hover:bg-lightgray p-2 items-center gap-2 text-gray-500"><span className="text-red-500"><LogoutIcon></LogoutIcon></span> Logout</div>
               </div>
               }
             </div>

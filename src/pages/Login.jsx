@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import {
   loginStart,
   loginSuccess,
-  loginFailure,
 } from "../redux/actions/authActions";
 import axios from "axios";
 
@@ -19,7 +18,6 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 export default function Login() {
-
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
@@ -29,6 +27,7 @@ export default function Login() {
     email: "",
     password: "",
   });
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -66,7 +65,7 @@ export default function Login() {
             password: formData.password,
           }
         );
-        console.log(response.data);
+
         dispatch(loginSuccess(response.data));
         setFormData({ email: "", password: "" });
         navigate('/admin/dashboard')
