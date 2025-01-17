@@ -1,16 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 //Importing data
-import { columns, rows } from "../data/chemistDataTable";
+import { columns, getAllChemist } from "../data/chemistDataTable";
 
 //Importing icons
 import SearchIcon from '@mui/icons-material/Search';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 
+
 export default function Chemist() {
+  const { user } = useSelector((state) => state.auth);
+  const [chemist,setChemist] = useState([])
+  const [searchQuery,setSearchQuery] = useState('')
+  const [filteredChemist,setFilteredChemist] = useState([])
+  const [loading,setLoading] = useState(false)
+  
+  const getChemistData = async ()=>{
+     try{
+      setLoading(true)
+      const data = await getAllChemist(user.api_token)
+      setChemist(data.map((item,index)=>({...item,id:index+1})))
+     }catch(err){
+      console.log(err)
+      toast.error(err.response.data.message || "Something went wrong.")
+     }finally{
+      setLoading(false)
+     }
+  }
+
+  useEffect(()=>{
+    if(searchQuery){
+      setFilteredChemist(()=>chemist.filter((chm)=>chm.chemistName.toLowerCase().includes(searchQuery.trim().toLowerCase())))
+    }else{
+      setFilteredChemist(chemist)
+    }
+  },[searchQuery,chemist])
+
+  useEffect(()=>{
+    getChemistData()
+  },[])
+
   return (
     <div className="flex h-full flex-col gap-3 md:gap-4">
       <div className="bg-white custom-shadow rounded-md md:py-4 py-3 px-3 flex items-center justify-between">
@@ -23,12 +57,14 @@ export default function Chemist() {
               <SearchIcon></SearchIcon>
             </span>
             <input
+              value={searchQuery}
+              onChange={(e)=>setSearchQuery(e.target.value)}
               className="outline-none bg-transparent"
               placeholder="Search Chemist..."
               type="text"
             ></input>
           </div>
-          <span className="cursor-pointer md:w-9 md:h-9 w-8 h-8 border border-slate-200 flex justify-center items-center rounded-md">
+          <span onClick={getChemistData} className="cursor-pointer md:w-9 md:h-9 w-8 h-8 border border-slate-200 flex justify-center items-center rounded-md">
             <AutorenewIcon></AutorenewIcon>
           </span>
           <Link to={"/admin/chemist/addnew"}>
@@ -48,8 +84,9 @@ export default function Chemist() {
           }}
         >
           <DataGrid
-            rows={rows}
+            rows={filteredChemist}
             columns={columns}
+            loading={loading}
             initialState={{
               pagination: {
                 paginationModel: {

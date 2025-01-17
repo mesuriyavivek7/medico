@@ -10,20 +10,13 @@ const formateDate = (dateString)=>{
   return date.toLocaleDateString('en-US', options).replace(',', '');
 }
 
-export const columns = [
+export const columns = (handleNavigateToEdit)=>[
   {
     field: 'srno',
     headerClassName: 'super-app-theme--header',
     headerName: 'Sr No.',
     flex: 0.5, // Proportional width
     minWidth: 80, // Minimum width to prevent shrinking
-  },
-  {
-    field: 'roleID',
-    headerClassName: 'super-app-theme--header',
-    headerName: 'Role Id',
-    flex: 0.5, // Proportional width
-    minWidth: 100, // Minimum width to prevent shrinking
   },
   {
     field: 'username',
@@ -109,7 +102,7 @@ export const columns = [
     minWidth: 150,
     renderCell: (params) => (
       <div className="flex gap-3 items-center w-full h-full">
-        <button className="bg-blue-500 md:text-base text-sm hover:bg-blue-600 flex justify-center items-center rounded-md text-white md:w-10 w-12 h-6 md:h-7">
+        <button onClick={()=>handleNavigateToEdit(params.row)} className="bg-blue-500 md:text-base text-sm hover:bg-blue-600 flex justify-center items-center rounded-md text-white md:w-10 w-12 h-6 md:h-7">
           <BorderColorOutlinedIcon style={{fontSize:'1.2rem'}}></BorderColorOutlinedIcon>
         </button>
         <button className="bg-red-500 md:text-base text-sm hover:bg-red-600 flex justify-center items-center rounded-md text-white md:w-10 w-12 h-6 md:h-7">

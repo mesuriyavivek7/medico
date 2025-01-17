@@ -1,7 +1,16 @@
+import axios from 'axios'
+
 //importing icons
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
+const formateDate = (dateString)=>{
+    const date = new Date(dateString);
+  
+    const options = { month: 'short', day: 'numeric', year: 'numeric' };
+    return date.toLocaleDateString('en-US', options).replace(',', '');
+  }
+  
 
 export const columns = [
     {
@@ -12,63 +21,49 @@ export const columns = [
         minWidth: 80, // Minimum width to prevent shrinking
     },
     {
-        field: 'chemistname',
+        field: 'chemistName',
         headerClassName: 'super-app-theme--header',
         headerName: 'Chemist Name',
         flex: 0.5, // Proportional width
         minWidth: 180, // Minimum width to prevent shrinking
     },
     {
-        field: 'email',
-        headerClassName: 'super-app-theme--header',
-        headerName: 'Email',
-        flex: 0.5, // Proportional width
-        minWidth: 180, // Minimum width to prevent shrinking
-    },
-    {
-        field: 'mobileno',
+        field: 'mobileNo',
         headerClassName: 'super-app-theme--header',
         headerName: 'Mobile No',
         flex: 0.5, // Proportional width
         minWidth: 150, // Minimum width to prevent shrinking
     },
     {
-        field: 'fax',
-        headerClassName: 'super-app-theme--header',
-        headerName: 'Fax',
-        flex: 0.5, // Proportional width
-        minWidth: 150, // Minimum width to prevent shrinking
-    },
-    {
-        field:'addressline1',
+        field:'addressLine1',
         headerClassName: 'super-app-theme--header',
         headerName:'Address Line 1',
         flex: 0.5, // Proportional width
         minWidth: 200, // Minimum width to prevent shrinking
     },
     {
-        field:'addressline2',
+        field:'addressLine2',
         headerClassName: 'super-app-theme--header',
         headerName:'Address Line 2',
         flex: 0.5, // Proportional width
         minWidth: 200, // Minimum width to prevent shrinking
     },
     {
-        field:'pincode',
+        field:'pinCode',
         headerClassName: 'super-app-theme--header',
         headerName:'Pincode',
         flex: 0.5, // Proportional width
         minWidth: 150, // Minimum width to prevent shrinking
     },
     {
-        field:'chemistarea',
+        field:'chemistArea',
         headerClassName: 'super-app-theme--header',
         headerName:'Chemist Area',
         flex: 0.5, // Proportional width
         minWidth: 150, // Minimum width to prevent shrinking
     },
     {
-        field:'visitfreq',
+        field:'vfreq',
         headerClassName: 'super-app-theme--header',
         headerName:'Visit Frequency',
         flex: 0.5, // Proportional width
@@ -82,14 +77,26 @@ export const columns = [
         minWidth: 150, // Minimum width to prevent shrinking
     },
     {
-        field:'contactperson',
+        field:'gender',
+        headerClassName: 'super-app-theme--header',
+        headerName:'Gender',
+        flex: 0.5, // Proportional width
+        minWidth: 140, // Minimum width to prevent shrinking
+        renderCell: (params)=>(
+            <div className='flex items-center w-full h-full'>
+                <span>{params.value==="M" || params.value==="m" ? "Male" : "Female"}</span>
+            </div>
+        )
+    },
+    {
+        field:'contactPerson',
         headerClassName: 'super-app-theme--header',
         headerName:'Contact Person',
         flex: 0.5, // Proportional width
         minWidth: 150, // Minimum width to prevent shrinking
     },
     {
-        field:'routename',
+        field:'routeName',
         headerClassName: 'super-app-theme--header',
         headerName:'Route Name',
         flex: 0.5, // Proportional width
@@ -101,9 +108,14 @@ export const columns = [
         headerName:'DOB',
         flex: 0.5, // Proportional width
         minWidth: 150, // Minimum width to prevent shrinking
+        renderCell: (params)=>(
+            <div className='w-full flex items-center'>
+                 <span>{formateDate(params.value)}</span>
+            </div>
+        )
     },
     {
-        field:'chemisttype',
+        field:'chemistType',
         headerClassName: 'super-app-theme--header',
         headerName:'Chemist Type',
         flex: 0.5, // Proportional width
@@ -199,3 +211,18 @@ export const rows = [
     }
 
 ]
+
+
+export const getAllChemist = async (token)=>{
+     try{ 
+        const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/Chemist/GetAllChemist`,{
+            headers: {
+              'Content-Type': 'application/json', // Ensure the content type is JSON
+              Authorization: `Bearer ${token}` // Include Bearer token if required
+            }
+          })
+        return response.data.data
+     }catch(err){
+        throw err
+     }
+}
