@@ -15,6 +15,8 @@ import { toast } from 'react-toastify';
 export default function Doctors() {
   const { user } = useSelector((state) => state.auth);
   const [doctors,setDoctors] = useState([])
+  const [filteredDoctors,setFilteredDoctors] = useState([])
+  const [searchQuery,setSearchQuery] = useState('')
   const [loading,setLoading] = useState(false)
 
   const fetchData = async ()=>{
@@ -33,6 +35,14 @@ export default function Doctors() {
   }
 
   useEffect(()=>{
+    if(searchQuery){
+       setFilteredDoctors(()=>doctors.filter((dr)=>dr.drName.toLowerCase().includes(searchQuery.trim().toLowerCase())))
+    }else{
+      setFilteredDoctors(doctors)
+    }
+  },[searchQuery,doctors])
+
+  useEffect(()=>{
     fetchData()
   },[])
 
@@ -43,7 +53,7 @@ export default function Doctors() {
          <div className='flex items-center gap-3'>
            <div className='bg-gray-100 md:flex p-1.5 rounded-md hidden gap-1 items-center'>
             <span><SearchIcon></SearchIcon></span>
-            <input className='outline-none bg-transparent' placeholder='Search Doctors...' type='text'></input>
+            <input value={searchQuery} onChange={(e)=>setSearchQuery(e.target.value)} className='outline-none bg-transparent' placeholder='Search Doctors...' type='text'></input>
            </div>
            <span onClick={fetchData} className='cursor-pointer md:w-9 md:h-9 w-8 h-8 border-slate-200 border flex justify-center items-center rounded-md'><AutorenewIcon></AutorenewIcon></span>
            <Link to={'/admin/doctors/addnew'}><button className='md:p-2 p-1.5 bg-themeblue md:text-base text-sm text-white rounded-md'>Add New Doctor</button></Link>
@@ -55,7 +65,7 @@ export default function Doctors() {
             backgroundColor: '#edf3fd',
           },}}>
            <DataGrid
-            rows={doctors}
+            rows={filteredDoctors}
             columns={columns}
             loading={loading}
             initialState={{

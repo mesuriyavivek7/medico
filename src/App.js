@@ -20,6 +20,9 @@ import AddNewChemist from "./pages/AddNewChemist";
 import Employee from "./pages/Employee";
 import AddNewEmp from "./pages/AddNewEmp";
 import Profile from "./pages/Profile";
+import EditEmp from "./pages/EditEmp";
+import Leave from "./pages/Leave";
+import AddLeave from "./pages/AddLeave";
 
 // ProtectedRoute Component
 const ProtectedRoute = ({ children }) => {
@@ -148,10 +151,34 @@ function App() {
             )
           },
           {
+            path:'employee/edit',
+            element:(
+              <ProtectedRoute>
+                <EditEmp></EditEmp>
+              </ProtectedRoute>
+            )
+          },
+          {
             path:'profile',
             element:(
               <ProtectedRoute>
                 <Profile></Profile>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'leaves',
+            element:(
+              <ProtectedRoute>
+                <Leave></Leave>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'leaves/add',
+            element:(
+              <ProtectedRoute>
+                <AddLeave></AddLeave>
               </ProtectedRoute>
             )
           }

@@ -206,7 +206,6 @@ export const getDoctors = async (token)=>{
         Authorization: `Bearer ${token}` // Include Bearer token if required
       }
     })
-    console.log(response.data)
     return response.data.data
   }catch(err){
    throw err
