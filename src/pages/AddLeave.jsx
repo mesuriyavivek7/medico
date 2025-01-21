@@ -1,34 +1,54 @@
 import React, { useState } from 'react'
 
 import { Link } from 'react-router-dom';
-
+import { useSelector } from "react-redux";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 function AddLeave() {
-
+  const { user } = useSelector((state) => state.auth);
+  const [loading, setLoading] = useState(false)
   const [formData,setFormData] = useState({
-    leaveType:"previlage",
+    leaveType:"",
     startDate:"",
     endDate:"",
-    leaveStatus:"",
-    requestDate:new Date(),
-    comments:""
+    comments:"",
   })
+
+  console.log(formData)
 
   const [errors,setErrors] = useState({})
 
-  const handleSubmit = ()=>{
+  const handleSubmit = async () =>{
    if(handleValidate()){
+    console.log("data validated")
     try{
-
+      setLoading(true)
+      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/Leave`,formData,{
+      headers: {
+        'Content-Type': 'application/json', // Ensure the content type is JSON
+        Authorization: `Bearer ${user.api_token}` // Include Bearer token if required
+      }})
+      setFormData({
+        leaveType:"",
+        startDate:"",
+        endDate:"",
+        comments:"",
+      })
+      toast.success("Leave added successfully.")
     }catch(err){
-
+     console.log(err)
+     toast.error(err.response.data.message | "Something went wrong")
+    }finally{
+      setLoading(false)
     }
    }
   }
 
   const handleValidate = ()=>{
      let newErrors = {}
+     if(!formData.leaveType) newErrors.leaveType="Leave type is required."
      if(!formData.startDate) newErrors.startDate="Leave start date is required."
      if(!formData.endDate) newErrors.endDate="Leave end date is required."
      if(!formData.comments) newErrors.comments="Comments is required."
@@ -36,6 +56,11 @@ function AddLeave() {
      setErrors(newErrors)
 
      return Object.keys(newErrors).length===0
+  }
+
+  const handleChange = (e) =>{
+      const {name, value} = e.target
+      setFormData((prevData)=>({...prevData,[name]:value}))
   }
 
 
@@ -50,37 +75,39 @@ function AddLeave() {
       <div className='bg-white grid grid-cols-2 gap-x-6 gap-y-6 custom-shadow rounded-md md:py-4 py-3 px-3 md:px-4'>
          <div className='col-span-2 pr-6'>
            <div className='w-1/2 flex flex-col gap-2'>
-            <label className='font-medium text-gray-600'>Leave Type</label>
-            <select className='border outline-none p-2 rounded-md'>
-              <option value={'previlage'}>Previlage</option>
+            <label htmlFor='leaveType' className='font-medium text-gray-600'>Leave Type</label>
+            <select onChange={handleChange} name='leaveType' id='leaveType' className='border outline-none p-2 rounded-md'>
+              <option value={''}>--- Select Leave Type ----</option>
+              <option value={'Previlage'}>Previlage</option>
               <option value={'Sick'}>Sick</option>
             </select>
+            {errors.leaveType && <span className='text-sm text-red-500'>{errors.leaveType}</span>}
           </div>
          </div>
          <div className='flex flex-col gap-2'>
-           <label className='font-medium text-gray-600'>From</label>
+           <label htmlFor='startDate' className='font-medium text-gray-600'>From</label>
            <div className='flex flex-col gap-1'>
-            <input type='date' className='p-2 rounded-md border outline-none'></input>
+            <input onChange={handleChange} name='startDate' id='startDate' type='date' className='p-2 rounded-md border outline-none'></input>
             {errors.startDate && <span className='text-sm text-red-500'>{errors.startDate}</span>}
            </div> 
          </div>
          <div className='flex flex-col gap-2'>
-           <label className='font-medium text-gray-600'>To</label>
+           <label htmlFor='endDate' className='font-medium text-gray-600'>To</label>
            <div className='flex flex-col gap-1'>
-            <input type='date' className='p-2 rounded-md border outline-none'></input>
+            <input onChange={handleChange} name='endDate' id='endDate' type='date' className='p-2 rounded-md border outline-none'></input>
             {errors.endDate && <span className='text-red-500 text-sm'>{errors.endDate}</span>}
            </div> 
          </div>
          <div className='col-span-2 flex flex-col gap-2'>
-           <label className='font-medium text-gray-600'>Comments</label>
+           <label htmlFor='comments' className='font-medium text-gray-600'>Comments</label>
            <div className='flex flex-col gap-1'>
-            <textarea rows={8} placeholder='Type here leave reason...' className='resize-none p-2 outline-none rounded-md border'></textarea>
+            <textarea onChange={handleChange} name='comments' id='comments' rows={8} placeholder='Type here leave reason...' className='resize-none p-2 outline-none rounded-md border'></textarea>
             {errors.comments && <span className='text-red-500 text-sm'>{errors.comments}</span>}
            </div>
          </div>
          <div className='col-span-2 flex place-content-end'>
            <div className='flex items-center gap-3'>
-             <button onClick={handleSubmit} className='p-2 w-28 rounded-md bg-themeblue text-white hover:bg-blue-800'>Submit</button>
+             <button disabled={loading} onClick={handleSubmit} className='p-2 w-28 rounded-md bg-themeblue text-white hover:bg-blue-800'>Submit</button>
              <button className='p-2 rounded-md border w-28'>Cancel</button> 
            </div>
          </div>
