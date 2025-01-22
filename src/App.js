@@ -10,8 +10,10 @@ import Login from "./pages/Login";
 import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
 
-//Importing dashboard components
-import Dashboard from "./components/Dashboard";
+//Importing Admin dashboard components
+import Dashboard from "./components/Admin/Dashboard";
+
+//Importing General Components
 import MyDashboard from "./pages/MyDashboard";
 import Doctors from "./pages/Doctors";
 import AddNewDoc from "./pages/AddNewDoc";
@@ -24,11 +26,20 @@ import EditEmp from "./pages/EditEmp";
 import Leave from "./pages/Leave";
 import AddLeave from "./pages/AddLeave";
 
+//Importing Employee dashboard components
+import EmpDashboard from "./components/Employee/EmpDashboard";
+
 // ProtectedRoute Component
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children , requiredRole }) => {
   const { user } = useSelector((state) => state.auth);
   if (!user) {
     return <Navigate to="/" />;
+  }
+
+  console.log(user)
+
+  if (!user.user.isAdmin && requiredRole==="admin") {
+    return <Navigate to='/employee/dashboard'></Navigate>
   }
 
   return children;
@@ -67,7 +78,7 @@ function App() {
         element: !user ? (
           <Login/>
         ) : (
-          <Navigate to="/admin/dashboard"/>
+          <Navigate to={`/${user.user.isAdmin?"admin":"employee"}/dashboard/`} />
         ),
       },
       {
@@ -75,7 +86,7 @@ function App() {
         element: !user ? (
           <ForgetPassword/>
         ) : (
-          <Navigate to="/admin/dashboard"/>
+          <Navigate to={`/${user.user.isAdmin?"admin":"employee"}/dashboard/`}/>
         )
       },
       {
@@ -83,13 +94,13 @@ function App() {
         element: !user ? (
           <ResetPassword/>
         ) : (
-          <Navigate to="/admin/dashboard"/>
+          <Navigate to={`/${user.user.isAdmin?"admin":"employee"}/dashboard/`}/>
         )
       },
       {
         path:'/admin',
         element:(
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="admin">
             <Dashboard></Dashboard>
           </ProtectedRoute>
         ),
@@ -97,7 +108,7 @@ function App() {
           {
             path:'dashboard',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <MyDashboard></MyDashboard>
               </ProtectedRoute>
             )
@@ -105,7 +116,7 @@ function App() {
           {
             path:'doctors',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <Doctors></Doctors>
               </ProtectedRoute>
             ),
@@ -113,7 +124,7 @@ function App() {
           {
             path:'doctors/addnew',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <AddNewDoc></AddNewDoc>
               </ProtectedRoute>
             )
@@ -121,7 +132,7 @@ function App() {
           {
             path:'chemist',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <Chemist></Chemist>
               </ProtectedRoute>
             )
@@ -129,7 +140,7 @@ function App() {
           {
             path:'chemist/addnew',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <AddNewChemist></AddNewChemist>
               </ProtectedRoute>
             )
@@ -137,7 +148,7 @@ function App() {
           {
             path:'employee',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <Employee></Employee>
               </ProtectedRoute>
             )
@@ -145,7 +156,7 @@ function App() {
           {
             path:'employee/addnew',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <AddNewEmp></AddNewEmp>
               </ProtectedRoute>
             )
@@ -153,7 +164,7 @@ function App() {
           {
             path:'employee/edit',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <EditEmp></EditEmp>
               </ProtectedRoute>
             )
@@ -161,7 +172,7 @@ function App() {
           {
             path:'profile',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <Profile></Profile>
               </ProtectedRoute>
             )
@@ -169,7 +180,7 @@ function App() {
           {
             path:'leaves',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <Leave></Leave>
               </ProtectedRoute>
             )
@@ -177,7 +188,105 @@ function App() {
           {
             path:'leaves/add',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
+                <AddLeave></AddLeave>
+              </ProtectedRoute>
+            )
+          }
+        ]
+      },
+      {
+        path:'/employee',
+        element:(
+          <ProtectedRoute requiredRole="employee">
+            <Dashboard></Dashboard>
+          </ProtectedRoute>
+        ),
+        children:[
+          {
+            path:'dashboard',
+            element:(
+              <ProtectedRoute requiredRole="employee" >
+                <MyDashboard></MyDashboard>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'doctors',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <Doctors></Doctors>
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path:'doctors/addnew',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <AddNewDoc></AddNewDoc>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'chemist',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <Chemist></Chemist>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'chemist/addnew',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <AddNewChemist></AddNewChemist>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'employee',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <Employee></Employee>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'employee/addnew',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <AddNewEmp></AddNewEmp>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'employee/edit',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <EditEmp></EditEmp>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'profile',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <Profile></Profile>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'leaves',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <Leave></Leave>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'leaves/add',
+            element:(
+              <ProtectedRoute requiredRole="employee">
                 <AddLeave></AddLeave>
               </ProtectedRoute>
             )

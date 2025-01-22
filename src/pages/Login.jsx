@@ -68,7 +68,11 @@ export default function Login() {
 
         dispatch(loginSuccess(response.data));
         setFormData({ email: "", password: "" });
-        navigate('/admin/dashboard')
+        if(response.data.user.isAdmin){
+          navigate('/admin/dashboard')
+        }else{
+          navigate('/employee/dashboard')
+        }
       } catch (err) {
         console.log(err);
         toast.error(err.response.data)

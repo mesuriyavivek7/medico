@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { logout } from "../redux/actions/authActions";
+import { logout } from "../../redux/actions/authActions";
 
 //importing images
-import LOGO from "../assets/logo.png";
-import PERSON from "../assets/asset4.jpg";
+import LOGO from "../../assets/logo.png";
+import PERSON from "../../assets/asset4.jpg";
 
 //importing icons
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -24,7 +24,7 @@ import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
-export default function Dashboard() {
+export default function EmpDashboard() {
   const { user } = useSelector((state) => state.auth);
   const location = useLocation()
   const navigate = useNavigate()
