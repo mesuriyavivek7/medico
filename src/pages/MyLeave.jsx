@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 //Importing images
@@ -13,10 +12,9 @@ import { toast } from "react-toastify";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import axios from "axios";
+import api from "../api";
 
 function Leave() {
-  const { user } = useSelector((state) => state.auth);
   const [leaves, setLeaves] = useState([]);
   const [activeState, setActiveState] = useState("approve");
   const [loading,setLoading] = useState(false)
@@ -52,18 +50,9 @@ function Leave() {
       reportingID: 0,
     };
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/Leave/GetAll`,
-        customData,
-        {
-          headers: {
-            "Content-Type": "application/json", // Ensure the content type is JSON
-            Authorization: `Bearer ${user.api_token}`, // Include Bearer token if required
-          },
-        }
-      );
-      console.log(response);
+      const response = await api.post(`/Leave/GetAll`,customData);
       setLeaves(response.data.data);
+      console.log(response.data.data)
     } catch (err) {
       console.log(err);
       toast.error(err?.response?.data?.message || "Something went wrong.");
@@ -110,7 +99,7 @@ function Leave() {
           <span onClick={fetchData} className="cursor-pointer md:w-9 md:h-9 w-8 h-8 border-slate-200 border flex justify-center items-center rounded-md">
             <AutorenewIcon></AutorenewIcon>
           </span>
-          <Link to={"/admin/leaves/add"}>
+          <Link to={"/admin/myleaves/add"}>
             <button className="md:p-2 p-1.5 bg-themeblue md:text-base text-sm text-white rounded-md">
               Add Leave
             </button>
@@ -251,10 +240,13 @@ function Leave() {
                     }
                     
                   </div>
-                  <div className="flex items-center gap-5">
+                  <div className="flex items-center gap-4">
                     <span className="bg-yellow-500 text-white text-sm p-1 rounded-md">
                       Pending
                     </span>
+                    <div className="flex justify-center gap-1 items-center">
+                      <span className="font-medium">Approver:</span> <span className="text-gray-700 text-[15px]">{item.approver}</span>
+                    </div>
                   </div>
                 </div>
                 <div className="p-4 col-span-3 gap-2 flex flex-col">
@@ -271,13 +263,21 @@ function Leave() {
                     </span>
                   </div>
                 </div>
-                <div className="py-4 px-4 col-span-2 flex gap-2 justify-start md:justify-center items-center">
-                  <button className="text-white tracking-wide p-1.5 bg-blue-500 hover:bg-blue-600 rounded-md transition-colors text-sm duration-300">
-                    Approve
-                  </button>
-                  <button className="text-white tracking-wide hover:bg-red-600 rounded-md transition-colors duration-300 flex gap-1 items-center bg-red-500 shadow-sm p-1.5 text-sm">
-                    <span>Reject</span>
-                  </button>
+                <div className="py-4 px-4 col-span-2 flex gap-2 flex-col items-start">
+                  <div className="flex items-center justify-center gap-1">
+                     <span className="font-medium">Raised On:</span>
+                     <span>{getDate(item.requestDate)}</span>
+                  </div>
+                  <div className="">
+                    <button className="text-white hover:bg-red-600 rounded-md transition-colors duration-300 flex gap-1 items-center bg-red-500 shadow-sm p-1 text-sm">
+                      <span>
+                       <DeleteOutlineOutlinedIcon
+                         style={{ fontSize: "1.2rem" }}
+                       ></DeleteOutlineOutlinedIcon>
+                      </span>{" "}
+                      <span className="md:text-[15px] text-sm">Remove</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

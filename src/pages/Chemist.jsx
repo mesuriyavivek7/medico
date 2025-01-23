@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
 
 //Importing data
 import { columns, getAllChemist } from "../data/chemistDataTable";
@@ -14,7 +13,6 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';
 
 
 export default function Chemist() {
-  const { user } = useSelector((state) => state.auth);
   const [chemist,setChemist] = useState([])
   const [searchQuery,setSearchQuery] = useState('')
   const [filteredChemist,setFilteredChemist] = useState([])
@@ -23,7 +21,7 @@ export default function Chemist() {
   const getChemistData = async ()=>{
      try{
       setLoading(true)
-      const data = await getAllChemist(user.api_token)
+      const data = await getAllChemist()
       setChemist(data.map((item,index)=>({...item,id:index+1})))
      }catch(err){
       console.log(err)

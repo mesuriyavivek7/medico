@@ -1,14 +1,12 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
-import { useSelector } from 'react-redux';
 
 //Importing icons
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 
 export default function AddNewDoc() {
-  const { user } = useSelector((state) => state.auth);
   const [errors,setErrors] = useState({})
   const [loading,setLoading] = useState(false)
    
@@ -67,12 +65,7 @@ export default function AddNewDoc() {
     if(validateData()){
      setLoading(true)
      try{
-        const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/Doctor/AddDoctor`,formData,{
-          headers: {
-            'Content-Type': 'application/json', // Ensure the content type is JSON
-            Authorization: `Bearer ${user.api_token}` // Include Bearer token if required
-          }
-        })
+        const response = await api.post(`/Doctor/AddDoctor`,formData)
         console.log(response.data)
         setFormData(
           {

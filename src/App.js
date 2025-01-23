@@ -10,8 +10,11 @@ import Login from "./pages/Login";
 import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
 
-//Importing dashboard components
-import Dashboard from "./components/Dashboard";
+//Importing Admin dashboard components
+import Dashboard from "./components/Admin/Dashboard";
+import PendingLeaves from "./pages/PendingLeaves";
+
+//Importing General Components
 import MyDashboard from "./pages/MyDashboard";
 import Doctors from "./pages/Doctors";
 import AddNewDoc from "./pages/AddNewDoc";
@@ -21,26 +24,33 @@ import Employee from "./pages/Employee";
 import AddNewEmp from "./pages/AddNewEmp";
 import Profile from "./pages/Profile";
 import EditEmp from "./pages/EditEmp";
-import Leave from "./pages/Leave";
+import MyLeave from "./pages/MyLeave";
 import AddLeave from "./pages/AddLeave";
 
+//Importing Employee dashboard components
+import EmpDashboard from "./components/Employee/EmpDashboard";
+
 // ProtectedRoute Component
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children , requiredRole }) => {
   const { user } = useSelector((state) => state.auth);
   if (!user) {
     return <Navigate to="/" />;
+  }
+
+  if (!user.isAdmin && requiredRole==="admin") {
+    return <Navigate to='/employee/dashboard'></Navigate>
   }
 
   return children;
 };
 
 function App() {
-  const { user } = useSelector((state) => state.auth);
+  const { user, api_token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-
+  
   //Set bearer token
   useEffect(()=>{
-     const token = user?.api_token
+     const token = api_token
      if(token){
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
      }
@@ -51,7 +61,7 @@ function App() {
     const validateUser = async () =>{
        dispatch(loginStart())
        try{
-          await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/verify_token`,{api_token:user.api_token})
+          await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/verify_token`,{api_token:api_token})
        }catch(err){
          console.log(err)
          dispatch(loginFailure("Validation failed"))
@@ -67,7 +77,7 @@ function App() {
         element: !user ? (
           <Login/>
         ) : (
-          <Navigate to="/admin/dashboard"/>
+          <Navigate to={`/${user.isAdmin?"admin":"employee"}/dashboard/`} />
         ),
       },
       {
@@ -75,7 +85,7 @@ function App() {
         element: !user ? (
           <ForgetPassword/>
         ) : (
-          <Navigate to="/admin/dashboard"/>
+          <Navigate to={`/${user.isAdmin?"admin":"employee"}/dashboard/`}/>
         )
       },
       {
@@ -83,13 +93,13 @@ function App() {
         element: !user ? (
           <ResetPassword/>
         ) : (
-          <Navigate to="/admin/dashboard"/>
+          <Navigate to={`/${user.isAdmin?"admin":"employee"}/dashboard/`}/>
         )
       },
       {
         path:'/admin',
         element:(
-          <ProtectedRoute>
+          <ProtectedRoute requiredRole="admin">
             <Dashboard></Dashboard>
           </ProtectedRoute>
         ),
@@ -97,7 +107,7 @@ function App() {
           {
             path:'dashboard',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <MyDashboard></MyDashboard>
               </ProtectedRoute>
             )
@@ -105,7 +115,7 @@ function App() {
           {
             path:'doctors',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <Doctors></Doctors>
               </ProtectedRoute>
             ),
@@ -113,7 +123,7 @@ function App() {
           {
             path:'doctors/addnew',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <AddNewDoc></AddNewDoc>
               </ProtectedRoute>
             )
@@ -121,7 +131,7 @@ function App() {
           {
             path:'chemist',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <Chemist></Chemist>
               </ProtectedRoute>
             )
@@ -129,7 +139,7 @@ function App() {
           {
             path:'chemist/addnew',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <AddNewChemist></AddNewChemist>
               </ProtectedRoute>
             )
@@ -137,7 +147,7 @@ function App() {
           {
             path:'employee',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <Employee></Employee>
               </ProtectedRoute>
             )
@@ -145,7 +155,7 @@ function App() {
           {
             path:'employee/addnew',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <AddNewEmp></AddNewEmp>
               </ProtectedRoute>
             )
@@ -153,7 +163,7 @@ function App() {
           {
             path:'employee/edit',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <EditEmp></EditEmp>
               </ProtectedRoute>
             )
@@ -161,27 +171,133 @@ function App() {
           {
             path:'profile',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <Profile></Profile>
               </ProtectedRoute>
             )
           },
           {
-            path:'leaves',
+            path:'myleaves',
             element:(
-              <ProtectedRoute>
-                <Leave></Leave>
+              <ProtectedRoute requiredRole="admin">
+                <MyLeave></MyLeave>
               </ProtectedRoute>
             )
           },
           {
-            path:'leaves/add',
+            path:'myleaves/add',
             element:(
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="admin">
                 <AddLeave></AddLeave>
               </ProtectedRoute>
             )
-          }
+          },
+          {
+            path:'pendingonme',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <PendingLeaves></PendingLeaves>
+              </ProtectedRoute>
+            )
+          },
+        ]
+      },
+      {
+        path:'/employee',
+        element:(
+          <ProtectedRoute requiredRole="employee">
+            <EmpDashboard></EmpDashboard>
+          </ProtectedRoute>
+        ),
+        children:[
+          {
+            path:'dashboard',
+            element:(
+              <ProtectedRoute requiredRole="employee" >
+                <MyDashboard></MyDashboard>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'doctors',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <Doctors></Doctors>
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path:'doctors/addnew',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <AddNewDoc></AddNewDoc>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'chemist',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <Chemist></Chemist>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'chemist/addnew',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <AddNewChemist></AddNewChemist>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'employee',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <Employee></Employee>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'employee/addnew',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <AddNewEmp></AddNewEmp>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'employee/edit',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <EditEmp></EditEmp>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'profile',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <Profile></Profile>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'myleaves',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <MyLeave></MyLeave>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'myleaves/add',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <AddLeave></AddLeave>
+              </ProtectedRoute>
+            )
+          },
         ]
       }
     ]

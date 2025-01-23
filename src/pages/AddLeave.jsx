@@ -1,13 +1,11 @@
 import React, { useState } from 'react'
 
 import { Link } from 'react-router-dom';
-import { useSelector } from "react-redux";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import axios from 'axios';
+import api from '../api';
 import { toast } from 'react-toastify';
 
 function AddLeave() {
-  const { user } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false)
   const [formData,setFormData] = useState({
     leaveType:"",
@@ -25,11 +23,7 @@ function AddLeave() {
     console.log("data validated")
     try{
       setLoading(true)
-      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/Leave`,formData,{
-      headers: {
-        'Content-Type': 'application/json', // Ensure the content type is JSON
-        Authorization: `Bearer ${user.api_token}` // Include Bearer token if required
-      }})
+      await api.post(`/Leave`,formData)
       setFormData({
         leaveType:"",
         startDate:"",
@@ -68,7 +62,7 @@ function AddLeave() {
    <div className='flex h-full flex-col gap-3 md:gap-4'>
       <div className='bg-white custom-shadow rounded-md md:py-4 py-3 px-3 md:px-4 flex items-center justify-between'>
         <div className='flex items-center gap-2'>
-           <Link to={'/admin/leaves'}><span className='text-gray-600 cursor-pointer'><ArrowBackIosIcon style={{fontSize:'1.4rem'}}></ArrowBackIosIcon></span></Link>
+           <Link to={'/admin/myleaves'}><span className='text-gray-600 cursor-pointer'><ArrowBackIosIcon style={{fontSize:'1.4rem'}}></ArrowBackIosIcon></span></Link>
            <h1 className='text-gray-800 text-base md:text-lg font-medium'>Apply For Leave</h1>
         </div>
       </div>

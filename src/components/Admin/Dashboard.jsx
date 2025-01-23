@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { logout } from "../redux/actions/authActions";
+import { logout } from "../../redux/actions/authActions";
 
 //importing images
-import LOGO from "../assets/logo.png";
-import PERSON from "../assets/asset4.jpg";
+import LOGO from "../../assets/logo.png";
+import PERSON from "../../assets/asset4.jpg";
 
 //importing icons
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -67,6 +67,7 @@ export default function Dashboard() {
 
   const logoutUser = () =>{
      dispatch(logout())
+     console.log("logout user")
      navigate('/')
   }
 
@@ -110,8 +111,8 @@ export default function Dashboard() {
                 alt="profile"
               ></img>
               <div className="md:flex hidden flex-col">
-                <h4 className="text-base leading-4 font-bold">{getName(user?.user.firstName)}</h4>
-                <h4 className="text-sm">{user?.user.isAdmin?"Admin":"Member"}</h4>
+                <h4 className="text-base leading-4 font-bold">{getName(user?.firstName)}</h4>
+                <h4 className="text-sm">{user?.isAdmin?"Admin":"Member"}</h4>
               </div>
               {isProfileOpen && 
                <div ref={popupRef} className="absolute z-40 w-36 md:w-48 shadow rounded-md border bg-white top-[120%] right-0 flex flex-col ">
@@ -144,9 +145,13 @@ export default function Dashboard() {
                <span className={`${isActive('employee') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><PersonOutlineIcon style={{fontSize:'1.5rem'}}></PersonOutlineIcon></span>
                {isMenuOpen && <span className={`${isActive("employee") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Employee</span>}
             </div>
-            <div onClick={()=>handleNavigate('leaves')} className={`group flex ${isActive("leaves") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
-               <span className={`${isActive('leaves') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>
-               {isMenuOpen && <span className={`${isActive("leaves") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Leaves</span>}
+            <div onClick={()=>handleNavigate('myleaves')} className={`group flex ${isActive("myleaves") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('myleaves') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>
+               {isMenuOpen && <span className={`${isActive("myleaves") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>My Leaves</span>}
+            </div>
+            <div onClick={()=>handleNavigate('pendingonme')} className={`group flex ${isActive("pendingonme") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('pendingonme') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>
+               {isMenuOpen && <span className={`${isActive("pendingonme") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Pending On Me</span>}
             </div>
         </div>
         {/* sidebar for mobile screen */}
@@ -167,9 +172,13 @@ export default function Dashboard() {
                <span className={`${isActive('employee') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><PersonOutlineIcon style={{fontSize:'1.5rem'}}></PersonOutlineIcon></span>
                <span className={`${isActive("employee") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Employee</span>
             </div>
-            <div onClick={()=>handleNavigate('leaves')} className={`group flex ${isActive("leaves") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
-               <span className={`${isActive('leaves') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>
-               <span className={`${isActive("leaves") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Leaves</span>
+            <div onClick={()=>handleNavigate('myleaves')} className={`group flex ${isActive("myleaves") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('myleaves') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>
+               <span className={`${isActive("myleaves") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>My Leaves</span>
+            </div>
+            <div onClick={()=>handleNavigate('pendingonme')} className={`group flex ${isActive("pendingonme") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('pendingonme') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>
+               <span className={`${isActive("pendingonme") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Pending On Me</span>
             </div>
         </div>
         {/* Outlate */}
