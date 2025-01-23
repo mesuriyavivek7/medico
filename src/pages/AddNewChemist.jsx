@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify'
-import axios from 'axios';
+import api from '../api';
 
 export default function AddNewChemist() {
 
@@ -59,7 +59,7 @@ export default function AddNewChemist() {
   const handleSubmit = async () =>{
     if(validateData()){
       try{
-        await axios.post(`${process.env.REACT_APP_API_BASE_URL}/Chemist/AddChemist`,formData)
+        await api.post(`/Chemist/AddChemist`,formData)
         setFormData({
           chemistCode:0,
           chemistName:'',

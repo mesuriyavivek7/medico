@@ -1,5 +1,4 @@
-import axios from 'axios'
-
+import api from '../api';
 //importing icons
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
@@ -213,14 +212,9 @@ export const rows = [
 ]
 
 
-export const getAllChemist = async (token)=>{
+export const getAllChemist = async ()=>{
      try{ 
-        const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/Chemist/GetAllChemist`,{
-            headers: {
-              'Content-Type': 'application/json', // Ensure the content type is JSON
-              Authorization: `Bearer ${token}` // Include Bearer token if required
-            }
-          })
+        const response = await api.get(`/Chemist/GetAllChemist`)
         return response.data.data
      }catch(err){
         throw err

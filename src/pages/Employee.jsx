@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import { toast } from 'react-toastify';
-import { useSelector } from 'react-redux';
 
 //importing data
 import { columns, fetchAllUsers } from '../data/EmployeeDataTable';
@@ -13,7 +12,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 
 export default function Employee() {
-  const { user } = useSelector((state) => state.auth);
   const [searchQuery,setSearchQuery] = useState('')
   const [filteredData,setFilteredData] = useState([])
   const navigate = useNavigate()
@@ -23,7 +21,7 @@ export default function Employee() {
   const fetchData = async ()=>{
     setLoader(true)
     try{
-       const users = await fetchAllUsers(user.api_token)
+       const users = await fetchAllUsers()
        setUsers(users.map((item,index)=>({...item,srno:index+1})))
     }catch(err){
       console.log(err)

@@ -1,7 +1,7 @@
 //importing icons
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import axios from 'axios';
+import api from '../api';
 
 const formateDate = (dateString)=>{
   const date = new Date(dateString);
@@ -198,14 +198,9 @@ export const rows = [
 ]
 
 
-export const getDoctors = async (token)=>{
+export const getDoctors = async ()=>{
   try{
-    const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/Doctor/GetAllDoctor`,{
-      headers: {
-        'Content-Type': 'application/json', // Ensure the content type is JSON
-        Authorization: `Bearer ${token}` // Include Bearer token if required
-      }
-    })
+    const response = await api.get(`/Doctor/GetAllDoctor`)
     return response.data.data
   }catch(err){
    throw err

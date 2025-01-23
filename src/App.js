@@ -12,6 +12,7 @@ import ResetPassword from "./pages/ResetPassword";
 
 //Importing Admin dashboard components
 import Dashboard from "./components/Admin/Dashboard";
+import PendingLeaves from "./pages/PendingLeaves";
 
 //Importing General Components
 import MyDashboard from "./pages/MyDashboard";
@@ -23,7 +24,7 @@ import Employee from "./pages/Employee";
 import AddNewEmp from "./pages/AddNewEmp";
 import Profile from "./pages/Profile";
 import EditEmp from "./pages/EditEmp";
-import Leave from "./pages/Leave";
+import MyLeave from "./pages/MyLeave";
 import AddLeave from "./pages/AddLeave";
 
 //Importing Employee dashboard components
@@ -36,9 +37,7 @@ const ProtectedRoute = ({ children , requiredRole }) => {
     return <Navigate to="/" />;
   }
 
-  console.log(user)
-
-  if (!user.user.isAdmin && requiredRole==="admin") {
+  if (!user.isAdmin && requiredRole==="admin") {
     return <Navigate to='/employee/dashboard'></Navigate>
   }
 
@@ -46,12 +45,12 @@ const ProtectedRoute = ({ children , requiredRole }) => {
 };
 
 function App() {
-  const { user } = useSelector((state) => state.auth);
+  const { user, api_token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-
+  
   //Set bearer token
   useEffect(()=>{
-     const token = user?.api_token
+     const token = api_token
      if(token){
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
      }
@@ -62,7 +61,7 @@ function App() {
     const validateUser = async () =>{
        dispatch(loginStart())
        try{
-          await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/verify_token`,{api_token:user.api_token})
+          await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/verify_token`,{api_token:api_token})
        }catch(err){
          console.log(err)
          dispatch(loginFailure("Validation failed"))
@@ -78,7 +77,7 @@ function App() {
         element: !user ? (
           <Login/>
         ) : (
-          <Navigate to={`/${user.user.isAdmin?"admin":"employee"}/dashboard/`} />
+          <Navigate to={`/${user.isAdmin?"admin":"employee"}/dashboard/`} />
         ),
       },
       {
@@ -86,7 +85,7 @@ function App() {
         element: !user ? (
           <ForgetPassword/>
         ) : (
-          <Navigate to={`/${user.user.isAdmin?"admin":"employee"}/dashboard/`}/>
+          <Navigate to={`/${user.isAdmin?"admin":"employee"}/dashboard/`}/>
         )
       },
       {
@@ -94,7 +93,7 @@ function App() {
         element: !user ? (
           <ResetPassword/>
         ) : (
-          <Navigate to={`/${user.user.isAdmin?"admin":"employee"}/dashboard/`}/>
+          <Navigate to={`/${user.isAdmin?"admin":"employee"}/dashboard/`}/>
         )
       },
       {
@@ -178,28 +177,36 @@ function App() {
             )
           },
           {
-            path:'leaves',
+            path:'myleaves',
             element:(
               <ProtectedRoute requiredRole="admin">
-                <Leave></Leave>
+                <MyLeave></MyLeave>
               </ProtectedRoute>
             )
           },
           {
-            path:'leaves/add',
+            path:'myleaves/add',
             element:(
               <ProtectedRoute requiredRole="admin">
                 <AddLeave></AddLeave>
               </ProtectedRoute>
             )
-          }
+          },
+          {
+            path:'pendingonme',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <PendingLeaves></PendingLeaves>
+              </ProtectedRoute>
+            )
+          },
         ]
       },
       {
         path:'/employee',
         element:(
           <ProtectedRoute requiredRole="employee">
-            <Dashboard></Dashboard>
+            <EmpDashboard></EmpDashboard>
           </ProtectedRoute>
         ),
         children:[
@@ -276,21 +283,21 @@ function App() {
             )
           },
           {
-            path:'leaves',
+            path:'myleaves',
             element:(
               <ProtectedRoute requiredRole="employee">
-                <Leave></Leave>
+                <MyLeave></MyLeave>
               </ProtectedRoute>
             )
           },
           {
-            path:'leaves/add',
+            path:'myleaves/add',
             element:(
               <ProtectedRoute requiredRole="employee">
                 <AddLeave></AddLeave>
               </ProtectedRoute>
             )
-          }
+          },
         ]
       }
     ]

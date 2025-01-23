@@ -144,8 +144,8 @@ export default function EmpDashboard() {
                <span className={`${isActive('employee') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><PersonOutlineIcon style={{fontSize:'1.5rem'}}></PersonOutlineIcon></span>
                {isMenuOpen && <span className={`${isActive("employee") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Employee</span>}
             </div>
-            <div onClick={()=>handleNavigate('leaves')} className={`group flex ${isActive("leaves") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
-               <span className={`${isActive('leaves') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>
+            <div onClick={()=>handleNavigate('myleaves')} className={`group flex ${isActive("myleaves") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('myleaves') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>
                {isMenuOpen && <span className={`${isActive("leaves") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Leaves</span>}
             </div>
         </div>
@@ -167,9 +167,9 @@ export default function EmpDashboard() {
                <span className={`${isActive('employee') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><PersonOutlineIcon style={{fontSize:'1.5rem'}}></PersonOutlineIcon></span>
                <span className={`${isActive("employee") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Employee</span>
             </div>
-            <div onClick={()=>handleNavigate('leaves')} className={`group flex ${isActive("leaves") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
-               <span className={`${isActive('leaves') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>
-               <span className={`${isActive("leaves") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Leaves</span>
+            <div onClick={()=>handleNavigate('myleaves')} className={`group flex ${isActive("myleaves") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('myleaves') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>
+               <span className={`${isActive("myleaves") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Leaves</span>
             </div>
         </div>
         {/* Outlate */}

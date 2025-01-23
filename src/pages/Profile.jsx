@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
-
+import { useSelector } from 'react-redux'
 //Importing images
 import IMG from '../assets/asset4.jpg'
-import axios from 'axios';
 
 //Importing Loader
 import Loader from '../assets/loader.svg'
@@ -17,12 +15,13 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import CloseIcon from '@mui/icons-material/Close';
+import api from '../api'
 
 
 export default function Profile() {
+  const { user } = useSelector((state) => state.auth);
   const [formData,setFormData] = useState({})
   const [updateData,setUpdateData] = useState({})
-  const { user } = useSelector((state) => state.auth);
   const [loader,setLoader] = useState(false)
 
   const getFullDate = (dString)=>{
@@ -38,13 +37,7 @@ export default function Profile() {
   const fetchUserData = async ()=>{
      setLoader(true)
      try{
-       const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/User`,{
-        headers: {
-          'Content-Type': 'application/json', // Ensure the content type is JSON
-          Authorization: `Bearer ${user.api_token}` // Include Bearer token if required
-        }
-      })
-      console.log(response.data.data)
+       const response = await api.get(`/User`)
        setFormData(response.data.data)
        setUpdateData(response.data.data)
      }catch(err){
@@ -82,12 +75,7 @@ export default function Profile() {
     if(handleValidateUpdateData()){
      const {password,createdBy,isAdmin,userID,roleID,id,...otherDetails} = updateData
      try{
-       await axios.put(`${process.env.REACT_APP_API_BASE_URL}/User/${user.user.id}`,otherDetails,{
-        headers: {
-          'Content-Type': 'application/json', // Ensure the content type is JSON
-          Authorization: `Bearer ${user.api_token}` // Include Bearer token if required
-        }
-      })
+       await api.put(`/User/${user.id}`,otherDetails)
       await fetchUserData()
       toast.success("User info updated successfully.")
      }catch(err){

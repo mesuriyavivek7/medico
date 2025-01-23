@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
-import { useSelector } from 'react-redux';
 
 //Importing icons
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -13,10 +12,9 @@ import { Link } from 'react-router-dom';
 //Importing images
 import IMG1 from '../assets/asset5.png'
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
-import axios from 'axios';
+import api from '../api';
 
 export default function AddNewEmp() {
-  const { user } = useSelector((state) => state.auth);
   const [loading,setLoading] = useState(false)
   const [previewImage,setPreviewImage] = useState(null)
   const [imageFile,setImageFile] = useState(null)
@@ -94,13 +92,7 @@ export default function AddNewEmp() {
     setLoading(true)
     try{
       console.log(formData)
-      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/AddUser`,formData,
-      {
-        headers: {
-          'Content-Type': 'application/json', // Ensure the content type is JSON
-          Authorization: `Bearer ${user.api_token}` // Include Bearer token if required
-        }
-      })
+      await api.post(`${process.env.REACT_APP_API_BASE_URL}/User/AddUser`,formData)
       setImageFile(null)
       setPreviewImage(null)
       setFormData({

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
-import { useSelector } from 'react-redux';
 
 //Importing icons
 import SearchIcon from '@mui/icons-material/Search';
@@ -13,7 +12,6 @@ import { columns, getDoctors } from '../data/doctorsDataTable';
 import { toast } from 'react-toastify';
 
 export default function Doctors() {
-  const { user } = useSelector((state) => state.auth);
   const [doctors,setDoctors] = useState([])
   const [filteredDoctors,setFilteredDoctors] = useState([])
   const [searchQuery,setSearchQuery] = useState('')
@@ -22,7 +20,7 @@ export default function Doctors() {
   const fetchData = async ()=>{
     setLoading(true)
     try{
-      const data = await getDoctors(user.api_token)
+      const data = await getDoctors()
       if(data){
         setDoctors(data.map((item,index)=>({...item,id:index+1})))
       }
