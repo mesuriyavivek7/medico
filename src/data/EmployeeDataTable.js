@@ -121,3 +121,13 @@ export const fetchAllUsers = async ()=>{
     throw err
   }
 }
+
+export const fetchTeam = async ()=>{
+  try{
+     const response = await api.get('User/MyTeam')
+     console.log(response.data.data)
+     return response.data.data
+  }catch(err){
+     throw err
+  }
+}

@@ -13,6 +13,7 @@ import ResetPassword from "./pages/ResetPassword";
 //Importing Admin dashboard components
 import Dashboard from "./components/Admin/Dashboard";
 import PendingLeaves from "./pages/PendingLeaves";
+import MyTeam from "./pages/MyTeam";
 
 //Importing General Components
 import MyDashboard from "./pages/MyDashboard";
@@ -195,11 +196,19 @@ function App() {
           {
             path:'pendingonme',
             element:(
-              <ProtectedRoute requiredRole="employee">
+              <ProtectedRoute requiredRole="admin">
                 <PendingLeaves></PendingLeaves>
               </ProtectedRoute>
             )
           },
+          {
+            path:'myteam',
+            element:(
+              <ProtectedRoute requiredRole="admin">
+                <MyTeam></MyTeam>
+              </ProtectedRoute>
+            )
+          }
         ]
       },
       {
@@ -251,7 +260,7 @@ function App() {
             )
           },
           {
-            path:'employee',
+            path:'user',
             element:(
               <ProtectedRoute requiredRole="employee">
                 <Employee></Employee>
@@ -259,7 +268,7 @@ function App() {
             )
           },
           {
-            path:'employee/addnew',
+            path:'user/addnew',
             element:(
               <ProtectedRoute requiredRole="employee">
                 <AddNewEmp></AddNewEmp>
@@ -267,7 +276,7 @@ function App() {
             )
           },
           {
-            path:'employee/edit',
+            path:'user/edit',
             element:(
               <ProtectedRoute requiredRole="employee">
                 <EditEmp></EditEmp>

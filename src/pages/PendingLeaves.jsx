@@ -8,14 +8,23 @@ import { toast } from "react-toastify";
 
 //Importing icons
 import AutorenewIcon from "@mui/icons-material/Autorenew";
+import NODATA from '../assets/computer.png'
 import DateRangeIcon from "@mui/icons-material/DateRange";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import api from "../api";
 
 function PendingLeaves() {
   const [leaves, setLeaves] = useState([]);
-  const [activeState, setActiveState] = useState("approve");
+  const [activeState, setActiveState] = useState("pending");
   const [loading,setLoading] = useState(false)
+
+  const [activeCounts, setActiveCounts] = useState(0);
+  const [pendingCounts, setPendingCounts] = useState(0);
+  const [rejectCounts, setRejectCounts] = useState(0);
+
+
+  console.log(activeCounts)
+  console.log(pendingCounts)
+  
 
   const getImage = (leaveType) => {
     if (leaveType.toLowerCase() === "sick") {
@@ -51,6 +60,19 @@ function PendingLeaves() {
       const response = await api.post(`/Leave/GetAll`,customData);
       setLeaves(response.data.data);
       console.log(response.data.data)
+      setActiveCounts(
+        response.data.data.filter((leave) => leave.leaveStatus === "Approved")
+          .length
+      );
+      setPendingCounts(
+        response.data.data.filter((leave) => leave.leaveStatus === "Pending")
+          .length
+      );
+      setRejectCounts(
+        response.data.data.filter((leave) => leave.leaveStatus === "Rejected")
+          .length
+      );
+
     } catch (err) {
       console.log(err);
       toast.error(err?.response?.data?.message || "Something went wrong.");
@@ -114,6 +136,268 @@ function PendingLeaves() {
     fetchData();
   }, []);
 
+
+  const renderContent = () =>{
+      switch(activeState){
+        
+        case 'approve':
+          return (
+            activeCounts > 0 ?
+            leaves
+            .filter((leave) => leave.leaveStatus === "Approved")
+            .map((item, index) => (
+              <div
+                key={index}
+                className="w-full scale-[1] mb-4 hover:scale-[1.01] transition-all duration-300 shadow-sm overflow-hidden  grid grid-cols-1 md:grid-cols-10 border border-slate-100 rounded-md"
+              >
+                <div className="relative  md:col-span-2">
+                  <div className="absolute md:-left-5 -right-12 -top-14 bg-sky-300/75 md:w-52 w-40 h-40 custom-round md:h-52 flex justify-center items-center">
+                    <img
+                      src={getImage(item.leaveType)}
+                      alt="sick"
+                      className="md:w-16 w-9 h-9 md:h-16"
+                    ></img>
+                  </div>
+                </div>
+                <div className="p-4 flex flex-col col-span-4 gap-2">
+                  <div className="flex items-center gap-4">
+                    <div className="flex gap-1 items-center">
+                      <span className="font-medium">
+                        <DateRangeIcon></DateRangeIcon>
+                      </span>
+                      <span className="text-gray-700 text-[15px]">
+                        {getDate(item.startDate || item.endDate)}
+                      </span>
+                    </div>
+                    {item.startDate!==item.endDate && (
+                      <>
+                        <span>to</span>
+                        <div className="flex gap-1 items-center">
+                          <span className="font-medium">
+                            <DateRangeIcon></DateRangeIcon>
+                          </span>
+                          <span className="text-gray-700 text-[15px]">
+                            {getDate(item.endDate)}
+                          </span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-2">
+                   <div className="flex justify-start gap-1 items-center">
+                       <span className="font-medium">Applied By:</span> <span className="text-gray-700 text-[15px]">{item.appliedBy}</span>
+                   </div>
+                   <div className="flex items-center gap-4">
+                    <span className="bg-green-500 text-white text-sm p-1 rounded-md">Approved</span>
+                    <div className="flex justify-center gap-1 items-center">
+                      <span className="font-medium">Approver:</span> <span className="text-gray-700 text-[15px]">{item.approver}</span>
+                    </div>
+                   </div>
+                </div>
+                </div>
+                <div className="p-4 col-span-4 gap-2 flex flex-col">
+                  <div className="flex items-center gap-1">
+                    <span className="font-medium">Leave Type:</span>
+                    <span className="text-gray-700 text-[15px]">
+                      {item.leaveType}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-medium">
+                      Comments:{" "}
+                      <span className="font-normal text-gray-700 text-[15px]">
+                        {item.comments}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+               
+              </div>
+            ))
+            :<div className="w-full h-full flex justify-center items-center">
+              <div className="flex flex-col gap-1 items-center">
+              <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
+              <span className="text-gray-600 font-medium">
+                No Approved Leaves
+              </span>
+            </div>
+            </div>
+          )
+        
+        case 'pending':
+          return (
+            pendingCounts > 0 ?
+            leaves
+            .filter((leave) => leave.leaveStatus === "Pending")
+            .map((item, index) => (
+              <div key={index} className="w-full mb-4 scale-[1] hover:scale-[1.01] transition-all duration-300 shadow-sm overflow-hidden  grid grid-cols-1 md:grid-cols-10 border border-slate-100 rounded-md">
+                <div className="relative  md:col-span-2">
+                  <div className="absolute md:-left-5 -right-12 -top-14 bg-sky-300/75 md:w-52 w-40 h-40 custom-round md:h-52 flex justify-center items-center">
+                    <img
+                      src={getImage(item.leaveType)}
+                      alt="sick"
+                      className="md:w-16 w-9 h-9 md:h-16"
+                    ></img>
+                  </div>
+                </div>
+                <div className="p-4 flex flex-col col-span-3 gap-2">
+                  <div className="flex items-center gap-4">
+                    <div className="flex gap-1 items-center">
+                      <span className="font-medium">
+                        <DateRangeIcon></DateRangeIcon>
+                      </span>
+                      <span className="text-gray-700 text-[15px]">
+                        {getDate(item.startDate || item.endDate)}
+                      </span>
+                    </div>
+                    {
+                      item.startDate!==item.endDate && 
+                      <>
+                      <span>to</span>
+                      <div className="flex gap-1 items-center">
+                        <span className="font-medium">
+                          <DateRangeIcon></DateRangeIcon>
+                        </span>
+                        <span className="text-gray-700 text-[15px]">
+                          {getDate(item.endDate)}
+                        </span>
+                      </div>
+                      </>
+                    }
+                    
+                  </div>
+                <div className="flex flex-col gap-2">
+                   <div className="flex justify-start gap-1 items-center">
+                       <span className="font-medium">Applied By:</span> <span className="text-gray-700 text-[15px]">{item.appliedBy}</span>
+                   </div>
+                   <div className="flex items-center gap-4">
+                    <span className="bg-yellow-500 text-white text-sm p-1 rounded-md">Pending</span>
+                    <div className="flex justify-center gap-1 items-center">
+                      <span className="font-medium">Approver:</span> <span className="text-gray-700 text-[15px]">{item.approver}</span>
+                    </div>
+                   </div>
+                </div>
+                </div>
+                <div className="p-4 col-span-3 gap-2 flex flex-col">
+                  <div className="flex items-center gap-1">
+                    <span className="font-medium">Leave Type:</span>
+                    <span className="text-gray-700 text-[15px]">{item.leaveType}</span>
+                  </div>
+                  <div>
+                    <span className="font-medium">
+                      Comments:{" "}
+                      <span className="font-normal text-gray-700 text-[15px]">
+                        {item.comments}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div className="py-4 px-4 col-span-2 flex gap-2 justify-start md:justify-center items-center md:items-start">
+                  <button onClick={()=>handleApproveLeave(item.id)} className="text-white w-[68px] flex justify-center items-center tracking-wide p-1.5 bg-blue-500 hover:bg-blue-600 rounded-md transition-colors text-sm duration-300">
+                    Approve
+                  </button>
+                  <button onClick={()=>handleOpenRejectPopUp(item.id)} className="text-white w-[68px] justify-center tracking-wide hover:bg-red-600 rounded-md transition-colors duration-300 flex gap-1 items-center bg-red-500 shadow-sm p-1.5 text-sm">
+                    <span>Reject</span>
+                  </button>
+                </div>
+              </div>
+            )) :  <div className="w-full h-full flex justify-center items-center">
+            <div className="flex flex-col gap-1 items-center">
+            <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
+            <span className="text-gray-600 font-medium">
+              No Pending Leaves
+            </span>
+            </div>
+           </div>
+          )
+        
+        case 'reject':
+          return (
+            rejectCounts > 0 ?
+            leaves
+            .filter((leave) => leave.leaveStatus === "Rejected")
+            .map((item, index) => (
+              <div
+                key={index}
+                className="w-full scale-[1] mb-4 hover:scale-[1.01] transition-all duration-300 shadow-sm overflow-hidden  grid grid-cols-1 md:grid-cols-10 border border-slate-100 rounded-md"
+              >
+                <div className="relative  md:col-span-2">
+                  <div className="absolute md:-left-5 -right-12 -top-14 bg-sky-300/75 md:w-52 w-40 h-40 custom-round md:h-52 flex justify-center items-center">
+                    <img
+                      src={getImage(item.leaveType)}
+                      alt="sick"
+                      className="md:w-16 w-9 h-9 md:h-16"
+                    ></img>
+                  </div>
+                </div>
+                <div className="p-4 flex flex-col col-span-4 gap-2">
+                  <div className="flex items-center gap-4">
+                    <div className="flex gap-1 items-center">
+                      <span className="font-medium">
+                        <DateRangeIcon></DateRangeIcon>
+                      </span>
+                      <span className="text-gray-700 text-[15px]">
+                        {getDate(item.startDate || item.endDate)}
+                      </span>
+                    </div>
+                    {item.startDate!==item.endDate && (
+                      <>
+                        <span>to</span>
+                        <div className="flex gap-1 items-center">
+                          <span className="font-medium">
+                            <DateRangeIcon></DateRangeIcon>
+                          </span>
+                          <span className="text-gray-700 text-[15px]">
+                            {getDate(item.endDate)}
+                          </span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-2">
+                   <div className="flex justify-start gap-1 items-center">
+                       <span className="font-medium">Applied By:</span> <span className="text-gray-700 text-[15px]">{item.appliedBy}</span>
+                   </div>
+                   <div className="flex items-center gap-4">
+                    <span className="bg-red-500 text-white text-sm p-1 rounded-md">Rejected</span>
+                    <div className="flex justify-center gap-1 items-center">
+                      <span className="font-medium">Approver:</span> <span className="text-gray-700 text-[15px]">{item.approver}</span>
+                    </div>
+                   </div>
+                </div>
+                </div>
+                <div className="p-4 col-span-4 gap-2 flex flex-col">
+                  <div className="flex items-center gap-1">
+                    <span className="font-medium">Leave Type:</span>
+                    <span className="text-gray-700 text-[15px]">
+                      {item.leaveType}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-medium">
+                      Comments:{" "}
+                      <span className="font-normal text-gray-700 text-[15px]">
+                        {item.comments}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+               
+              </div>
+            ))
+            :<div className="w-full h-full flex justify-center items-center">
+              <div className="flex flex-col gap-1 items-center">
+              <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
+              <span className="text-gray-600 font-medium">
+                No Approved Leaves
+              </span>
+            </div>
+            </div>
+          )
+
+      }
+  }
+
   return (
     <>
     {
@@ -159,6 +443,16 @@ function PendingLeaves() {
           >
             Pending
           </span>
+          <span
+            onClick={() => setActiveState("reject")}
+            className={`w-20 ${
+              activeState === "reject"
+                ? "bg-themeblue text-white"
+                : "text-gray-600"
+            } cursor-pointer hover:bg-themeblue hover:text-white transition-colors duration-300 flex justify-center items-center text-sm p-1 border rounded-md`}
+          >
+            Rejected
+          </span>
         </div>
       </div>
       <div className="flex items-center gap-3">
@@ -167,175 +461,17 @@ function PendingLeaves() {
         </span>
       </div>
     </div>
-    {activeState === "approve" ? (
+    
       <div className="bg-white h-full overflow-auto rounded-md md:py-4 py-3 px-3">
         {
           loading ?
           <div className="w-full h-full flex justify-center items-center">
             <img src={Loader} alt="loader" className="w-10 h-10"></img>
           </div> :
-          leaves
-          .filter((leave) => leave.leaveStatus !== "Pending")
-          .map((item, index) => (
-            <div
-              key={index}
-              className="w-full scale-[1] mb-4 hover:scale-[1.01] transition-all duration-300 shadow-sm overflow-hidden  grid grid-cols-1 md:grid-cols-10 border border-slate-100 rounded-md"
-            >
-              <div className="relative  md:col-span-2">
-                <div className="absolute md:-left-5 -right-12 -top-14 bg-sky-300/75 md:w-52 w-40 h-40 custom-round md:h-52 flex justify-center items-center">
-                  <img
-                    src={getImage(item.leaveType)}
-                    alt="sick"
-                    className="md:w-16 w-9 h-9 md:h-16"
-                  ></img>
-                </div>
-              </div>
-              <div className="p-4 flex flex-col col-span-3 gap-2">
-                <div className="flex items-center gap-4">
-                  <div className="flex gap-1 items-center">
-                    <span className="font-medium">
-                      <DateRangeIcon></DateRangeIcon>
-                    </span>
-                    <span className="text-gray-700 text-[15px]">
-                      {getDate(item.startDate || item.endDate)}
-                    </span>
-                  </div>
-                  {item.startDate!==item.endDate && (
-                    <>
-                      <span>to</span>
-                      <div className="flex gap-1 items-center">
-                        <span className="font-medium">
-                          <DateRangeIcon></DateRangeIcon>
-                        </span>
-                        <span className="text-gray-700 text-[15px]">
-                          {getDate(item.endDate)}
-                        </span>
-                      </div>
-                    </>
-                  )}
-                </div>
-                <div className="flex items-center gap-5">
-                  <div className="flex items-center gap-1">
-                    <span className="font-medium">Approved By:</span>
-                    <span className="text-gray-700 text-[15px]">
-                      {item.approver}
-                    </span>
-                  </div>
-                  <span className="bg-green-600 text-white text-sm p-1 rounded-md">
-                    Approved
-                  </span>
-                </div>
-              </div>
-              <div className="p-4 col-span-3 gap-2 flex flex-col">
-                <div className="flex items-center gap-1">
-                  <span className="font-medium">Leave Type:</span>
-                  <span className="text-gray-700 text-[15px]">
-                    {item.leaveType}
-                  </span>
-                </div>
-                <div>
-                  <span className="font-medium">
-                    Comments:{" "}
-                    <span className="font-normal text-gray-700 text-[15px]">
-                      {item.comments}
-                    </span>
-                  </span>
-                </div>
-              </div>
-              <div className="py-4 px-4 col-span-2 flex justify-start md:justify-center md:items-start items-center">
-                <button className="text-white hover:bg-red-600 rounded-md transition-colors duration-300 flex gap-1 items-center bg-red-500 shadow-sm p-1.5 text-sm">
-                  <span>
-                    <DeleteOutlineOutlinedIcon
-                      style={{ fontSize: "1.2rem" }}
-                    ></DeleteOutlineOutlinedIcon>
-                  </span>{" "}
-                  <span className="md:text-[15px] text-sm">Remove</span>
-                </button>
-              </div>
-            </div>
-          ))}
+          renderContent()
+        }
       </div>
-    ) : (
-      <div className="bg-white h-full overflow-auto rounded-md md:py-4 py-3 px-3">
-        {
-          loading ? 
-          <div className="w-full h-full flex justify-center items-center">
-            <img src={Loader} alt="loader" className="w-10 h-10"></img>
-          </div> :
-          leaves
-          .filter((leave) => leave.leaveStatus === "Pending")
-          .map((item, index) => (
-            <div key={index} className="w-full mb-4 scale-[1] hover:scale-[1.01] transition-all duration-300 shadow-sm overflow-hidden  grid grid-cols-1 md:grid-cols-10 border border-slate-100 rounded-md">
-              <div className="relative  md:col-span-2">
-                <div className="absolute md:-left-5 -right-12 -top-14 bg-sky-300/75 md:w-52 w-40 h-40 custom-round md:h-52 flex justify-center items-center">
-                  <img
-                    src={getImage(item.leaveType)}
-                    alt="sick"
-                    className="md:w-16 w-9 h-9 md:h-16"
-                  ></img>
-                </div>
-              </div>
-              <div className="p-4 flex flex-col col-span-3 gap-2">
-                <div className="flex items-center gap-4">
-                  <div className="flex gap-1 items-center">
-                    <span className="font-medium">
-                      <DateRangeIcon></DateRangeIcon>
-                    </span>
-                    <span className="text-gray-700 text-[15px]">
-                      {getDate(item.startDate || item.endDate)}
-                    </span>
-                  </div>
-                  {
-                    item.startDate!==item.endDate && 
-                    <>
-                    <span>to</span>
-                    <div className="flex gap-1 items-center">
-                      <span className="font-medium">
-                        <DateRangeIcon></DateRangeIcon>
-                      </span>
-                      <span className="text-gray-700 text-[15px]">
-                        {getDate(item.endDate)}
-                      </span>
-                    </div>
-                    </>
-                  }
-                  
-                </div>
-                <div className="flex items-center gap-4">
-                  <span className="bg-yellow-500 text-white text-sm p-1 rounded-md">
-                    Pending
-                  </span>
-                  <div className="flex justify-center gap-1 items-center">
-                    <span className="font-medium">Approver:</span> <span className="text-gray-700 text-[15px]">{item.approver}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="p-4 col-span-3 gap-2 flex flex-col">
-                <div className="flex items-center gap-1">
-                  <span className="font-medium">Leave Type:</span>
-                  <span className="text-gray-700 text-[15px]">{item.leaveType}</span>
-                </div>
-                <div>
-                  <span className="font-medium">
-                    Comments:{" "}
-                    <span className="font-normal text-gray-700 text-[15px]">
-                      {item.comments}
-                    </span>
-                  </span>
-                </div>
-              </div>
-              <div className="py-4 px-4 col-span-2 flex gap-2 justify-start md:justify-center items-center md:items-start">
-                <button onClick={()=>handleApproveLeave(item.id)} className="text-white w-[68px] flex justify-center items-center tracking-wide p-1.5 bg-blue-500 hover:bg-blue-600 rounded-md transition-colors text-sm duration-300">
-                  Approve
-                </button>
-                <button onClick={()=>handleOpenRejectPopUp(item.id)} className="text-white w-[68px] justify-center tracking-wide hover:bg-red-600 rounded-md transition-colors duration-300 flex gap-1 items-center bg-red-500 shadow-sm p-1.5 text-sm">
-                  <span>Reject</span>
-                </button>
-              </div>
-            </div>
-          ))}
-      </div>
-    )}
+
   </div>
   </>
   )

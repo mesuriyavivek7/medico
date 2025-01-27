@@ -118,7 +118,7 @@ export default function AddNewChemist() {
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='gender' className='font-medium text-gray-700'>Gender <span className='text-red-500'>*</span> </label>
-             <select onChange={handleChange} name='gender' className='p-2 outline-none border-2 border-gray-200' id='gender'>
+             <select value={formData.gender} onChange={handleChange} name='gender' className='p-2 outline-none border-2 border-gray-200' id='gender'>
                <option value={""}>--- Select Gender ---</option>
                <option value={'M'}>Male</option>
                <option value={"F"}>Female</option>

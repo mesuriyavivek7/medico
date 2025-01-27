@@ -87,16 +87,6 @@ export default function EmpDashboard() {
           </div>
           
           <div className="flex items-center gap-8">
-          <div className="p-2 rounded-md hidden md:flex bg-gray-100 items-center gap-1">
-            <span>
-              <SearchIcon style={{ fontSize: "1.6rem" }}></SearchIcon>
-            </span>
-            <input
-              placeholder="Search here...."
-              className="bg-transparent outline-none"
-              type="text"
-            ></input>
-          </div>
           <div className="flex items-center gap-4 md:gap-8">
             <span className="bg-gray-100 text-themeblue rounded-md flex justify-center items-center w-12 h-12">
               <NotificationsNoneOutlinedIcon
@@ -110,8 +100,8 @@ export default function EmpDashboard() {
                 alt="profile"
               ></img>
               <div className="md:flex hidden flex-col">
-                <h4 className="text-base leading-4 font-bold">{getName(user?.user.firstName)}</h4>
-                <h4 className="text-sm">{user?.user.isAdmin?"Admin":"Member"}</h4>
+                <h4 className="text-base leading-4 font-bold">{getName(user?.firstName)}</h4>
+                <h4 className="text-sm">{user?.isAdmin?"Admin":"Member"}</h4>
               </div>
               {isProfileOpen && 
                <div ref={popupRef} className="absolute z-40 w-36 md:w-48 shadow rounded-md border bg-white top-[120%] right-0 flex flex-col ">
@@ -128,7 +118,7 @@ export default function EmpDashboard() {
       <div className="w-full relative flex md:mt-24 mt-20">
         {/* Sidebar For Web screen */}
         <div className={`${isMenuOpen?"w-72":"w-28"} z-40 md:block hidden transition-all duration-300 shadow-lg bg-white`}>
-            <div onClick={()=>handleNavigate('/admin/dashboard')} className={`group flex ${isActive("dashboard") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+            <div onClick={()=>handleNavigate('dashboard')} className={`group flex ${isActive("dashboard") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
                <span className={`${isActive('dashboard') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><DashboardOutlinedIcon style={{fontSize:'1.5rem'}}></DashboardOutlinedIcon></span>
                {isMenuOpen && <span className={`${isActive("dashboard") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>Dashboard</span>}
             </div>
@@ -140,9 +130,9 @@ export default function EmpDashboard() {
                <span className={`${isActive('chemist') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ScienceOutlinedIcon style={{fontSize:'1.5rem'}}></ScienceOutlinedIcon></span>
                {isMenuOpen && <span className={`${isActive("chemist") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Chemist</span>}
             </div>
-            <div onClick={()=>handleNavigate('employee')} className={`group flex ${isActive("employee") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
-               <span className={`${isActive('employee') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><PersonOutlineIcon style={{fontSize:'1.5rem'}}></PersonOutlineIcon></span>
-               {isMenuOpen && <span className={`${isActive("employee") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Employee</span>}
+            <div onClick={()=>handleNavigate('user')} className={`group flex ${isActive("user") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('user') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><PersonOutlineIcon style={{fontSize:'1.5rem'}}></PersonOutlineIcon></span>
+               {isMenuOpen && <span className={`${isActive("user") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Employee</span>}
             </div>
             <div onClick={()=>handleNavigate('myleaves')} className={`group flex ${isActive("myleaves") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
                <span className={`${isActive('myleaves') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>
@@ -151,7 +141,7 @@ export default function EmpDashboard() {
         </div>
         {/* sidebar for mobile screen */}
         <div className={`${isMenuOpen?"-left-96":"left-0"} z-40 w-64 bottom-0 top-0 md:hidden absolute transition-all duration-300 shadow-lg bg-white`}>
-            <div onClick={()=>handleNavigate('/admin')} className={`group flex ${isActive("dashboard") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+            <div onClick={()=>handleNavigate('dashboard')} className={`group flex ${isActive("dashboard") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
                <span className={`${isActive('dashboard') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><DashboardOutlinedIcon style={{fontSize:'1.5rem'}}></DashboardOutlinedIcon></span>
                <span className={`${isActive("dashboard") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>Dashboard</span>
             </div>
@@ -163,9 +153,9 @@ export default function EmpDashboard() {
                <span className={`${isActive('chemist') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ScienceOutlinedIcon style={{fontSize:'1.5rem'}}></ScienceOutlinedIcon></span>
                <span className={`${isActive("chemist") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Chemist</span>
             </div>
-            <div onClick={()=>handleNavigate('employee')} className={`group flex ${isActive("employee") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
-               <span className={`${isActive('employee') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><PersonOutlineIcon style={{fontSize:'1.5rem'}}></PersonOutlineIcon></span>
-               <span className={`${isActive("employee") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Employee</span>
+            <div onClick={()=>handleNavigate('user')} className={`group flex ${isActive("user") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('user') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><PersonOutlineIcon style={{fontSize:'1.5rem'}}></PersonOutlineIcon></span>
+               <span className={`${isActive("user") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Employee</span>
             </div>
             <div onClick={()=>handleNavigate('myleaves')} className={`group flex ${isActive("myleaves") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
                <span className={`${isActive('myleaves') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>
