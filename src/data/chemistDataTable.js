@@ -11,7 +11,7 @@ const formateDate = (dateString)=>{
   }
   
 
-export const columns = [
+export const columns = (handleOpenUpdateData,handleOpenConfirmPopUp) => [
     {
         field: 'id',
         headerClassName: 'super-app-theme--header',
@@ -128,10 +128,10 @@ export const columns = [
         minWidth: 150,
         renderCell: (params) => (
           <div className="flex gap-3 items-center w-full h-full">
-            <button className="bg-blue-500 md:text-base text-sm hover:bg-blue-600 flex justify-center items-center rounded-md text-white md:w-10 w-12 h-6 md:h-7">
+            <button onClick={()=>handleOpenUpdateData(params.row)} className="bg-blue-500 md:text-base text-sm hover:bg-blue-600 flex justify-center items-center rounded-md text-white md:w-10 w-12 h-6 md:h-7">
               <BorderColorOutlinedIcon style={{fontSize:'1.2rem'}}></BorderColorOutlinedIcon>
             </button>
-            <button className="bg-red-500 md:text-base text-sm hover:bg-red-600 flex justify-center items-center rounded-md text-white md:w-10 w-12 h-6 md:h-7">
+            <button onClick={()=>handleOpenConfirmPopUp(params.row)} className="bg-red-500 md:text-base text-sm hover:bg-red-600 flex justify-center items-center rounded-md text-white md:w-10 w-12 h-6 md:h-7">
               <DeleteOutlineOutlinedIcon style={{fontSize:'1.2rem'}}></DeleteOutlineOutlinedIcon>
             </button>
           </div>

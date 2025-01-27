@@ -7,22 +7,20 @@ import { logout } from "../../redux/actions/authActions";
 import LOGO from "../../assets/logo.png";
 import PERSON from "../../assets/asset4.jpg";
 
-//importing icons
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import LogoutIcon from '@mui/icons-material/Logout';
-
 import { useLocation , Outlet, useNavigate} from "react-router-dom";
 
 //importing icons
 import MenuIcon from "@mui/icons-material/Menu";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
-import SearchIcon from "@mui/icons-material/Search";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
 import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 
 export default function Dashboard() {
   const { user } = useSelector((state) => state.auth);
@@ -88,16 +86,6 @@ export default function Dashboard() {
           </div>
           
           <div className="flex items-center gap-8">
-          <div className="p-2 rounded-md hidden md:flex bg-gray-100 items-center gap-1">
-            <span>
-              <SearchIcon style={{ fontSize: "1.6rem" }}></SearchIcon>
-            </span>
-            <input
-              placeholder="Search here...."
-              className="bg-transparent outline-none"
-              type="text"
-            ></input>
-          </div>
           <div className="flex items-center gap-4 md:gap-8">
             <span className="bg-gray-100 text-themeblue rounded-md flex justify-center items-center w-12 h-12">
               <NotificationsNoneOutlinedIcon
@@ -144,6 +132,10 @@ export default function Dashboard() {
             <div onClick={()=>handleNavigate('employee')} className={`group flex ${isActive("employee") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
                <span className={`${isActive('employee') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><PersonOutlineIcon style={{fontSize:'1.5rem'}}></PersonOutlineIcon></span>
                {isMenuOpen && <span className={`${isActive("employee") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Employee</span>}
+            </div>
+            <div onClick={()=>handleNavigate('myteam')} className={`group flex ${isActive("myteam") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('myteam') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><GroupOutlinedIcon style={{fontSize:'1.5rem'}}></GroupOutlinedIcon></span>
+               {isMenuOpen && <span className={`${isActive("myteam") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>My Team</span>}
             </div>
             <div onClick={()=>handleNavigate('myleaves')} className={`group flex ${isActive("myleaves") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
                <span className={`${isActive('myleaves') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>

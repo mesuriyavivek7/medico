@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-
+import { useSelector } from "react-redux";
 import { Link } from 'react-router-dom';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import api from '../api';
 import { toast } from 'react-toastify';
 
 function AddLeave() {
+  const { user } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false)
   const [formData,setFormData] = useState({
     leaveType:"",
@@ -62,7 +63,7 @@ function AddLeave() {
    <div className='flex h-full flex-col gap-3 md:gap-4'>
       <div className='bg-white custom-shadow rounded-md md:py-4 py-3 px-3 md:px-4 flex items-center justify-between'>
         <div className='flex items-center gap-2'>
-           <Link to={'/admin/myleaves'}><span className='text-gray-600 cursor-pointer'><ArrowBackIosIcon style={{fontSize:'1.4rem'}}></ArrowBackIosIcon></span></Link>
+           <Link to={user.isAdmin?'/admin/myleaves':'/employee/myleaves'}><span className='text-gray-600 cursor-pointer'><ArrowBackIosIcon style={{fontSize:'1.4rem'}}></ArrowBackIosIcon></span></Link>
            <h1 className='text-gray-800 text-base md:text-lg font-medium'>Apply For Leave</h1>
         </div>
       </div>
@@ -70,7 +71,7 @@ function AddLeave() {
          <div className='col-span-2 pr-6'>
            <div className='w-1/2 flex flex-col gap-2'>
             <label htmlFor='leaveType' className='font-medium text-gray-600'>Leave Type</label>
-            <select onChange={handleChange} name='leaveType' id='leaveType' className='border outline-none p-2 rounded-md'>
+            <select value={formData.leaveType} onChange={handleChange} name='leaveType' id='leaveType' className='border outline-none p-2 rounded-md'>
               <option value={''}>--- Select Leave Type ----</option>
               <option value={'Previlage'}>Previlage</option>
               <option value={'Sick'}>Sick</option>
@@ -81,21 +82,21 @@ function AddLeave() {
          <div className='flex flex-col gap-2'>
            <label htmlFor='startDate' className='font-medium text-gray-600'>From</label>
            <div className='flex flex-col gap-1'>
-            <input onChange={handleChange} name='startDate' id='startDate' type='date' className='p-2 rounded-md border outline-none'></input>
+            <input value={formData.startDate} onChange={handleChange} name='startDate' id='startDate' type='date' className='p-2 rounded-md border outline-none'></input>
             {errors.startDate && <span className='text-sm text-red-500'>{errors.startDate}</span>}
            </div> 
          </div>
          <div className='flex flex-col gap-2'>
            <label htmlFor='endDate' className='font-medium text-gray-600'>To</label>
            <div className='flex flex-col gap-1'>
-            <input onChange={handleChange} name='endDate' id='endDate' type='date' className='p-2 rounded-md border outline-none'></input>
+            <input value={formData.endDate} onChange={handleChange} name='endDate' id='endDate' type='date' className='p-2 rounded-md border outline-none'></input>
             {errors.endDate && <span className='text-red-500 text-sm'>{errors.endDate}</span>}
            </div> 
          </div>
          <div className='col-span-2 flex flex-col gap-2'>
            <label htmlFor='comments' className='font-medium text-gray-600'>Comments</label>
            <div className='flex flex-col gap-1'>
-            <textarea onChange={handleChange} name='comments' id='comments' rows={8} placeholder='Type here leave reason...' className='resize-none p-2 outline-none rounded-md border'></textarea>
+            <textarea value={formData.comments} onChange={handleChange} name='comments' id='comments' rows={8} placeholder='Type here leave reason...' className='resize-none p-2 outline-none rounded-md border'></textarea>
             {errors.comments && <span className='text-red-500 text-sm'>{errors.comments}</span>}
            </div>
          </div>

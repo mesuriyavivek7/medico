@@ -53,7 +53,8 @@ export default function Login() {
     return valid;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (validateData()) {
       setLoading(true);
       dispatch(loginStart);
@@ -111,7 +112,7 @@ export default function Login() {
       {/* second section */}
       <div className="w-full flex place-content-center md:place-content-end md:h-screen bg-lightgray">
         <div className="md:w-1/2 w-full py-10 md:h-screen flex justify-center items-center">
-          <div className="flex md:w-8/12 w-4/5 flex-col gap-5">
+          <form onSubmit={handleSubmit} className="flex md:w-8/12 w-4/5 flex-col gap-5">
             <h1 className="md:text-3xl text-2xl font-medium mb-2 text-center">
               Sign in your account
             </h1>
@@ -126,7 +127,7 @@ export default function Login() {
                 onChange={handleChange}
                 id="email"
                 name="email"
-                type="email"
+                type="text"
                 value={formData.email}
                 placeholder="demo@example.com"
                 className="outline-none bg-white px-2 py-4 shadow rounded-md"
@@ -164,7 +165,7 @@ export default function Login() {
               </span>
             </div>
             <button
-              onClick={handleSubmit}
+              type="submit"
               disabled={loading}
               className={`relative flex items-center justify-center px-6 py-2 text-white font-semibold rounded-md ${
                 loading
@@ -203,7 +204,7 @@ export default function Login() {
                 </span>
               </Link>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
