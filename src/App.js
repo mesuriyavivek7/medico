@@ -14,6 +14,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./components/Admin/Dashboard";
 import PendingLeaves from "./pages/PendingLeaves";
 import MyTeam from "./pages/MyTeam";
+import StourPlan from "./pages/StourPlan";
 
 //Importing General Components
 import MyDashboard from "./pages/MyDashboard";
@@ -206,6 +207,14 @@ function App() {
             element:(
               <ProtectedRoute requiredRole="admin">
                 <MyTeam></MyTeam>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'tourplan',
+            element:(
+              <ProtectedRoute requiredRole="admin">
+                <StourPlan></StourPlan>
               </ProtectedRoute>
             )
           }

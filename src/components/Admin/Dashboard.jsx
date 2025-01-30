@@ -145,6 +145,10 @@ export default function Dashboard() {
                <span className={`${isActive('pendingonme') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>
                {isMenuOpen && <span className={`${isActive("pendingonme") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Pending On Me</span>}
             </div>
+            <div onClick={()=>handleNavigate('tourplan')} className={`group flex ${isActive("tourplan") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('tourplan') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>
+               {isMenuOpen && <span className={`${isActive("tourplan") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Tour Plan</span>}
+            </div>
         </div>
         {/* sidebar for mobile screen */}
         <div className={`${isMenuOpen?"-left-96":"left-0"} z-40 w-64 bottom-0 top-0 md:hidden absolute transition-all duration-300 shadow-lg bg-white`}>
