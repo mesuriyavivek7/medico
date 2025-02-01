@@ -14,6 +14,8 @@ import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./components/Admin/Dashboard";
 import PendingLeaves from "./pages/PendingLeaves";
 import MyTeam from "./pages/MyTeam";
+import StourPlan from "./pages/StourPlan";
+import PreviewEmp from "./pages/PreviewEmp";
 
 //Importing General Components
 import MyDashboard from "./pages/MyDashboard";
@@ -30,6 +32,7 @@ import AddLeave from "./pages/AddLeave";
 
 //Importing Employee dashboard components
 import EmpDashboard from "./components/Employee/EmpDashboard";
+import AddStourPlan from "./pages/AddStourPlan";
 
 // ProtectedRoute Component
 const ProtectedRoute = ({ children , requiredRole }) => {
@@ -170,6 +173,14 @@ function App() {
             )
           },
           {
+            path:'employee/preview',
+            element:(
+            <ProtectedRoute requiredRole="admin">
+              <PreviewEmp></PreviewEmp>
+             </ProtectedRoute>
+            )
+          },
+          {
             path:'profile',
             element:(
               <ProtectedRoute requiredRole="admin">
@@ -208,7 +219,23 @@ function App() {
                 <MyTeam></MyTeam>
               </ProtectedRoute>
             )
-          }
+          },
+          {
+            path:'tourplan',
+            element:(
+              <ProtectedRoute requiredRole="admin">
+                <StourPlan></StourPlan>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'tourplan/add',
+            element:(
+              <ProtectedRoute requiredRole="admin">
+                <AddStourPlan></AddStourPlan>
+              </ProtectedRoute>
+            )
+          },
         ]
       },
       {

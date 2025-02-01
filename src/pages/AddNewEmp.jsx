@@ -38,21 +38,29 @@ export default function AddNewEmp() {
   }
 
   const [formData , setFormData ] = useState({
-    password:'',
-    userId:1,
-    username:'',
-    firstName:'',
-    lastName:'',
-    gender:'',
-    dob:'',
-    panCard:'',
-    email:'',
-    phoneNumber:'',
-    roleId:1,
-    createdBy:1,
-    joiningDate:'',
-    id:0
+    password: "",
+    userID: 0,
+    username: "",
+    firstName: "",
+    lastName: "",
+    gender: "",
+    dob: "",
+    panCard: "",
+    email: "",
+    phoneNumber: "",
+    roleID: 0,
+    joiningdate: "",
+    designation: "",
+    reportingTo: 2,
+    pfno: "",
+    uan: "",
+    bankName: "",
+    ifscCode: "",
+    bankAcctNo: "",
+    headQuater: ""
   })
+
+  console.log(formData)
 
   const [errors,setErrors] = useState({})
 
@@ -72,11 +80,18 @@ export default function AddNewEmp() {
    else if(!emailRegex.test(formData.email)) newErrors.email = "Invalid email address."
    if(!formData.phoneNumber) newErrors.phoneNumber = "Please enter mobileno."
    else if(formData.phoneNumber.length!==10) newErrors.phoneNumber = "Invalid mobile no."
-   if(!formData.joiningDate) newErrors.joiningDate = "Please enter joining date."
+   if(!formData.joiningdate) newErrors.joiningDate = "Please enter joining date."
    if(!formData.dob) newErrors.dob="Please enter date of birth."
    if(!formData.panCard) newErrors.panCard="Please enter pancard."
    if(!formData.gender) newErrors.gender="Please enter gender."
    if(!formData.password) newErrors.password="Please enter password."
+   if(!formData.designation) newErrors.designation="Please enter designation."
+   if(!formData.pfno) newErrors.pfno="Please enter Provident fund"
+   if(!formData.uan) newErrors.uan="Please enter Universal Account Number."
+   if(!formData.headQuater) newErrors.headQuater="Please enter headQuater details."
+   if(!formData.bankName) newErrors.bankName="Please enter bank name."
+   if(!formData.ifscCode) newErrors.ifscCode="Please enter ifsc code."
+   if(!formData.bankAcctNo) newErrors.bankAcctNo="Please enter account number."
    setErrors(newErrors)
 
    return Object.keys(newErrors).length===0
@@ -96,20 +111,26 @@ export default function AddNewEmp() {
       setImageFile(null)
       setPreviewImage(null)
       setFormData({
-        password:'',
-        userId:1,
-        username:'',
-        firstName:'',
-        lastName:'',
-        gender:'',
-        dob:'',
-        panCard:'',
-        email:'',
-        phoneNumber:'',
-        roleId:2,
-        createdBy:1,
-        joiningDate:'',
-        id:0
+        password: "",
+        userID: 0,
+        username: "",
+        firstName: "",
+        lastName: "",
+        gender: "",
+        dob: "",
+        panCard: "",
+        email: "",
+        phoneNumber: "",
+        roleID: 0,
+        joiningdate: "",
+        designation: "",
+        reportingTo: 2,
+        pfno: "",
+        uan: "",
+        bankName: "",
+        ifscCode: "",
+        bankAcctNo: "",
+        headQuater: ""
       })
       toast.success("New Emplyee added.")
     }catch(err){
@@ -190,15 +211,56 @@ export default function AddNewEmp() {
              {errors.gender && <span className='text-sm text-red-400'>{errors.gender}</span>}
          </div>
          <div className='flex flex-col gap-2'>
-             <label htmlFor='joiningDate' className='font-medium text-gray-700'>Joining Date <span className='text-red-500'>*</span></label>
-             <input name='joiningDate' onChange={handleChange} type='date' value={formData.joiningDate} id='joiningDate' className='p-2 outline-none border-b-2 border-gray-200'></input>
-             {errors.joiningDate && <span className='text-sm text-red-400'>{errors.joiningDate}</span>}
+             <label htmlFor='joiningdate' className='font-medium text-gray-700'>Joining Date <span className='text-red-500'>*</span></label>
+             <input name='joiningdate' onChange={handleChange} type='date' value={formData.joiningdate} id='joiningdate' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.joiningdate && <span className='text-sm text-red-400'>{errors.joiningdate}</span>}
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='panCard' className='font-medium text-gray-700'>Pancard <span className='text-red-500'>*</span></label>
              <input name='panCard' onChange={handleChange} type='text' value={formData.panCard} placeholder='Ex. AFZPK7190K' id='panCard' className='p-2 outline-none border-b-2 border-gray-200'></input>
              {errors.panCard && <span className='text-sm text-red-400'>{errors.panCard}</span>}
          </div>
+         <div className='flex flex-col gap-2'>
+             <label htmlFor='designation' className='font-medium text-gray-700'>Designation <span className='text-red-500'>*</span></label>
+             <input name='designation' onChange={handleChange} type='text' value={formData.designation} placeholder='Ex. Manager' id='designation' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.designation && <span className='text-sm text-red-400'>{errors.designation}</span>}
+         </div>
+         <div className='flex flex-col gap-2'>
+             <label htmlFor='pfno' className='font-medium text-gray-700'>Provident Fund <span className='text-red-500'>*</span></label>
+             <input name='pfno' onChange={handleChange} type='text' value={formData.pfno} placeholder='Ex. 1 Cr' id='pfno' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.pfno && <span className='text-sm text-red-400'>{errors.pfno}</span>}
+         </div>
+         <div className='flex flex-col gap-2'>
+             <label htmlFor='uan' className='font-medium text-gray-700'>Universal Account Number <span className='text-red-500'>*</span></label>
+             <input name='uan' onChange={handleChange} type='text' value={formData.uan} placeholder='Ex. 1000 2625 5142' id='uan' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.uan && <span className='text-sm text-red-400'>{errors.uan}</span>}
+         </div>
+         <div className='flex flex-col gap-2'>
+             <label htmlFor='headQuater' className='font-medium text-gray-700'>Headquater <span className='text-red-500'>*</span></label>
+             <input name='headQuater' onChange={handleChange} type='text' value={formData.headQuater} placeholder='Ex. Mumbai' id='headQuater' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.headQuater && <span className='text-sm text-red-400'>{errors.headQuater}</span>}
+         </div>
+
+         <div className='md:col-span-2'>
+             <h1 className='text-lg font-smibold'>Employee Bank Details</h1>
+         </div>
+
+         <div className='flex flex-col gap-2'>
+             <label htmlFor='bankName' className='font-medium text-gray-700'>Bank Name <span className='text-red-500'>*</span></label>
+             <input name='bankName' onChange={handleChange} type='text' value={formData.bankName} placeholder='Ex. STATE BANK OF INDIA' id='bankName' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.bankName && <span className='text-sm text-red-400'>{errors.bankName}</span>}
+         </div>
+         <div className='flex flex-col gap-2'>
+             <label htmlFor='ifscCode' className='font-medium text-gray-700'>IFSC Code <span className='text-red-500'>*</span></label>
+             <input name='ifscCode' onChange={handleChange} type='text' value={formData.ifscCode} placeholder='Ex. KKBK0000123' id='ifscCode' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.ifscCode && <span className='text-sm text-red-400'>{errors.ifscCode}</span>}
+         </div>
+         <div className='flex flex-col gap-2'>
+             <label htmlFor='bankAcctNo' className='font-medium text-gray-700'>Account No <span className='text-red-500'>*</span></label>
+             <input name='bankAcctNo' onChange={handleChange} type='text' value={formData.bankAcctNo} placeholder='Ex. 1234567000' id='bankAcctNo' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {errors.bankAcctNo && <span className='text-sm text-red-400'>{errors.bankAcctNo}</span>}
+         </div>
+
 
       </div>
      </div>
