@@ -117,7 +117,7 @@ function Leave() {
       case "approve":
         return activeCounts > 0 ? (
           leaves
-            .filter((leave) => leave.leaveStatus == "Approved")
+            .filter((leave) => leave.leaveStatus === "Approved")
             .map((item, index) => (
               <div
                 key={index}

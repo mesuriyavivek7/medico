@@ -15,8 +15,6 @@ function AddLeave() {
     comments:"",
   })
 
-  console.log(formData)
-
   const [errors,setErrors] = useState({})
 
   const handleSubmit = async () =>{

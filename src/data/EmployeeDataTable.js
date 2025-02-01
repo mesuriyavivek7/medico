@@ -1,5 +1,6 @@
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'; 
 import api from '../api';
 
 
@@ -10,7 +11,7 @@ const formateDate = (dateString)=>{
   return date.toLocaleDateString('en-US', options).replace(',', '');
 }
 
-export const columns = (handleNavigateToEdit)=>[
+export const columns = (handleNavigateToEdit,handleNavigateToPreview)=>[
   {
     field: 'srno',
     headerClassName: 'super-app-theme--header',
@@ -107,6 +108,9 @@ export const columns = (handleNavigateToEdit)=>[
         </button>
         <button className="bg-red-500 md:text-base text-sm hover:bg-red-600 flex justify-center items-center rounded-md text-white md:w-10 w-12 h-6 md:h-7">
           <DeleteOutlineOutlinedIcon style={{fontSize:'1.2rem'}}></DeleteOutlineOutlinedIcon>
+        </button>
+        <button onClick={()=>handleNavigateToPreview(params.row)} className='bg-orange-500 md:text-base text-sm hover:bg-orange-600 flex justify-center items-center rounded-md text-white md:w-10 w-12 h-6 md:h-7'>
+          <RemoveRedEyeOutlinedIcon style={{fontSize:'1.2rem'}}></RemoveRedEyeOutlinedIcon>
         </button>
       </div>
     ),

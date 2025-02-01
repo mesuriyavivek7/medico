@@ -76,7 +76,7 @@ export default function Login() {
         }
       } catch (err) {
         console.log(err);
-        toast.error(err.response.data)
+        toast.error("Username or Password is incorrect.")
       } finally {
         setLoading(false);
       }

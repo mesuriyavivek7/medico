@@ -11,6 +11,7 @@ import { columns, fetchAllUsers } from '../data/EmployeeDataTable';
 import SearchIcon from '@mui/icons-material/Search';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 
+
 export default function Employee() {
   const [searchQuery,setSearchQuery] = useState('')
   const [filteredData,setFilteredData] = useState([])
@@ -47,6 +48,10 @@ export default function Employee() {
     fetchData()
   },[])
 
+  const handleNavigateToPreview = (data) =>{
+    navigate('preview',{state:data})
+  }
+
   return (
     <div className='flex h-full flex-col gap-3 md:gap-4'>
        <div className='bg-white custom-shadow rounded-md md:py-4 py-3 px-3 flex items-center justify-between'>
@@ -67,7 +72,7 @@ export default function Employee() {
           },}}>
            <DataGrid
             rows={filteredData}
-            columns={columns(handleNavigateToEdit)}
+            columns={columns(handleNavigateToEdit,handleNavigateToPreview)}
             loading={loader}
             initialState={{
             pagination: {
