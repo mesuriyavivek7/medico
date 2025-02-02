@@ -182,7 +182,7 @@ export default function Chemist() {
        <div className="fixed z-50 flex justify-center items-center inset-0 bg-black/50">
         <div className="bg-white w-96 rounded-md p-4 flex flex-col">
           <h1 className="font-medium text-lg">Confirmation</h1>
-          <span>Are you sure to remove this leave?</span>
+          <span>Are you sure to remove this chemist?</span>
           <div className="w-full mt-4 flex place-content-end gap-2">
              <button onClick={handleCloseConfirmPopUp} className="font-medium text-white rounded-md p-1 w-20 bg-blue-500 hover:bg-blue-600">Cancel</button>
              <button onClick={handleRemoveChemist} className="font-medium text-white rounded-md p-1 w-20 bg-red-500 hover:bg-red-600">Remove</button>

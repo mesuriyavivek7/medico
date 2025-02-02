@@ -21,6 +21,10 @@ function EditEmp() {
 
   const [errors, setErrors] = useState({});
 
+
+  const [designation,setDesignation] = useState([])
+  const [reporting,setReporting] = useState([])
+
   useEffect(() => {
     if (!location.state) {
       navigate("/admin/employee");
@@ -51,7 +55,7 @@ function EditEmp() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setFormData((prevData) => ({ ...prevData, [name]: name==="reportingTo"?parseInt(value):value }));
   };
 
   const validateData = () => {
@@ -79,6 +83,7 @@ function EditEmp() {
     if(!formData.bankName) newErrors.bankName="Please enter bank name."
     if(!formData.ifscCode) newErrors.ifscCode="Please enter ifsc code."
     if(!formData.bankAcctNo) newErrors.bankAcctNo="Please enter account number."
+    if(!formData.reportingTo) newErrors.reportingTo="Please select reporting to."
     setErrors(newErrors);
 
     return Object.keys(newErrors).length === 0;
@@ -135,7 +140,8 @@ function EditEmp() {
             bankName,
             ifscCode,
             bankAcctNo,
-            headQuater
+            headQuater,
+            reportingTo
           },
         );
         setImageFile(null);
@@ -151,6 +157,27 @@ function EditEmp() {
       }
     }
   };
+
+  useEffect(()=>{
+    
+    const fetchDropDownData = async () => {
+      try {
+        const [designationRes, reportingRes] = await Promise.all([
+          api.get('/User/Designation'),
+          api.get('/User/GetReportingTo')
+        ]);
+        setDesignation(designationRes.data.data);
+        setReporting(reportingRes.data.data);
+      } catch (err) {
+        console.error(err);
+        toast.error("Error fetching data.");
+      }
+    };
+
+    fetchDropDownData();
+
+  },[])
+
 
   return (
     <div className="flex h-full flex-col gap-3 md:gap-4">
@@ -367,15 +394,14 @@ function EditEmp() {
             <label htmlFor="designation" className="font-medium text-gray-700">
               Designation <span className="text-red-500">*</span>
             </label>
-            <input
-              name="designation"
-              onChange={handleChange}
-              type="text"
-              value={formData.designation}
-              placeholder="Ex. Manager"
-              id="designation"
-              className="p-2 outline-none border-b-2 border-gray-200"
-            ></input>
+            <select name='designation' onChange={handleChange}  value={formData.designation} id='designation' className='p-2 outline-none border-2 border-gray-200'>
+               <option value="">--- Select Designation ---</option>
+               {
+                 designation.map((item,index)=>(
+                  <option key={index} value={item.codeID}>{item.codeName}</option>
+                 ))
+               }
+             </select>
             {errors.designation && (
               <span className="text-sm text-red-400">{errors.designation}</span>
             )}
@@ -431,6 +457,20 @@ function EditEmp() {
               <span className="text-sm text-red-400">{errors.headQuater}</span>
             )}
           </div>
+
+          <div className='flex flex-col gap-2'>
+           <label htmlFor='reportingTo' className='font-medium text-gray-700'>Reporting To <span className='text-red-500'>*</span></label>
+           <select className='p-2 outline-none border-2 border-gray-200'  name='reportingTo' onChange={handleChange} value={formData.reportingTo}>
+              <option value={''}>--- Select Reporting To ---</option>
+              {
+                reporting.map((item,index)=>(
+                  <option key={index} value={item.codeID}>{item.codeName}</option>
+                ))
+              }
+           </select>
+           {errors.reportingTo && <span className='text-sm text-red-400'>{errors.reportingTo}</span>}
+         </div>
+
           <div className='md:col-span-2'>
              <h1 className='text-lg font-smibold'>Employee Bank Details</h1>
          </div>

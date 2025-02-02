@@ -50,7 +50,8 @@ const Place = ({place, index, endPoint, removePlace, movePlace}) =>{
 
 
 function AddStourPlan() {
-
+ 
+  const [tourPlanName,setTourPlanName] = useState('')
   const [places,setPlaces] = useState([])
 
   const movePlace = (fromIndex, toIndex) => {
@@ -67,6 +68,11 @@ function AddStourPlan() {
   const [newPlace,setNewPlace] = useState('')
 
   const addNewPlace = () =>{
+    if(!newPlace){
+      toast.error("Please enter place value.")
+      return
+    }
+
     if(places.includes(newPlace)){
       toast.warning("Place is already added.")
       return 
@@ -86,6 +92,10 @@ function AddStourPlan() {
         </div>
      </div>
      <div className='bg-white overflow-scroll h-full custom-shadow flex flex-col gap-4 rounded-md md:py-4 py-3 px-3 md:px-4'>
+        <div className='flex flex-col mb-1 gap-2'>
+           <label htmlFor='tourName' className='font-bold'>Tour Plan Name <span className='text-red-500'>*</span></label>
+           <input onChange={(e)=>setTourPlanName(e.target.value)} value={tourPlanName} type='text' name='tourPlanName' id='tourName' className='border outline-none w-1/4 py-1.5 px-2 rounded-md' placeholder='Enter Tour Name'></input>
+        </div>
         <div className='flex items-center gap-3'>
             <span className='text-themeblue'><PlaceOutlinedIcon style={{fontSize:'2.2rem'}}></PlaceOutlinedIcon></span>
             <h1 className='text-xl font-bold tracking-wide'>Places Visited Today</h1>

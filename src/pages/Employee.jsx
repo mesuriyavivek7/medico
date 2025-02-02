@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import { toast } from 'react-toastify';
+import api from '../api';
 
 //importing data
 import { columns, fetchAllUsers } from '../data/EmployeeDataTable';
@@ -18,6 +19,9 @@ export default function Employee() {
   const navigate = useNavigate()
   const [users,setUsers] = useState([])
   const [loader,setLoader] = useState(false)
+
+  const [openConfirmPopUp,setOpenConfirmPopUp] = useState(false)
+  const [selectedId , setSelectedId] = useState(null)
 
   const fetchData = async ()=>{
     setLoader(true)
@@ -52,7 +56,46 @@ export default function Employee() {
     navigate('preview',{state:data})
   }
 
+  const handleOpenConfirmPopUp = (data) =>{
+    setSelectedId(data.id)
+    setOpenConfirmPopUp(true)
+  }
+
+  const handleCloseConfirmPopUp = () =>{
+    setSelectedId(null)
+    setOpenConfirmPopUp(false)
+  }
+
+  const handleRemoveEmployee = async () =>{
+    if(selectedId){
+      try{
+        await api.delete(`/User/${selectedId}`)
+        fetchData()
+        handleCloseConfirmPopUp()
+        toast.success("Employee deleted successfully.")
+      }catch(err){
+        console.log(err)
+        toast.error(err?.response?.data?.message || "Something went wrong.")
+      }
+    }
+  }
+
   return (
+  <>
+     {
+      openConfirmPopUp && (
+       <div className="fixed z-50 flex justify-center items-center inset-0 bg-black/50">
+        <div className="bg-white w-96 rounded-md p-4 flex flex-col">
+          <h1 className="font-medium text-lg">Confirmation</h1>
+          <span>Are you sure to remove this employee?</span>
+          <div className="w-full mt-4 flex place-content-end gap-2">
+             <button onClick={handleCloseConfirmPopUp} className="font-medium text-white rounded-md p-1 w-20 bg-blue-500 hover:bg-blue-600">Cancel</button>
+             <button onClick={handleRemoveEmployee} className="font-medium text-white rounded-md p-1 w-20 bg-red-500 hover:bg-red-600">Remove</button>
+          </div>
+         </div>
+       </div>
+      )
+     }
     <div className='flex h-full flex-col gap-3 md:gap-4'>
        <div className='bg-white custom-shadow rounded-md md:py-4 py-3 px-3 flex items-center justify-between'>
          <h1 className='text-gray-600 text-base md:text-lg font-medium'>Employee Details</h1>
@@ -72,7 +115,7 @@ export default function Employee() {
           },}}>
            <DataGrid
             rows={filteredData}
-            columns={columns(handleNavigateToEdit,handleNavigateToPreview)}
+            columns={columns(handleNavigateToEdit,handleOpenConfirmPopUp,handleNavigateToPreview)}
             loading={loader}
             initialState={{
             pagination: {
@@ -87,5 +130,6 @@ export default function Employee() {
          </Box>
        </div>
     </div>
+  </>
   )
 }

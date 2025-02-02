@@ -14,6 +14,7 @@ import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import { LoaderCircle } from 'lucide-react';
 import CloseIcon from '@mui/icons-material/Close';
 import api from '../api'
 
@@ -108,14 +109,114 @@ export default function Profile() {
 
   //Bank details
   const [bankDetails, setBankDetails] = useState({
-    acholdername:'',
     bankName:'',
     bankAcctNo:'',
     ifscCode:'',
   })
 
+  const [bankErrors,setBankErrors] = useState({})
+
+  const [bankLoader,setBankLoader] = useState(false)
+
+  const validateBankDetails = () =>{
+     let newErrors = {}
+
+     if(!bankDetails.bankAcctNo) newErrors.bankAcctNo="Bank account no is required."
+     if(!bankDetails.bankName) newErrors.bankName="Bank name is required."
+     if(!bankDetails.ifscCode) newErrors.ifscCode="Ifsc code is required."
+  
+     setBankErrors(newErrors)
+     
+     return Object.keys(newErrors).length===0
+  } 
+
+  useEffect(()=>{
+    setBankDetails({
+      bankName:formData?.bankName,
+      bankAcctNo:formData?.bankAcctNo,
+      ifscCode:formData?.ifscCode
+    })
+  },[formData])
+
+  const handleChangeBankDetails = (e) =>{
+    const {name, value} = e.target
+    setBankDetails((prevData)=>({...prevData,[name]:value}))
+  }
+
   const handleCloseBankPopUp = () =>{
     setBankEditPopUp(false)
+  }
+
+  const handleUpdateBankDetails = async (e) =>{
+   e.preventDefault()
+   if(validateBankDetails()){
+    try{
+      setBankLoader(true)
+      await api.put(`/User/${formData.id}`,bankDetails)
+      fetchUserData()
+      handleCloseBankPopUp()
+      toast.success("Bank details updated.")
+    }catch(err){
+      console.log(err)
+      toast.error("Something went wrong.")
+    } finally{
+      setBankLoader(false)
+    }
+   }
+  }
+
+  //Change Password
+  const [passwordData,setPasswordData] = useState({
+    currentPassword:"",
+    newPassword:"",
+    confirmPassword:"",
+  })
+
+  const [showCuurrentPassword,setShowCurrentPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+
+  const [loading,setLoading] = useState(false)
+  const [passwordErrors,setPasswordErrors] = useState({})
+
+  const handleChangePassword = (e) =>{
+    const {name, value} = e.target
+    setPasswordData((prevData)=>({...prevData,[name]:value}))
+  }
+
+  const handleValidatePasswordData = () =>{
+    let newErrors = {}
+
+    if(!passwordData.currentPassword) newErrors.currentPassword="Current password is required."
+    if(!passwordData.newPassword) newErrors.newPassword="New password is required."
+    if(!passwordData.confirmPassword) newErrors.confirmPassword="Confirm password is required."
+    if(passwordData.confirmPassword!==passwordData.newPassword) newErrors.confirmPassword="Confirm password is not matched with current password."
+
+    setPasswordErrors(newErrors)
+    return Object.keys(newErrors).length===0
+  } 
+
+  const handleUpdatePassword = async (e) =>{
+      console.log('change value')
+      e.preventDefault()
+      if(handleValidatePasswordData()){
+        try{
+          setLoading(true)
+          const {confirmPassword, ...otherDetails} = passwordData
+          await api.post('/User/UpdatePass',otherDetails)
+          setPasswordData({
+            currentPassword:"",
+            newPassword:"",
+            confirmPassword:"",
+          })
+          toast.success("Password is changed successfully")
+        }catch(err){
+          console.log(err)
+          toast.error("Something went wrong")
+        } finally{
+          setLoading(false)
+        }
+      }
   }
 
 
@@ -201,18 +302,30 @@ export default function Profile() {
         return (
           <div className='w-full rounded-md custom-shadow bg-white p-4 px-6 flex flex-col gap-6'>
              <h1 className='font-semibold text-lg'>Change Password</h1>
-             <form className='flex flex-col gap-4'>
+             <form onSubmit={handleUpdatePassword} className='flex flex-col gap-4'>
                 <div className='flex flex-col gap-2'>
-                   <label>Current Password</label>
-                   <input type='password' className='p-2 border outline-none rounded-md '></input>
+                   <label htmlFor='currentPassword'>Current Password <span className='text-red-500'>*</span></label>
+                   <div className='relative flex flex-col gap-1'>
+                     <input onChange={handleChangePassword} id='currentPassword' name='currentPassword' value={passwordData.currentPassword} type={showCuurrentPassword?"text":"password"} className='p-2 border outline-none rounded-md '></input>
+                     <span className='absolute right-2 top-2'><RemoveRedEyeOutlinedIcon></RemoveRedEyeOutlinedIcon></span>
+                     {passwordErrors.currentPassword && <span className='text-red-500 text-sm'>{passwordErrors.currentPassword}</span>}
+                   </div>
                 </div>
                 <div className='flex flex-col gap-2'>
-                   <label>New Password</label>
-                   <input type='password' className='p-2 border outline-none rounded-md '></input>
+                   <label htmlFor='newPassword'>New Password <span className='text-red-500'>*</span></label>
+                   <div className='relative flex flex-col gap-1'>
+                    <input onChange={handleChangePassword} id='newPassword' name='newPassword' value={passwordData.newPassword} type={showNewPassword?"text":"password"} className='p-2 border outline-none rounded-md '></input>
+                    <span className='absolute right-2 top-2'><RemoveRedEyeOutlinedIcon></RemoveRedEyeOutlinedIcon></span>
+                    {passwordErrors.newPassword && <span className='text-red-500 text-sm'>{passwordErrors.newPassword}</span>}
+                   </div>
                 </div>
                 <div className='flex flex-col gap-2'>
-                   <label>Confirm Password</label>
-                   <input type='password' className='p-2 border outline-none rounded-md '></input>
+                   <label htmlFor='confirmPassword'>Confirm Password <span className='text-red-500'>*</span></label>
+                   <div className='relative flex flex-col gap-1'>
+                     <input onChange={handleChangePassword} id='confirmPassword' name='confirmPassword' value={passwordData.confirmPassword} type={showConfirmPassword?"text":"password"} className='p-2 border outline-none rounded-md '></input>
+                     <span className='absolute right-2 top-2'><RemoveRedEyeOutlinedIcon></RemoveRedEyeOutlinedIcon></span>
+                     {passwordErrors.confirmPassword && <span className='text-red-500 text-sm'>{passwordErrors.confirmPassword}</span>}
+                   </div>
                 </div>
                 <div className='flex place-content-end'>
                    <button type='submit' className='p-2 bg-themeblue text-white font-medium rounded-md flex justify-center items-center w-36 hover:bg-blue-800 transition-colors duration-300'>Submit</button>
@@ -233,20 +346,16 @@ export default function Profile() {
                </div>
                <div className='grid grid-cols-2 gap-6 p-4 px-6'>
                   <div className='flex flex-col gap-1'>
-                     <label htmlFor='acholdername'>Account Holder Name</label>
-                     <input id='acholdername' name='acholdername' value={bankDetails.acholdername} type='text' className='p-2 outline-none border rounded-md'></input>
-                  </div>
-                  <div className='flex flex-col gap-1'>
                      <label htmlFor='bankName'>Bank Name</label>
-                     <input type='text' id='bankName' name='bankName' value={bankDetails.bankName} className='p-2 outline-none border rounded-md'></input>
+                     <input readOnly type='text' id='bankName' name='bankName' value={formData.bankName || "Not Available"} className='p-2 outline-none border rounded-md'></input>
                   </div>
                   <div className='flex flex-col gap-1'>
                      <label htmlFor='ifscCode'>IFSC Code</label>
-                     <input type='text' id='ifscCode' name='ifscCode' value={bankDetails.ifscCode} className='p-2 outline-none border rounded-md'></input>
+                     <input readOnly type='text' id='ifscCode' name='ifscCode' value={formData.ifscCode || "Not Available"} className='p-2 outline-none border rounded-md'></input>
                   </div>
                   <div className='flex flex-col gap-1'>
                      <label htmlFor='bankAcctNo'>Account No</label>
-                     <input type='text' id='bankAcctNo' name='bankAcctNo' value={bankDetails.bankAcctNo} className='p-2 outline-none border rounded-md'></input>
+                     <input readOnly type='text' id='bankAcctNo' name='bankAcctNo' value={formData.bankAcctNo || "Not Available"} className='p-2 outline-none border rounded-md'></input>
                   </div>
                </div>
             </div>
@@ -339,29 +448,33 @@ export default function Profile() {
                <span onClick={handleCloseBankPopUp} className='bg-gray-500 cursor-pointer w-5 transition-colors h-5 flex justify-center items-center hover:bg-red-500 text-white rounded-full'><CloseIcon style={{fontSize:'.9rem'}}></CloseIcon></span>
              </div>
              <div className='px-4 py-4'>
-               <form className='flex flex-col gap-4'>
+               <form onSubmit={handleUpdateBankDetails} className='flex flex-col gap-4'>
                  <div className='flex flex-col gap-1'>
-                    <label className='font-medium' htmlFor='username'>Account Holder Name <span className='text-sm text-red-500'>*</span></label>
-                    <input name='username' onChange={handleChangeUpdateData} className='outline-none border py-1 px-1.5' value={bankDetails.acholdername} type='text' id='username' placeholder='Ex. Enter placeholder name'></input>
-                    {errors.username && <span className='text-sm text-red-500'>{errors.username}</span>}
+                    <label className='font-medium' htmlFor='bankName'>Bank Name <span className='text-sm text-red-500'>*</span></label>
+                    <input name='bankName' onChange={handleChangeBankDetails} className='outline-none border py-1 px-1.5' value={bankDetails.bankName} type='text' id='bankName' placeholder='Ex. Enter bank name'></input>
+                    {bankErrors.bankName && <span className='text-sm text-red-500'>{bankErrors.bankName}</span>}
                  </div>
                  <div className='flex flex-col gap-1'>
-                    <label className='font-medium' htmlFor='username'>Bank Name <span className='text-sm text-red-500'>*</span></label>
-                    <input name='username' onChange={handleChangeUpdateData} className='outline-none border py-1 px-1.5' value={bankDetails.bankName} type='text' id='username' placeholder='Ex. Enter bank name'></input>
-                    {errors.username && <span className='text-sm text-red-500'>{errors.username}</span>}
+                    <label className='font-medium' htmlFor='ifscCode'>IFSC Code <span className='text-sm text-red-500'>*</span></label>
+                    <input name='ifscCode' onChange={handleChangeBankDetails} className='outline-none border py-1 px-1.5' value={bankDetails.ifscCode} type='text' id='ifscCode' placeholder='Ex. Enter Ifsc code'></input>
+                    {bankErrors.ifscCode && <span className='text-sm text-red-500'>{bankErrors.ifscCode}</span>}
                  </div>
                  <div className='flex flex-col gap-1'>
-                    <label className='font-medium' htmlFor='username'>IFSC Code <span className='text-sm text-red-500'>*</span></label>
-                    <input name='username' onChange={handleChangeUpdateData} className='outline-none border py-1 px-1.5' value={bankDetails.ifscCode} type='text' id='username' placeholder='Ex. Enter Ifsc code'></input>
-                    {errors.username && <span className='text-sm text-red-500'>{errors.username}</span>}
+                    <label className='font-medium' htmlFor='bankAcctNo'>Account No <span className='text-sm text-red-500'>*</span></label>
+                    <input name='bankAcctNo' onChange={handleChangeBankDetails} className='outline-none border py-1 px-1.5' value={bankDetails.bankAcctNo} type='text' id='bankAcctNo' placeholder='Ex. Enter account no'></input>
+                    {bankErrors.bankAcctNo && <span className='text-sm text-red-500'>{bankErrors.bankAcctNo}</span>}
                  </div>
-                 <div className='flex flex-col gap-1'>
-                    <label className='font-medium' htmlFor='username'>Account No <span className='text-sm text-red-500'>*</span></label>
-                    <input name='username' onChange={handleChangeUpdateData} className='outline-none border py-1 px-1.5' value={bankDetails.bankAcctNo} type='text' id='username' placeholder='Ex. Enter account no'></input>
-                    {errors.username && <span className='text-sm text-red-500'>{errors.username}</span>}
-                 </div>
-                 <button type='button' className='text-white mt-1 p-2 bg-themeblue'>
-                   Submit
+                 <button disabled={bankLoader} type='submit' className='text-white flex justify-center mt-1 p-2 bg-themeblue'>
+                   {
+                    bankLoader ? (
+                      <div className='flex justify-center items-center gap-2'>
+                        <span><LoaderCircle className='animate-spin'></LoaderCircle></span>
+                        <span>Loading...</span>
+                      </div>
+                    ) : (
+                      <span>Submit</span>
+                    )
+                   }
                  </button>
                </form>
              </div>
