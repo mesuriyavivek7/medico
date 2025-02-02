@@ -2,11 +2,15 @@ import React, {useState, useEffect} from 'react'
 import IMG1 from "../assets/asset5.png";
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import api from '../api';
+import { toast } from 'react-toastify'
 
 function PreviewEmp() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+
+  const [designation,setDesignation] = useState([])
+  const [reporting,setReporting] = useState([])
 
   const [formData, setFormData] = useState({});
 
@@ -17,7 +21,34 @@ function PreviewEmp() {
     setFormData(location.state);
   }, []);
 
-  console.log(formData)
+
+   useEffect(()=>{
+      const fetchDesignationData = async () =>{
+         try{
+           const response = await api.get('/User/Designation')
+           console.log(response.data.data)
+           setDesignation(response.data.data)
+         }catch(err){
+          console.log(err)
+          toast.error("Something went wrong.")
+         }
+      }
+    
+      const fetchReportingValue = async () =>{
+        try{
+          const response = await api.get('/User/GetReportingTo')
+          console.log(response.data.data)
+          setReporting(response.data.data)
+        }catch(err){
+          console.log(err)
+          toast.error("Something went wrong.")
+        }
+      }
+  
+      fetchDesignationData()
+      fetchReportingValue()
+  },[])
+
 
   return (
     <div className="flex h-full flex-col gap-3 md:gap-4">
@@ -82,7 +113,7 @@ function PreviewEmp() {
              </div>
              <div className='flex flex-col gap-2'>
                    <span className='font-medium text-gray-700 text-lg'>Designation </span>
-                   <span className='h-10 px-2 flex items-center border'>{formData.designation || "Not Available"}</span>
+                   <span className='h-10 px-2 flex items-center border'>{designation.find((item)=> item.codeID==formData.designation)?.codeName || "Not Available"}</span>
              </div>
              <div className='flex flex-col gap-2'>
                    <span className='font-medium text-gray-700 text-lg'> Provident Fund </span>
@@ -95,6 +126,10 @@ function PreviewEmp() {
              <div className='flex flex-col gap-2'>
                    <span className='font-medium text-gray-700 text-lg'> Headquater </span>
                    <span className='h-10 px-2 flex items-center border'>{formData.headQuater || "Not Available"}</span>
+             </div>
+             <div className='flex flex-col gap-2'>
+                   <span className='font-medium text-gray-700 text-lg'> Reporting To </span>
+                   <span className='h-10 px-2 flex items-center border'>{reporting.find((item)=> item.codeID==formData.reportingTo)?.codeName || "Not Available"}</span>
              </div>
              <div className='md:col-span-2'>
                <h1 className='text-lg font-bold'>Bank Details</h1>

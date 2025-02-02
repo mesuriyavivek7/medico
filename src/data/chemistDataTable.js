@@ -12,13 +12,13 @@ const formateDate = (dateString)=>{
   
 
 export const columns = (handleOpenUpdateData,handleOpenConfirmPopUp) => [
-    {
-        field: 'id',
-        headerClassName: 'super-app-theme--header',
-        headerName: 'Sr No.',
-        flex: 0.5, // Proportional width
-        minWidth: 80, // Minimum width to prevent shrinking
-    },
+    // {
+    //     field: 'id',
+    //     headerClassName: 'super-app-theme--header',
+    //     headerName: 'Sr No.',
+    //     flex: 0.5, // Proportional width
+    //     minWidth: 80, // Minimum width to prevent shrinking
+    // },
     {
         field: 'chemistName',
         headerClassName: 'super-app-theme--header',
