@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import { useSelector } from 'react-redux';
 
 //Importing icons
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -15,6 +16,7 @@ import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import api from '../api';
 
 export default function AddNewEmp() {
+  const { user } = useSelector((state) => state.auth);
   const [loading,setLoading] = useState(false)
   const [previewImage,setPreviewImage] = useState(null)
   const [imageFile,setImageFile] = useState(null)
@@ -173,7 +175,7 @@ export default function AddNewEmp() {
     <div className='flex h-full flex-col gap-3 md:gap-4'>
        <div className='bg-white custom-shadow rounded-md md:py-4 py-3 px-3 md:px-4 flex items-center justify-between'>
         <div className='flex items-center gap-2'>
-           <Link to={'/admin/employee'}><span className='text-gray-600 cursor-pointer'><ArrowBackIosIcon style={{fontSize:'1.4rem'}}></ArrowBackIosIcon></span></Link>
+           <Link to={user.isAdmin?'/admin/employee':"/employee/user"}><span className='text-gray-600 cursor-pointer'><ArrowBackIosIcon style={{fontSize:'1.4rem'}}></ArrowBackIosIcon></span></Link>
            <h1 className='text-gray-800 text-base md:text-lg font-medium'>Add New Employee</h1>
         </div>
       </div>

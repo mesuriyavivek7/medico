@@ -15,13 +15,19 @@ import Dashboard from "./components/Admin/Dashboard";
 import PendingLeaves from "./pages/PendingLeaves";
 import MyTeam from "./pages/MyTeam";
 import StourPlan from "./pages/StourPlan";
+import MTP from "./pages/MTP";
+import AddMtp from "./pages/AddMtp";
 import PreviewEmp from "./pages/PreviewEmp";
+import PendingStp from "./pages/PendingStp";
+import PendingMtp from "./pages/PendingMtp";
 
 //Importing General Components
 import MyDashboard from "./pages/MyDashboard";
 import Doctors from "./pages/Doctors";
 import AddNewDoc from "./pages/AddNewDoc";
 import Chemist from "./pages/Chemist";
+import ChemistMapping from "./pages/ChemistMapping";
+import DoctorMapping from "./pages/DoctorMapping";
 import AddNewChemist from "./pages/AddNewChemist";
 import Employee from "./pages/Employee";
 import AddNewEmp from "./pages/AddNewEmp";
@@ -40,8 +46,9 @@ const ProtectedRoute = ({ children , requiredRole }) => {
   if (!user) {
     return <Navigate to="/" />;
   }
-
+  console.log(requiredRole)
   if (!user.isAdmin && requiredRole==="admin") {
+    console.log("you are not employee")
     return <Navigate to='/employee/dashboard'></Navigate>
   }
 
@@ -133,7 +140,7 @@ function App() {
             )
           },
           {
-            path:'chemist',
+            path:'chemists',
             element:(
               <ProtectedRoute requiredRole="admin">
                 <Chemist></Chemist>
@@ -141,7 +148,7 @@ function App() {
             )
           },
           {
-            path:'chemist/addnew',
+            path:'chemists/addnew',
             element:(
               <ProtectedRoute requiredRole="admin">
                 <AddNewChemist></AddNewChemist>
@@ -205,7 +212,7 @@ function App() {
             )
           },
           {
-            path:'pendingonme',
+            path:'pendingleaves',
             element:(
               <ProtectedRoute requiredRole="admin">
                 <PendingLeaves></PendingLeaves>
@@ -221,7 +228,7 @@ function App() {
             )
           },
           {
-            path:'tourplan',
+            path:'stpplan',
             element:(
               <ProtectedRoute requiredRole="admin">
                 <StourPlan></StourPlan>
@@ -229,13 +236,61 @@ function App() {
             )
           },
           {
-            path:'tourplan/add',
+            path:'stpplan/add',
             element:(
               <ProtectedRoute requiredRole="admin">
                 <AddStourPlan></AddStourPlan>
               </ProtectedRoute>
             )
           },
+          {
+            path:'pendingstp',
+            element:(
+              <ProtectedRoute requiredRole="admin">
+                <PendingStp></PendingStp>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'mtpplan',
+            element:(
+              <ProtectedRoute requiredRole="admin">
+                <MTP></MTP>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'mtpplan/add',
+            element:(
+              <ProtectedRoute requiredRole="admin">
+                <AddMtp></AddMtp>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'pendingmtp',
+            element:(
+              <ProtectedRoute requiredRole="admin">
+                <PendingMtp></PendingMtp>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'chemistmapping',
+            element:(
+              <ProtectedRoute requiredRole='admin'>
+                <ChemistMapping></ChemistMapping>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:"doctormapping",
+            element:(
+              <ProtectedRoute requiredRole='admin'>
+                <DoctorMapping></DoctorMapping>
+              </ProtectedRoute>
+            )
+          }
         ]
       },
       {
@@ -271,7 +326,7 @@ function App() {
             )
           },
           {
-            path:'chemist',
+            path:'chemists',
             element:(
               <ProtectedRoute requiredRole="employee">
                 <Chemist></Chemist>
@@ -279,7 +334,7 @@ function App() {
             )
           },
           {
-            path:'chemist/addnew',
+            path:'chemists/addnew',
             element:(
               <ProtectedRoute requiredRole="employee">
                 <AddNewChemist></AddNewChemist>
@@ -311,6 +366,14 @@ function App() {
             )
           },
           {
+            path:'user/preview',
+            element:(
+            <ProtectedRoute requiredRole="admin">
+              <PreviewEmp></PreviewEmp>
+             </ProtectedRoute>
+            )
+          },
+          {
             path:'profile',
             element:(
               <ProtectedRoute requiredRole="employee">
@@ -331,6 +394,38 @@ function App() {
             element:(
               <ProtectedRoute requiredRole="employee">
                 <AddLeave></AddLeave>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'stpplan',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <StourPlan></StourPlan>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'stpplan/add',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <AddStourPlan></AddStourPlan>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'mtpplan',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <MTP></MTP>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'mtpplan/add',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <AddMtp></AddMtp>
               </ProtectedRoute>
             )
           },

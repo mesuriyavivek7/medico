@@ -12,14 +12,15 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import { toast } from 'react-toastify'
 
-function StourPlan() {
+function MTP() {
    const { user } = useSelector((state) => state.auth);
-   const [stpPlan,setStpPlan] = useState([])
+   const [mtpPlan,setMtpPlan] = useState([])
    const [activeState,setActiveState] = useState('approve')
    const [loading,setLoading] = useState(false)
-   const [activeCounts, setActiveCounts] = useState(0);
-   const [pendingCounts, setPendingCounts] = useState(0);
-   const [rejectCounts, setRejectCounts] = useState(0);
+   const [activeCounts, setActiveCounts] = useState(1);
+   const [pendingCounts, setPendingCounts] = useState(1);
+   const [rejectCounts, setRejectCounts] = useState(1);
+   
 
    const getDate = (orgdate) => {
     if (!orgdate) return "";
@@ -35,6 +36,7 @@ function StourPlan() {
     return formattedDate;
   };
 
+
    const getAllTourPlan = async () =>{
      try{
        setLoading(true)
@@ -44,36 +46,36 @@ function StourPlan() {
         pageSize:0,
         criteria:'string',
         reportingTo:0,
-        tourType:0
+        tourType:1
        })
        if(response.data.data.length>0){
-        setStpPlan(response.data.data[0].tours.filter((tour)=> tour.tourType === 0))
+        setMtpPlan(response.data.data[0].tours.filter((tour)=> tour.tourType === 1))
        }
+       
      }catch(err){
-      toast.error("Something went wrong.")
       console.log(err)
+      toast.error("Something went wrong.")
      }finally{
       setLoading(false)
      }
    }
 
    useEffect(()=>{
-     setActiveCounts(stpPlan.filter((item)=>item.status==="Approved").length)
-     setPendingCounts(stpPlan.filter((item)=>item.status==="Pending").length)
-     setRejectCounts(stpPlan.filter((item)=>item.status==="Rejected").length)
-   },[stpPlan])
-
+    setActiveCounts(mtpPlan.filter((item)=>item.status==="Approved").length)
+    setPendingCounts(mtpPlan.filter((item)=>item.status==="Pending").length)
+    setRejectCounts(mtpPlan.filter((item)=>item.status==="Rejected").length)
+  },[mtpPlan])
 
 
    useEffect(()=>{
     getAllTourPlan()
    },[])
 
-   const renderSTP = () =>{
+   const renderMTP = () =>{
     switch(activeState) {
       case "approve":
         return activeCounts > 0 ? (
-          stpPlan.filter((plan) => plan.status === "Approved")
+          mtpPlan.filter((plan) => plan.status === "Approved")
           .map((item,index) => (
           <div key={index} className='rounded-md custom-shadow border-l-4 border-black  bg-white p-4 flex flex-col gap-2'>
           <div className='w-full flex justify-between'>
@@ -109,7 +111,7 @@ function StourPlan() {
           <div className="flex flex-col gap-1 items-center">
             <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
             <span className="text-gray-600 font-medium">
-              No Approved Tour Plans
+              No Approved Tour Plan
             </span>
           </div>
         </div>
@@ -117,7 +119,7 @@ function StourPlan() {
 
       case "pending":
         return pendingCounts > 0 ? (
-          stpPlan.filter((plan)=> plan.status==="Pending").
+          mtpPlan.filter((plan)=> plan.status==="Pending").
           map((item,index) => (
           <div key={index} className='rounded-md custom-shadow border-l-4 border-black  bg-white p-4 flex flex-col gap-2'>
           <div className='w-full flex justify-between'>
@@ -150,7 +152,7 @@ function StourPlan() {
             <div className="flex flex-col gap-1 items-center">
               <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
               <span className="text-gray-600 font-medium">
-                No Pending Tour Plans
+                No Pending Tour Plan
               </span>
             </div>
           </div>
@@ -158,7 +160,7 @@ function StourPlan() {
         
       case "rejected" : 
         return rejectCounts > 0 ? (
-          stpPlan.filter((plan)=> plan.status==="Rejected").
+          mtpPlan.filter((plan)=> plan.status==="Rejected").
           map((item,index)=>(
           <div key={index} className='rounded-md custom-shadow border-l-4 border-black  bg-white p-4 flex flex-col gap-2'>
           <div className='w-full flex justify-between'>
@@ -193,12 +195,11 @@ function StourPlan() {
             <div className="flex flex-col gap-1 items-center">
               <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
               <span className="text-gray-600 font-medium">
-                No Rejected Tour Plans
+                No Rejected Tour Plan
               </span>
             </div>
           </div>
-        )
-         
+        )  
     }
    }
 
@@ -207,7 +208,7 @@ function StourPlan() {
       <div className="bg-white custom-shadow rounded-md md:py-4 py-3 px-3 flex items-center justify-between">
         <div className="flex flex-col gap-2">
           <h1 className="text-gray-600 text-base md:text-lg font-medium">
-            Standard Tour Plan
+            Monthly Tour Plan
           </h1>
           <div className="flex items-center gap-2">
             <span
@@ -244,7 +245,7 @@ function StourPlan() {
         </div>
         <div className="flex items-center gap-3">
           <Link
-            to={user.isAdmin?"/admin/stpplan/add":"/employee/stpplan/add"}
+            to={user.isAdmin?"/admin/mtpplan/add":"/employee/mtpplan/add"}
           >
             <button className="md:p-2 p-1.5 bg-themeblue md:text-base text-sm text-white rounded-md">
               Add Tour Plan
@@ -259,11 +260,11 @@ function StourPlan() {
             <img src={Loader} alt="loader" className="w-10 h-10"></img>
           </div>
         ) : (
-          renderSTP()
+          renderMTP()
         )}
       </div>
     </div>
   )
 }
 
-export default StourPlan
+export default MTP

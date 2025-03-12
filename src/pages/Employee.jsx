@@ -4,6 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import { toast } from 'react-toastify';
 import api from '../api';
+import { useSelector } from 'react-redux';
 
 //importing data
 import { columns, fetchAllUsers } from '../data/EmployeeDataTable';
@@ -14,6 +15,7 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';
 
 
 export default function Employee() {
+  const { user } = useSelector((state) => state.auth);
   const [searchQuery,setSearchQuery] = useState('')
   const [filteredData,setFilteredData] = useState([])
   const navigate = useNavigate()
@@ -45,7 +47,7 @@ export default function Employee() {
 
   const handleNavigateToEdit = (data)=>{
       console.log(data)
-      navigate('/admin/employee/edit',{state:data})
+      navigate(user.isAdmin?'/admin/employee/edit':'/employee/user/edit',{state:data})
   }
 
   useEffect(()=>{
@@ -53,7 +55,7 @@ export default function Employee() {
   },[])
 
   const handleNavigateToPreview = (data) =>{
-    navigate('preview',{state:data})
+    navigate(user.isAdmin?'/admin/employee/preview':"/employee/user/preview",{state:data})
   }
 
   const handleOpenConfirmPopUp = (data) =>{
@@ -105,7 +107,7 @@ export default function Employee() {
             <input value={searchQuery} onChange={(e)=>setSearchQuery(e.target.value)} className='outline-none bg-transparent' placeholder='Search Employee...' type='text'></input>
            </div>
            <span onClick={fetchData} className='cursor-pointer md:w-9 md:h-9 w-8 h-8 border border-slate-200 flex justify-center items-center rounded-md'><AutorenewIcon></AutorenewIcon></span>
-           <Link to={'/admin/employee/addnew'}><button className='md:p-2 p-1.5 bg-themeblue md:text-base text-sm text-white rounded-md'>Add New Employee</button></Link>
+           <Link to={user.isAdmin?'/admin/employee/addnew':'/employee/user/addnew'}><button className='md:p-2 p-1.5 bg-themeblue md:text-base text-sm text-white rounded-md'>Add New Employee</button></Link>
          </div>
        </div>
        <div className='h-full py-4 px-3 custom-shadow rounded-md bg-white'>

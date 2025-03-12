@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux';
-
 //Importing dnd libraries
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -14,6 +13,7 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 
 import {toast} from 'react-toastify'
 import api from '../api';
+
 
 const Place = ({place, index, endPoint, removePlace, movePlace}) =>{
 
@@ -51,78 +51,77 @@ const Place = ({place, index, endPoint, removePlace, movePlace}) =>{
 }
 
 
-function AddStourPlan() {
-  const { user } = useSelector((state) => state.auth);
-  const [tourPlanName,setTourPlanName] = useState('')
-  const [places,setPlaces] = useState([])
-  const [errors,setErrors] = useState({})
-  const [loading,setLoading] = useState(false)
-
-  const movePlace = (fromIndex, toIndex) => {
-    const updatedPlaces = [...places];
-    const [movedPlace] = updatedPlaces.splice(fromIndex, 1);
-    updatedPlaces.splice(toIndex, 0, movedPlace);
-    setPlaces(updatedPlaces);
-  };
-
-  const removePlace = (ind) =>{
-     setPlaces((prevData)=>prevData.filter((item,index)=>ind!==index))
-  }
-
-  const [newPlace,setNewPlace] = useState('')
-
-  const addNewPlace = () =>{
-    if(!newPlace){
-      toast.error("Please enter place value.")
-      return
+function AddMtp() {
+    const { user } = useSelector((state) => state.auth);
+    const [tourPlanName,setTourPlanName] = useState('')
+    const [places,setPlaces] = useState([])
+    const [errors,setErrors] = useState({})
+    const [loading,setLoading] = useState(false)
+  
+    const movePlace = (fromIndex, toIndex) => {
+      const updatedPlaces = [...places];
+      const [movedPlace] = updatedPlaces.splice(fromIndex, 1);
+      updatedPlaces.splice(toIndex, 0, movedPlace);
+      setPlaces(updatedPlaces);
+    };
+  
+    const removePlace = (ind) =>{
+       setPlaces((prevData)=>prevData.filter((item,index)=>ind!==index))
     }
-
-    if(places.includes(newPlace)){
-      toast.warning("Place is already added.")
-      return 
-    }
-    setPlaces((prevData)=>([...prevData,newPlace]))
-    setNewPlace('')
-  }
-
-  const validateData = () =>{
-     let newErrors = {}
-     if(!tourPlanName) newErrors.tourplan = "Tourplan name is required."
-     if(places.length===0) newErrors.places = "Add one or more place."
-
-     setErrors(newErrors)
-
-     return Object.keys(newErrors).length===0
-  }
-
-  const addTourPlan = async ()=>{
-    if(validateData()){
-      try{
-        let locations = places.map((item,index)=> ({tourLocationID:0,locationName:item,locationSequence:index}))
-        await api.post(`STPMTP`,{
-         tourId:0,
-         tourName:tourPlanName,
-         tourType:0,
-         tourLocations:locations
-        })
-        setTourPlanName('')
-        setPlaces([])
-        toast.success("Tour plan added successfully.")
-      }catch(err){
-        console.log(err)
+  
+    const [newPlace,setNewPlace] = useState('')
+  
+    const addNewPlace = () =>{
+      if(!newPlace){
+        toast.error("Please enter place value.")
+        return
       }
+  
+      if(places.includes(newPlace)){
+        toast.warning("Place is already added.")
+        return 
+      }
+      setPlaces((prevData)=>([...prevData,newPlace]))
+      setNewPlace('')
     }
-
-  }
-
-
+  
+    const validateData = () =>{
+       let newErrors = {}
+       if(!tourPlanName) newErrors.tourplan = "Tourplan name is required."
+       if(places.length===0) newErrors.places = "Add one or more place."
+  
+       setErrors(newErrors)
+  
+       return Object.keys(newErrors).length===0
+    }
+  
+    const addTourPlan = async ()=>{
+      if(validateData()){
+        try{
+          let locations = places.map((item,index)=> ({tourLocationID:0,locationName:item,locationSequence:index}))
+          await api.post(`STPMTP`,{
+           tourId:0,
+           tourName:tourPlanName,
+           tourType:1,
+           tourLocations:locations
+          })
+          setTourPlanName('')
+          setPlaces([])
+          toast.success("Tour plan added successfully.")
+        }catch(err){
+          console.log(err)
+        }
+      }
+  
+    }
+    
   return (
-  <DndProvider backend={HTML5Backend}>
+    <DndProvider backend={HTML5Backend}>
     <div className='flex h-full flex-col gap-3 md:gap-4'>
       <div className='bg-white custom-shadow rounded-md md:py-4 py-3 px-3 md:px-4 flex items-center justify-between'>
         <div className='flex items-center gap-2'>
-           <Link to={user.isAdmin?'/admin/stpplan':"/employee/stpplan"}><span className='text-gray-600 cursor-pointer'><ArrowBackIosIcon style={{fontSize:'1.4rem'}}></ArrowBackIosIcon></span></Link>
-           <h1 className='text-gray-800 text-base md:text-lg font-medium'>Add Standard Tour Plan</h1>
+           <Link to={user.isAdmin?'/admin/mtpplan':'/employee/mtpplan'}><span className='text-gray-600 cursor-pointer'><ArrowBackIosIcon style={{fontSize:'1.4rem'}}></ArrowBackIosIcon></span></Link>
+           <h1 className='text-gray-800 text-base md:text-lg font-medium'>Add Monthly Tour Plan</h1>
         </div>
      </div>
      <div className='bg-white h-full custom-shadow flex flex-col gap-4 rounded-md md:py-4 py-3 px-3 md:px-4'>
@@ -172,4 +171,4 @@ function AddStourPlan() {
   )
 }
 
-export default AddStourPlan
+export default AddMtp

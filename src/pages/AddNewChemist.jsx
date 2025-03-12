@@ -3,10 +3,11 @@ import React, { useState } from 'react'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify'
+import { useSelector } from 'react-redux';
 import api from '../api';
 
 export default function AddNewChemist() {
-
+  const { user } = useSelector((state) => state.auth);
   const [errors,setErrors] = useState({})
 
   const [formData,setFormData] = useState({
@@ -96,7 +97,7 @@ export default function AddNewChemist() {
     <div className='flex h-full flex-col gap-3 md:gap-4'>
       <div className='bg-white custom-shadow rounded-md md:py-4 py-3 px-3 md:px-4 flex items-center justify-between'>
         <div className='flex items-center gap-2'>
-           <Link to={'/admin/chemist'}><span className='text-gray-600 cursor-pointer'><ArrowBackIosIcon style={{fontSize:'1.4rem'}}></ArrowBackIosIcon></span></Link>
+           <Link to={user.isAdmin?'/admin/chemists':"/employee/chemists"}><span className='text-gray-600 cursor-pointer'><ArrowBackIosIcon style={{fontSize:'1.4rem'}}></ArrowBackIosIcon></span></Link>
            <h1 className='text-gray-800 text-base md:text-lg font-medium'>Add New Chemist</h1>
         </div>
       </div>

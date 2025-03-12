@@ -17,18 +17,24 @@ import { useLocation , Outlet, useNavigate} from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import SearchIcon from "@mui/icons-material/Search";
+import { BiTrip } from "react-icons/bi";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
 import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 
 export default function EmpDashboard() {
   const { user } = useSelector((state) => state.auth);
   const location = useLocation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
+
+  const [openPlan,setOpenPlan] = useState(false)
 
   const isActive = (pathname) =>{
     return location.pathname.includes(pathname)
@@ -105,7 +111,7 @@ export default function EmpDashboard() {
               </div>
               {isProfileOpen && 
                <div ref={popupRef} className="absolute z-40 w-36 md:w-48 shadow rounded-md border bg-white top-[120%] right-0 flex flex-col ">
-                 <Link to="/admin/profile"><div className="flex hover:bg-lightgray p-2 items-center gap-2 text-gray-500"><span className="text-blue-500"><AccountCircleIcon></AccountCircleIcon></span> Profile</div></Link>
+                 <Link to="/employee/profile"><div className="flex hover:bg-lightgray p-2 items-center gap-2 text-gray-500"><span className="text-blue-500"><AccountCircleIcon></AccountCircleIcon></span> Profile</div></Link>
                  <div onClick={logoutUser} className="flex hover:bg-lightgray p-2 items-center gap-2 text-gray-500"><span className="text-red-500"><LogoutIcon></LogoutIcon></span> Logout</div>
               </div>
               }
@@ -126,8 +132,8 @@ export default function EmpDashboard() {
                <span className={`${isActive('doctors') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><LocalHospitalOutlinedIcon style={{fontSize:'1.5rem'}}></LocalHospitalOutlinedIcon></span>
                {isMenuOpen && <span className={`${isActive("doctors") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>Doctors</span>}
             </div>
-            <div onClick={()=>handleNavigate('chemist')} className={`group flex ${isActive("chemist") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
-               <span className={`${isActive('chemist') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ScienceOutlinedIcon style={{fontSize:'1.5rem'}}></ScienceOutlinedIcon></span>
+            <div onClick={()=>handleNavigate('chemists')} className={`group flex ${isActive("chemists") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('chemists') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ScienceOutlinedIcon style={{fontSize:'1.5rem'}}></ScienceOutlinedIcon></span>
                {isMenuOpen && <span className={`${isActive("chemist") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Chemist</span>}
             </div>
             <div onClick={()=>handleNavigate('user')} className={`group flex ${isActive("user") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
@@ -138,6 +144,27 @@ export default function EmpDashboard() {
                <span className={`${isActive('myleaves') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>
                {isMenuOpen && <span className={`${isActive("leaves") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Leaves</span>}
             </div>
+
+            <div className="relative">
+              <div onClick={()=>setOpenPlan((prev)=>!prev)} className={`group flex ${isActive("plan") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 justify-between`}>
+               <div className="flex items-center gap-2">
+                 <span className={`${isActive('plan') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><BiTrip style={{fontSize:'1.5rem'}}></BiTrip></span>
+                 {isMenuOpen && <span className={`${isActive("plan") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Tour Plans</span>}
+               </div>
+               {isMenuOpen && <span className="text-gray-700">{openPlan?<KeyboardArrowDownIcon></KeyboardArrowDownIcon>:<ChevronRightIcon></ChevronRightIcon>}</span>}
+              </div>
+              <div className={`px-2 flex flex-col ${openPlan?"h-30":"h-0"} transition-all duration-300 overflow-hidden`}>            
+                <div onClick={()=>handleNavigate('stpplan')} className={`group flex ${isActive("stpplan") && "text-blue-600"} hover:bg-blue-50 py-2 cursor-pointer px-8 items-center gap-2`}>
+                  <span className={`${isActive('stpplan') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><HorizontalRuleIcon style={{fontSize:'1.5rem'}}></HorizontalRuleIcon></span>
+                  {isMenuOpen && <span className={`${isActive("stpplan") && "text-themeblue"} group-hover:text-themeblue font-medium`}>STP Plan</span>}
+                </div>
+                <div onClick={()=>handleNavigate('mtpplan')} className={`group flex ${isActive("mtpplan") && "text-blue-600"} hover:bg-blue-50 py-2 cursor-pointer px-8 items-center gap-2`}>
+                 <span className={`${isActive('mtpplan') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><HorizontalRuleIcon style={{fontSize:'1.5rem'}}></HorizontalRuleIcon></span>
+                 {isMenuOpen && <span className={`${isActive("mtpplan") && "text-themeblue"} group-hover:text-themeblue font-medium`}>MTP Plan</span>}
+                </div>
+              </div>
+            </div>
+
         </div>
         {/* sidebar for mobile screen */}
         <div className={`${isMenuOpen?"-left-96":"left-0"} z-40 w-64 bottom-0 top-0 md:hidden absolute transition-all duration-300 shadow-lg bg-white`}>
@@ -149,9 +176,9 @@ export default function EmpDashboard() {
                <span className={`${isActive('doctors') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><LocalHospitalOutlinedIcon style={{fontSize:'1.5rem'}}></LocalHospitalOutlinedIcon></span>
                <span className={`${isActive("doctors") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>Doctors</span>
             </div>
-            <div onClick={()=>handleNavigate('chemist')} className={`group flex ${isActive("chemist") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
-               <span className={`${isActive('chemist') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ScienceOutlinedIcon style={{fontSize:'1.5rem'}}></ScienceOutlinedIcon></span>
-               <span className={`${isActive("chemist") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Chemist</span>
+            <div onClick={()=>handleNavigate('chemists')} className={`group flex ${isActive("chemists") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('chemists') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ScienceOutlinedIcon style={{fontSize:'1.5rem'}}></ScienceOutlinedIcon></span>
+               <span className={`${isActive("chemists") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Chemist</span>
             </div>
             <div onClick={()=>handleNavigate('user')} className={`group flex ${isActive("user") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
                <span className={`${isActive('user') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><PersonOutlineIcon style={{fontSize:'1.5rem'}}></PersonOutlineIcon></span>
@@ -160,6 +187,25 @@ export default function EmpDashboard() {
             <div onClick={()=>handleNavigate('myleaves')} className={`group flex ${isActive("myleaves") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
                <span className={`${isActive('myleaves') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ExitToAppIcon style={{fontSize:'1.5rem'}}></ExitToAppIcon></span>
                <span className={`${isActive("myleaves") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Leaves</span>
+            </div>
+            <div className="relative">
+              <div onClick={()=>setOpenPlan((prev)=>!prev)} className={`group flex ${isActive("plan") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 justify-between`}>
+                <div className="flex items-center gap-2">
+                 <span className={`${isActive('myleaves') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><BiTrip style={{fontSize:'1.5rem'}}></BiTrip></span>
+                 <span className={`${isActive("myleaves") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Tour Plans</span>
+                </div>
+                 <span className="text-gray-700">{openPlan?<KeyboardArrowDownIcon></KeyboardArrowDownIcon>:<ChevronRightIcon></ChevronRightIcon>}</span>
+              </div>
+              <div className={`flex flex-col ${openPlan?"h-30":"h-0"} px-2 transition-all duration-300 overflow-hidden`}>
+                <div onClick={()=>handleNavigate('stpplan')} className={`group flex ${isActive("stpplan") && "text-themeblue"} hover:bg-blue-50 py-2 cursor-pointer px-8 items-center gap-2`}>
+                  <span className={`${isActive('stpplan') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><HorizontalRuleIcon style={{fontSize:'1.5rem'}}></HorizontalRuleIcon></span>
+                  <span className={`${isActive("stpplan") && "text-themeblue"} group-hover:text-themeblue font-medium `}>STP Plan</span>
+                </div>
+                <div onClick={()=>handleNavigate('mtpplan')} className={`group flex ${isActive("mtpplan") && "text-themeblue"} hover:bg-blue-50 py-2 cursor-pointer px-8 items-center gap-2`}>
+                  <span className={`${isActive('mtpplan') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><HorizontalRuleIcon style={{fontSize:'1.5rem'}}></HorizontalRuleIcon></span>
+                  <span className={`${isActive("mtpplan") && "text-themeblue"} group-hover:text-themeblue font-medium`}>MTP Plan</span>
+                </div>
+              </div>
             </div>
         </div>
         {/* Outlate */}
