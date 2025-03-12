@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React , {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
 import api from '../api'
-import { useSelector } from 'react-redux'
 
 //importing images
 import NODATA from '../assets/computer.png'
@@ -12,16 +11,15 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import { toast } from 'react-toastify'
 
-function StourPlan() {
-   const { user } = useSelector((state) => state.auth);
-   const [stpPlan,setStpPlan] = useState([])
-   const [activeState,setActiveState] = useState('approve')
-   const [loading,setLoading] = useState(false)
-   const [activeCounts, setActiveCounts] = useState(0);
-   const [pendingCounts, setPendingCounts] = useState(0);
-   const [rejectCounts, setRejectCounts] = useState(0);
+function PendingMtp() {
+  const [mtpPlan,setMtpPlan] = useState([])
+  const [activeState,setActiveState] = useState('approve')
+  const [loading,setLoading] = useState(false)
+  const [activeCounts, setActiveCounts] = useState(1);
+  const [pendingCounts, setPendingCounts] = useState(1);
+  const [rejectCounts, setRejectCounts] = useState(1);
 
-   const getDate = (orgdate) => {
+  const getDate = (orgdate) => {
     if (!orgdate) return "";
     const dateObj = new Date(orgdate);
 
@@ -35,45 +33,44 @@ function StourPlan() {
     return formattedDate;
   };
 
-   const getAllTourPlan = async () =>{
-     try{
-       setLoading(true)
-       const response = await api.post(`/STPMTP/GetAll`,
-       {
-        pageNumber:0,
-        pageSize:0,
-        criteria:'string',
-        reportingTo:0,
-        tourType:0
-       })
-       if(response.data.data.length>0){
-        setStpPlan(response.data.data[0].tours.filter((tour)=> tour.tourType === 0))
-       }
-     }catch(err){
-      toast.error("Something went wrong.")
-      console.log(err)
-     }finally{
-      setLoading(false)
-     }
-   }
+  const getAllTourPlan = async () =>{
+    try{
+      setLoading(true)
+      const response = await api.post(`/STPMTP/GetAll`,
+      {
+       pageNumber:0,
+       pageSize:0,
+       criteria:'string',
+       reportingTo:1,
+       tourType:1
+      })
+      if(response.data.data.length>0){
+       setMtpPlan(response.data.data[0].tours.filter((tour)=> tour.tourType === 1))
+      }
+      
+    }catch(err){
+     console.log(err)
+     toast.error("Something went wrong.")
+    }finally{
+     setLoading(false)
+    }
+  }
 
-   useEffect(()=>{
-     setActiveCounts(stpPlan.filter((item)=>item.status==="Approved").length)
-     setPendingCounts(stpPlan.filter((item)=>item.status==="Pending").length)
-     setRejectCounts(stpPlan.filter((item)=>item.status==="Rejected").length)
-   },[stpPlan])
+  useEffect(()=>{
+    setActiveCounts(mtpPlan.filter((item)=>item.status==="Approved").length)
+    setPendingCounts(mtpPlan.filter((item)=>item.status==="Pending").length)
+    setRejectCounts(mtpPlan.filter((item)=>item.status==="Rejected").length)
+  },[mtpPlan])
 
-
-
-   useEffect(()=>{
+  useEffect(()=>{
     getAllTourPlan()
-   },[])
+  },[])
 
-   const renderSTP = () =>{
+  const renderMTP = () =>{
     switch(activeState) {
       case "approve":
         return activeCounts > 0 ? (
-          stpPlan.filter((plan) => plan.status === "Approved")
+          mtpPlan.filter((plan) => plan.status === "Approved")
           .map((item,index) => (
           <div key={index} className='rounded-md custom-shadow border-l-4 border-black  bg-white p-4 flex flex-col gap-2'>
           <div className='w-full flex justify-between'>
@@ -109,7 +106,7 @@ function StourPlan() {
           <div className="flex flex-col gap-1 items-center">
             <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
             <span className="text-gray-600 font-medium">
-              No Approved Tour Plans
+              No Approved Tour Plan
             </span>
           </div>
         </div>
@@ -117,7 +114,7 @@ function StourPlan() {
 
       case "pending":
         return pendingCounts > 0 ? (
-          stpPlan.filter((plan)=> plan.status==="Pending").
+          mtpPlan.filter((plan)=> plan.status==="Pending").
           map((item,index) => (
           <div key={index} className='rounded-md custom-shadow border-l-4 border-black  bg-white p-4 flex flex-col gap-2'>
           <div className='w-full flex justify-between'>
@@ -150,7 +147,7 @@ function StourPlan() {
             <div className="flex flex-col gap-1 items-center">
               <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
               <span className="text-gray-600 font-medium">
-                No Pending Tour Plans
+                No Pending Tour Plan
               </span>
             </div>
           </div>
@@ -158,7 +155,7 @@ function StourPlan() {
         
       case "rejected" : 
         return rejectCounts > 0 ? (
-          stpPlan.filter((plan)=> plan.status==="Rejected").
+          mtpPlan.filter((plan)=> plan.status==="Rejected").
           map((item,index)=>(
           <div key={index} className='rounded-md custom-shadow border-l-4 border-black  bg-white p-4 flex flex-col gap-2'>
           <div className='w-full flex justify-between'>
@@ -193,77 +190,68 @@ function StourPlan() {
             <div className="flex flex-col gap-1 items-center">
               <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
               <span className="text-gray-600 font-medium">
-                No Rejected Tour Plans
+                No Rejected Tour Plan
               </span>
             </div>
           </div>
-        )
-         
+        )  
     }
    }
 
   return (
     <div className='flex h-full flex-col gap-3 md:gap-4'>
-      <div className="bg-white custom-shadow rounded-md md:py-4 py-3 px-3 flex items-center justify-between">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-gray-600 text-base md:text-lg font-medium">
-            Standard Tour Plan
-          </h1>
-          <div className="flex items-center gap-2">
-            <span
-              onClick={() => setActiveState("approve")}
-              className={`w-20 ${
-                activeState === "approve"
-                  ? "bg-themeblue text-white"
-                  : "text-gray-600"
-              } cursor-pointer hover:bg-themeblue hover:text-white transition-colors duration-300 flex justify-center items-center text-sm p-1 border rounded-md`}
-            >
-              Approved
-            </span>
-            <span
-              onClick={() => setActiveState("pending")}
-              className={`w-20 ${
-                activeState === "pending"
-                  ? "bg-themeblue text-white"
-                  : "text-gray-600"
-              } cursor-pointer hover:bg-themeblue hover:text-white transition-colors duration-300 flex justify-center items-center text-sm p-1 border rounded-md`}
-            >
-              Pending
-            </span>
-            <span
-              onClick={() => setActiveState("rejected")}
-              className={`w-20 ${
-                activeState === "rejected"
-                  ? "bg-themeblue text-white"
-                  : "text-gray-600"
-              } cursor-pointer hover:bg-themeblue hover:text-white transition-colors duration-300 flex justify-center items-center text-sm p-1 border rounded-md`}
-            >
-              Rejected
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link
-            to={user.isAdmin?"/admin/stpplan/add":"/employee/stpplan/add"}
+    <div className="bg-white custom-shadow rounded-md md:py-4 py-3 px-3 flex items-center justify-between">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-gray-600 text-base md:text-lg font-medium">
+         Pending Monthly Tour Plan
+        </h1>
+        <div className="flex items-center gap-2">
+          <span
+            onClick={() => setActiveState("approve")}
+            className={`w-20 ${
+              activeState === "approve"
+                ? "bg-themeblue text-white"
+                : "text-gray-600"
+            } cursor-pointer hover:bg-themeblue hover:text-white transition-colors duration-300 flex justify-center items-center text-sm p-1 border rounded-md`}
           >
-            <button className="md:p-2 p-1.5 bg-themeblue md:text-base text-sm text-white rounded-md">
-              Add Tour Plan
-            </button>
-          </Link>
+            Approved
+          </span>
+          <span
+            onClick={() => setActiveState("pending")}
+            className={`w-20 ${
+              activeState === "pending"
+                ? "bg-themeblue text-white"
+                : "text-gray-600"
+            } cursor-pointer hover:bg-themeblue hover:text-white transition-colors duration-300 flex justify-center items-center text-sm p-1 border rounded-md`}
+          >
+            Pending
+          </span>
+          <span
+            onClick={() => setActiveState("rejected")}
+            className={`w-20 ${
+              activeState === "rejected"
+                ? "bg-themeblue text-white"
+                : "text-gray-600"
+            } cursor-pointer hover:bg-themeblue hover:text-white transition-colors duration-300 flex justify-center items-center text-sm p-1 border rounded-md`}
+          >
+            Rejected
+          </span>
         </div>
       </div>
-
-      <div className='flex h-full flex-col overflow-scroll gap-4'>
-        {loading ? (
-          <div className="w-full h-full flex justify-center items-center">
-            <img src={Loader} alt="loader" className="w-10 h-10"></img>
-          </div>
-        ) : (
-          renderSTP()
-        )}
-      </div>
+     
     </div>
+
+    <div className='flex h-full flex-col overflow-scroll gap-4'>
+      {loading ? (
+        <div className="w-full h-full flex justify-center items-center">
+          <img src={Loader} alt="loader" className="w-10 h-10"></img>
+        </div>
+      ) : (
+        renderMTP()
+      )}
+    </div>
+  </div>
   )
 }
 
-export default StourPlan
+export default PendingMtp

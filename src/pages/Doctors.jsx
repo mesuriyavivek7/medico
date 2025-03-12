@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import api from '../api';
+import { useSelector } from 'react-redux';
 
 //Importing icons
 import SearchIcon from '@mui/icons-material/Search';
@@ -11,10 +12,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import { LoaderCircle } from 'lucide-react';
 
 //Importing data
-import { columns, getDoctors } from '../data/doctorsDataTable';
+import { columns, getDoctors, getDoctorsForEmployee } from '../data/doctorsDataTable';
 import { toast } from 'react-toastify';
 
 export default function Doctors() {
+  const { user } = useSelector((state) => state.auth);
   const [doctors,setDoctors] = useState([])
   const [filteredDoctors,setFilteredDoctors] = useState([])
   const [searchQuery,setSearchQuery] = useState('')
@@ -73,7 +75,6 @@ export default function Doctors() {
     
   }
 
-
   const handleChange = (e) =>{
     const {name, value} = e.target
     setUpdateData((prevData)=>({...prevData,[name]:value}))
@@ -82,7 +83,13 @@ export default function Doctors() {
   const fetchData = async ()=>{
     setLoading(true)
     try{
-      const data = await getDoctors()
+      let data = []
+      if(user.isAdmin){
+        data = await getDoctors()
+      }else{
+        data = await getDoctorsForEmployee()
+      }
+      
       if(data){
         setDoctors(data.map((item,index)=>({...item,id:index+1})))
       }

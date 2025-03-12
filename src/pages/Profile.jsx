@@ -9,15 +9,15 @@ import Loader from '../assets/loader.svg'
 import {toast} from 'react-toastify'
 
 //Importing icons
-import AutorenewIcon from '@mui/icons-material/Autorenew';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
-import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import { LoaderCircle } from 'lucide-react';
 import CloseIcon from '@mui/icons-material/Close';
 import api from '../api'
 
+//Importing components
+import Salary from '../components/Salary'
 
 export default function Profile() {
   const { user } = useSelector((state) => state.auth);
@@ -360,6 +360,11 @@ export default function Profile() {
                </div>
             </div>
          )
+        
+    case 'salary':
+      return (
+        <Salary></Salary>
+      )
 
     }
   }
@@ -489,6 +494,7 @@ export default function Profile() {
                <h1 onClick={()=>setCurrentTab('leave')} className={`${currentTab==="leave"?"border-b-2 text-blue-500 border-blue-500":"text-gray-600"} cursor-pointer text-base  py-3 font-medium`}>Leaves</h1>
                <h1 onClick={()=>setCurrentTab('bank')} className={`${currentTab==="bank"?"border-b-2 text-blue-500 border-blue-500":"text-gray-600"} cursor-pointer text-base  py-3 font-medium`}>Bank Details</h1>
                <h1 onClick={()=>setCurrentTab('password')} className={`text-base py-3 ${currentTab==="password"?"border-b-2 text-blue-500 border-blue-500":"text-gray-600"} cursor-pointer font-medium`}>Change Password</h1>
+               <h1 onClick={()=>setCurrentTab('salary')} className={`text-base py-3 ${currentTab==="salary"?"border-b-2 text-blue-500 border-blue-500":"text-gray-600"} cursor-pointer font-medium`}>Salary</h1>
             </div>
         </div>
         {renderContent()}

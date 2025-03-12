@@ -197,6 +197,112 @@ export const rows = [
     }
 ]
 
+export const docMapColumn = [
+  {
+    field: 'drName',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Dr. Name',
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: 'className',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Class',
+    flex: 0.8,
+    minWidth: 120,
+  },
+  {
+    field: 'speciality',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Speciality',
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: 'qualification',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Qualification',
+    flex: 1,
+    minWidth: 150,
+  },
+  {
+    field: 'dob',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'DOB',
+    flex: 1,
+    minWidth: 150,
+    renderCell: (params)=>(
+      <div className='flex w-full h-full'>
+        <span>{formateDate(params.row.dob)}</span>
+      </div>
+    )
+  },
+  {
+    field: 'gender',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Gender',
+    flex: 0.8,
+    minWidth: 120,
+  },
+  {
+    field: 'routeName',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Route Name',
+    flex: 1.2,
+    minWidth: 150,
+  },
+  {
+    field: 'addressLine1',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Address Line 1',
+    flex: 2,
+    minWidth: 200,
+  },
+  {
+    field: 'addressLine2',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Address Line 2',
+    flex: 2,
+    minWidth: 200,
+  },
+  {
+    field: 'pinCode',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Pincode',
+    flex: 0.8,
+    minWidth: 120,
+  },
+  {
+    field: 'doctorArea',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Docter Area',
+    flex: 0.8,
+    minWidth: 120,
+  },
+  {
+    field: 'vfreq',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Visiting Freq',
+    flex: 0.8,
+    minWidth: 120,
+  },
+  {
+    field: 'mobileNo',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Mobile No',
+    flex: 0.8,
+    minWidth: 120,
+  },
+  {
+    field: 'phone',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Phone',
+    flex: 0.8,
+    minWidth: 120,
+  },
+]
+
 
 export const getDoctors = async ()=>{
   try{
@@ -205,5 +311,16 @@ export const getDoctors = async ()=>{
     return response.data.data
   }catch(err){
    throw err
+  }
+}
+
+
+export const getDoctorsForEmployee = async () =>{
+  try{
+    const response = await api.get('/DoctorMapping/GetAllDoctorMappingData')
+    console.log(response)
+    return response.data.data
+  }catch(err){
+    throw err
   }
 }

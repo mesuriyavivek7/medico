@@ -53,31 +53,31 @@ export default function MyDashboard() {
    getEmployeeData()
    fetchCounts()
  },[])
-
+ 
   return (
   <div className='flex h-full flex-col gap-4'>
     <div className='grid md:grid-cols-3 grid-cols-1 gap-4'>
-      <div className='flex custom-shadow p-4 bg-white  rounded-lg flex-col gap-2'>
-         <h1 className='text-lg text-gray-600'>DOCTORS</h1>
-         <span className='text-2xl'>{doctorsCount}</span>
+      <div className='flex custom-shadow p-4 bg-gradient-to-r from-blue-400 to-blue-600  rounded-lg flex-col gap-2'>
+         <h1 className='text-lg text-white font-semibold'>DOCTORS</h1>
+         <span className='text-2xl font-bold text-gray-100'>{doctorsCount}</span>
          <div className='flex justify-between items-center'>
-            <Link to={'/admin/doctors'}><span className='underline cursor-pointer'>See all doctors</span></Link>
+            <Link to={'/admin/doctors'}><span className='underline text-white cursor-pointer'>See all doctors</span></Link>
             <span className='bg-themeblue text-white w-10 h-10 flex justify-center items-center rounded-md'><LocalHospitalOutlinedIcon style={{fontSize:'1.8rem'}}></LocalHospitalOutlinedIcon></span>
          </div>
       </div>
-      <div className='flex p-4 bg-white custom-shadow rounded-lg flex-col gap-2'>
-         <h1 className='text-lg text-gray-600'>CHEMIST</h1>
-         <span className='text-2xl'>{chemistCount}</span>
+      <div className='flex p-4 bg-gradient-to-r from-violet-400 to-violet-600 custom-shadow rounded-lg flex-col gap-2'>
+         <h1 className='text-lg text-white font-semibold'>CHEMIST</h1>
+         <span className='text-2xl font-bold text-gray-100'>{chemistCount}</span>
          <div className='flex justify-between items-center'>
-            <Link to={'/admin/chemist'}><span className='underline cursor-pointer'>See all chemist</span></Link>
+            <Link to={'/admin/chemist'}><span className='underline text-white cursor-pointer'>See all chemist</span></Link>
             <span className='bg-themeblue text-white w-10 h-10 flex justify-center items-center rounded-md'><ScienceOutlinedIcon style={{fontSize:'1.8rem'}}></ScienceOutlinedIcon></span>
          </div>
       </div>
-      <div className='flex p-4 bg-white custom-shadow rounded-lg flex-col gap-2'>
-         <h1 className='text-lg text-gray-600'>PRODUCTS</h1>
-         <span className='text-2xl'>120</span>
+      <div className='flex p-4 bg-gradient-to-r from-emerald-400 to-teal-600 custom-shadow rounded-lg flex-col gap-2'>
+         <h1 className='text-lg text-white font-semibold'>PRODUCTS</h1>
+         <span className='text-2xl font-bold text-gray-100'>120</span>
          <div className='flex justify-between items-center'>
-            <span className='underline cursor-pointer'>See all products</span>
+            <span className='underline cursor-pointer text-white'>See all products</span>
             <span className='bg-themeblue text-white w-10 h-10 flex justify-center items-center rounded-md'><Inventory2OutlinedIcon style={{fontSize:'1.8rem'}}></Inventory2OutlinedIcon></span>
          </div>
       </div>

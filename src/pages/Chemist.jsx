@@ -4,9 +4,10 @@ import { DataGrid } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
 import { toast } from "react-toastify";
 import api from "../api";
+import { useSelector } from "react-redux";
 
 //Importing data
-import { columns, getAllChemist } from "../data/chemistDataTable";
+import { columns, getAllChemist, getAllChemistForEmployee } from "../data/chemistDataTable";
 
 //Importing icons
 import SearchIcon from '@mui/icons-material/Search';
@@ -16,6 +17,7 @@ import { LoaderCircle } from 'lucide-react';
 
 
 export default function Chemist() {
+  const { user } = useSelector((state) => state.auth);
   const [chemist,setChemist] = useState([])
   const [searchQuery,setSearchQuery] = useState('')
   const [filteredChemist,setFilteredChemist] = useState([])
@@ -78,7 +80,13 @@ export default function Chemist() {
   const getChemistData = async ()=>{
      try{
       setLoading(true)
-      const data = await getAllChemist()
+      let data = []
+      if(user.isAdmin){
+        data = await getAllChemist()
+      }else{
+        data = await getAllChemistForEmployee()
+      }
+      
       setChemist(data.map((item,index)=>({...item,id:index+1})))
      }catch(err){
       console.log(err)
@@ -333,7 +341,7 @@ export default function Chemist() {
           <span onClick={getChemistData} className="cursor-pointer md:w-9 md:h-9 w-8 h-8 border border-slate-200 flex justify-center items-center rounded-md">
             <AutorenewIcon></AutorenewIcon>
           </span>
-          <Link to={"/admin/chemist/addnew"}>
+          <Link to={user.isAdmin?"/admin/chemists/addnew":"/employee/chemists/addnew"}>
             <button className="md:p-2 p-1.5 bg-themeblue md:text-base text-sm text-white rounded-md">
               Add New Chemist
             </button>
