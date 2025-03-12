@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import api from '../api';
+import { useSelector } from 'react-redux';
 
 //Importing icons
 import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
@@ -13,16 +14,19 @@ import { latestColumns, fetchAllUsers } from '../data/EmployeeDataTable';
 import { Link } from 'react-router-dom';
 
 export default function MyDashboard() {
-
+  const { user } = useSelector((state) => state.auth);
   const [doctorsCount,setDoctorsCount] = useState(0)
   const [chemistCount,setChemistCount] = useState(0)
   const [productCount,setProductCount] = useState(0)
 
   const fetchCounts = async ()=>{
      try{
-        const [doctorsResponse, chemistResponse] = await Promise.all([
+        const [doctorsResponse, chemistResponse] = await Promise.all(user.isAdmin?[
           api.get('/Doctor/GetAllDoctor'),
           api.get('/Chemist/GetAllChemist')
+        ]:[
+          api.get('/DoctorMapping/GetAllDoctorMappingData'),
+          api.get('/ChemistMapping/GetAllChemistMappingData')
         ])
         setDoctorsCount(doctorsResponse.data.data.length)
         setChemistCount(chemistResponse.data.data.length)
@@ -61,7 +65,7 @@ export default function MyDashboard() {
          <h1 className='text-lg text-white font-semibold'>DOCTORS</h1>
          <span className='text-2xl font-bold text-gray-100'>{doctorsCount}</span>
          <div className='flex justify-between items-center'>
-            <Link to={'/admin/doctors'}><span className='underline text-white cursor-pointer'>See all doctors</span></Link>
+            <Link to={user.isAdmin?'/admin/doctors':'/employee/doctors'}><span className='underline text-white cursor-pointer'>See all doctors</span></Link>
             <span className='bg-themeblue text-white w-10 h-10 flex justify-center items-center rounded-md'><LocalHospitalOutlinedIcon style={{fontSize:'1.8rem'}}></LocalHospitalOutlinedIcon></span>
          </div>
       </div>
@@ -69,7 +73,7 @@ export default function MyDashboard() {
          <h1 className='text-lg text-white font-semibold'>CHEMIST</h1>
          <span className='text-2xl font-bold text-gray-100'>{chemistCount}</span>
          <div className='flex justify-between items-center'>
-            <Link to={'/admin/chemist'}><span className='underline text-white cursor-pointer'>See all chemist</span></Link>
+            <Link to={user.isAdmin?'/admin/chemists':'/employee/chemists'}><span className='underline text-white cursor-pointer'>See all chemist</span></Link>
             <span className='bg-themeblue text-white w-10 h-10 flex justify-center items-center rounded-md'><ScienceOutlinedIcon style={{fontSize:'1.8rem'}}></ScienceOutlinedIcon></span>
          </div>
       </div>

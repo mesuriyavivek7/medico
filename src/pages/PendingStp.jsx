@@ -98,6 +98,7 @@ function PendingStp() {
         comments
        })
        console.log(response)
+       await getAllTourPlan()
        handleCloseApprovePopUp()
        toast.success('successfully stp plan approved.')
     }catch(err){
