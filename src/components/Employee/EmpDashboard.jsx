@@ -40,12 +40,15 @@ export default function EmpDashboard() {
     return location.pathname.includes(pathname)
   }
 
-  const handleNavigate = (pathname) =>{
-     navigate(pathname)
-  }
-
   const [isMenuOpen,setIsMenuOpen] = useState(true)
   const [isProfileOpen,setIsProfileOpen] = useState(false)
+
+  const handleNavigate = (pathname) =>{
+    setIsMenuOpen(true)
+    navigate(pathname)
+  }
+
+  const sidebarRef = useRef(null)
 
   const popupRef = useRef(null)
 
@@ -53,6 +56,10 @@ export default function EmpDashboard() {
   const handleClickOutside = (event) => {
     if (popupRef.current && !popupRef.current.contains(event.target)) {
       setIsProfileOpen(false)
+    }
+
+    if(sidebarRef.current && !sidebarRef.current.contains(event.target)){
+      setIsMenuOpen(true)
     }
   };
 
@@ -167,7 +174,7 @@ export default function EmpDashboard() {
 
         </div>
         {/* sidebar for mobile screen */}
-        <div className={`${isMenuOpen?"-left-96":"left-0"} z-40 w-64 bottom-0 top-0 md:hidden absolute transition-all duration-300 shadow-lg bg-white`}>
+        <div ref={sidebarRef} className={`${isMenuOpen?"-left-96":"left-0"} z-40 w-64 bottom-0 top-0 md:hidden absolute transition-all duration-300 shadow-lg bg-white`}>
             <div onClick={()=>handleNavigate('dashboard')} className={`group flex ${isActive("dashboard") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
                <span className={`${isActive('dashboard') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><DashboardOutlinedIcon style={{fontSize:'1.5rem'}}></DashboardOutlinedIcon></span>
                <span className={`${isActive("dashboard") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>Dashboard</span>

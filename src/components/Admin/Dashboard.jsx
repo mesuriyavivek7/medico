@@ -51,10 +51,6 @@ export default function Dashboard() {
     }
   }
 
-  const handleNavigate = (pathname) =>{
-     navigate(pathname)
-  }
-
   const [openLeave,setOpenLeave] = useState(false)
   const [openPlan,setOpenPlan] = useState(false)
 
@@ -63,9 +59,16 @@ export default function Dashboard() {
 
   const [notificationOpen,setNotificationOpen] = useState(false)
 
+  const sidebarRef = useRef(null)
+
   const popupRef = useRef(null)
 
   const notificationRef = useRef(null)
+
+  const handleNavigate = (pathname) =>{
+    setIsMenuOpen(true)
+    navigate(pathname)
+ }
 
   // Handle click outside
   const handleClickOutside = (event) => {
@@ -77,6 +80,9 @@ export default function Dashboard() {
      setNotificationOpen(false)
     }
 
+    if(sidebarRef.current && !sidebarRef.current.contains(event.target)){
+      setIsMenuOpen(true)
+    }
   };
 
   const getName = (name) =>{
@@ -232,7 +238,7 @@ export default function Dashboard() {
 
         </div>
         {/* sidebar for mobile screen */}
-        <div className={`${isMenuOpen?"-left-96":"left-0"} z-40 w-64 bottom-0 top-0 md:hidden absolute overflow-scroll transition-all duration-300 shadow-lg bg-white`}>
+        <div ref={sidebarRef} className={`${isMenuOpen?"-left-96":"left-0"} z-40 w-64 bottom-0 top-0 md:hidden absolute overflow-scroll transition-all duration-300 shadow-lg bg-white`}>
             <div onClick={()=>handleNavigate('/admin')} className={`group flex ${isActive("dashboard") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
                <span className={`${isActive('dashboard') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><DashboardOutlinedIcon style={{fontSize:'1.5rem'}}></DashboardOutlinedIcon></span>
                <span className={`${isActive("dashboard") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>Dashboard</span>
