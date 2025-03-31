@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux';
+import Box from '@mui/material/Box';
+import { DataGrid } from '@mui/x-data-grid';
 
 //Importing icons
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -19,21 +21,26 @@ function AddMtp() {
     const [chemist,setChemist] = useState([])
     const [stp,setStp] = useState([])
     const [loading,setLoading] = useState(false)
-    const [products,setProducts] = useState([])
     const [errors,setErrors] = useState({})
+
+    let docchem = [...doctors,...chemist]
 
     const [selectedUser,setSelectedUser] = useState(null)
     const [selectedDoc,setSelectedDoc] = useState(null)
     const [selectedStp,setSelectdStp] = useState(null)
-    const [selectedProducts,setSelectedProducts] = useState([])
-
+    
 
     const [description,setDescription] = useState('')
     const [mtpDate,setMtpDate] = useState(null)
 
-    let docchem = [...doctors,...chemist]
-
-    console.log(docchem)
+    const [formData,setFormData] = useState({
+      user:null,
+      doctor:null,
+      stp:null,
+      mtpDate:'',
+      description:''
+    })
+  
 
     const fetchData = async ()=>{
       let stpObj = {
@@ -49,16 +56,11 @@ function AddMtp() {
           api.get('/Chemist/GetAllChemist'),
           api.post('/STPMTP/GetAll',stpObj)
         ])
-
-         let allTours = stps.data.data.map((item)=> item.tours).flat()
-
-         console.log(allTours)
-
+      
           setUsers(users.data.data)
           setDoctors(doctors.data.data)
           setChemist(chemists.data.data)
-          setStp(allTours)
-     
+          setStp(stps.data.data)
           
       }catch(err){
         console.log(err)
@@ -70,14 +72,26 @@ function AddMtp() {
       fetchData()
     },[])
 
+    const handleChange = (e) =>{
+       const {name, value} = e.target
+       
+       if(name==="user" || name==="stp" || name==="doctor"){
+          let parsedValue = JSON.parse(value)
+          setFormData((prevData)=>({...prevData,[name]:parsedValue}))
+       }else{
+        setFormData((prevData)=>({...prevData,[name]:value}))
+       }
+
+    }
+
     const validateData = () =>{
        let newErrors = {}
 
-       if(!selectedDoc) newErrors.doc = "Please select doctor or chemist."
-       if(!selectedUser) newErrors.user = "Please select user."
-       if(!selectedStp) newErrors.stp = "Please select stp."
-       if(!description) newErrors.description = "Please enter description."
-       if(!mtpDate) newErrors.mtpDate = "Please enter mtp date."
+       if(!formData.doctor) newErrors.doc = "Please select doctor or chemist."
+       if(!formData.user) newErrors.user = "Please select user."
+       if(!formData.stp) newErrors.stp = "Please select stp."
+       if(!formData.description) newErrors.description = "Please enter description."
+       if(!formData.mtpDate) newErrors.mtpDate = "Please enter mtp date."
 
        setErrors(newErrors)
 
@@ -124,11 +138,11 @@ function AddMtp() {
         <div className='grid gap-4 md:grid-cols-2 grid-cols-1'>
           <div className='flex flex-col gap-2'>
              <label className='font-medium text-gray-700'>Select Doctor/Chemist <span className='text-sm text-red-500'>*</span></label>
-             <select className='p-2 outline-none border border-gray-200' value={selectedDoc} onChange={(e)=>setSelectedDoc(e.target.value)}> 
+             <select name='doctor' className='p-2 outline-none border border-gray-200' value={JSON.stringify(formData.doctor)} onChange={handleChange}> 
                <option value={''}>--- Select Doctor/Chemist ---</option>
                {
                 docchem.map((item,index)=>(
-                  <option key={index} value={item.drCode || item.chemistCode}>{item.drName || item.chemistName}</option>
+                  <option key={index} value={JSON.stringify(item)}>{item.drName || item.chemistName}</option>
                 ))
                }
              </select>
@@ -139,7 +153,7 @@ function AddMtp() {
           </div>
           <div className='flex flex-col gap-2'>
              <label className='font-medium text-gray-700'>Select Users <span className='text-sm text-red-500'>*</span></label>
-             <select value={selectedUser} onChange={(e)=>setSelectedUser(e.target.value)} className='p-2 border border-gray-200 outline-none'>
+             <select name='user' value={selectedUser} onChange={handleChange} className='p-2 border border-gray-200 outline-none'>
                <option value={''}>--Select User ---</option>
                {
                  users.map((item, index)=>(
@@ -196,6 +210,27 @@ function AddMtp() {
                }
              </button>
           </div>
+     </div>
+     <div className='h-full py-4 px-3 custom-shadow rounded-md bg-white'>
+        {/* <Box sx={{height:"100%",
+          '& .super-app-theme--header': {
+            backgroundColor: '#edf3fd',
+          },}}>
+           <DataGrid
+            rows={}
+            columns={}
+            loading={loading}
+            initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+              },
+            },
+           }}
+           pageSizeOptions={[5,10]}
+           disableRowSelectionOnClick
+          />
+         </Box> */}
      </div>
     </div>
   
