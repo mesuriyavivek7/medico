@@ -8,7 +8,7 @@ import { BiTrip } from "react-icons/bi";
 import NotificationBar from "../NotificationBar";
 
 //importing images
-import LOGO from "../../assets/logo.png";
+import LOGO from '../../assets/ELVIRA LOGO.png' 
 import PERSON from "../../assets/asset4.jpg";
 
 import { useLocation , Outlet, useNavigate} from "react-router-dom";
@@ -111,8 +111,7 @@ export default function Dashboard() {
       {/* Navbar */}
       <div className="fixed bg-white z-40 top-0 right-0 left-0 md:h-24 h-20 flex items-center">
         <div className={`${isMenuOpen?"md:w-72":"md:w-28"} w-28 duration-300 transition-all px-5 h-full flex items-center gap-2`}>
-          <img className="w-14 h-14" alt="logo" src={LOGO}></img>
-          {isMenuOpen && <h1 className="text-themeblue md:block hidden text-3xl transition-all duration-300 font-semibold">Elvira</h1>}
+          {isMenuOpen ? <img className="w-36 h-14" alt="logo" src={LOGO}></img>: <h1 className="text-2xl text-green-500">Elvira</h1>}
         </div>
         <div className="flex justify-between px-2 md:px-8 h-full w-full items-center">
           <div className="flex items-center gap-3">

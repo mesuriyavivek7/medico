@@ -10,7 +10,7 @@ import {
 import axios from "axios";
 
 //Importing images
-import Logo from "../assets/logo.png";
+import LOGO from '../assets/ELVIRA LOGO.png'
 import IMG from "../assets/asset1.png";
 
 //Importing icons
@@ -88,11 +88,8 @@ export default function Login() {
       {/* first section */}
       <div className="md:w-1/2 w-full flex md:absolute top-0 left-0 pentagon h-2/3 md:h-full overflow-hidden py-8 md:py-24 px-4 flex-col bg-white gap-10 md:gap-24">
         <div className="flex flex-col gap-2 md:gap-6 items-center md:items-start md:pl-36">
-          <div className="flex items-center gap-2">
-            <img className="md:w-24 w-12 h-12 md:h-24" src={Logo} alt="logo" />
-            <span className="text-themeblue text-3xl md:text-4xl font-semibold">
-              Elvira
-            </span>
+          <div className="flex justify-center pl-4 items-center gap-2">
+            <img className="md:w-40 w-12 h-12 md:h-20" src={LOGO} alt="logo" />
           </div>
           <div className="flex flex-col gap-1 md:gap-2 items-center">
             <h1 className="text-purple text-xl md:text-2xl font-medium">
