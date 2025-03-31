@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 
@@ -11,6 +11,9 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { ChevronUp } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
+
 
 import {toast} from 'react-toastify'
 import api from '../api';
@@ -55,7 +58,12 @@ function AddStourPlan() {
   const { user } = useSelector((state) => state.auth);
   const [tourPlanName,setTourPlanName] = useState('')
   const [places,setPlaces] = useState([])
+  const [tourType,setTourType] = useState(0)
+  const [perKm,setPerKm] = useState(null)
   const [errors,setErrors] = useState({})
+  const [allowance,setAllowance] = useState([])
+  const [open,setOpen] = useState(false)
+  const [selectedAllowance,setSelectedAllowanace] = useState([])
   const [loading,setLoading] = useState(false)
 
   const movePlace = (fromIndex, toIndex) => {
@@ -89,6 +97,8 @@ function AddStourPlan() {
      let newErrors = {}
      if(!tourPlanName) newErrors.tourplan = "Tourplan name is required."
      if(places.length===0) newErrors.places = "Add one or more place."
+     if(selectedAllowance.length===0) newErrors.selectedAllowance = 'Please select any one allowance.'
+     if(!perKm) newErrors.perKm = 'Please enter km value'
 
      setErrors(newErrors)
 
@@ -102,7 +112,9 @@ function AddStourPlan() {
         await api.post(`STPMTP`,{
          tourId:0,
          tourName:tourPlanName,
-         tourType:0,
+         tourType:tourType,
+         perKm:perKm,
+         lstAllowance:selectedAllowance,
          tourLocations:locations
         })
         setTourPlanName('')
@@ -115,6 +127,31 @@ function AddStourPlan() {
 
   }
 
+  //get Allowance 
+  const getAllowance = async () =>{
+    try{
+      const response = await api.get('/User/getAllowace')
+      console.log(response.data.data)
+      setAllowance(response.data.data)
+    }catch(err){
+      console.log(err)
+      toast.error("Something went wrong.")
+    }
+  }
+
+  const handleSelectAllowance = (item) =>{
+     const existItems = selectedAllowance.find((i)=>item.allowanceID === i.allowanceID)
+     if(existItems){
+         setSelectedAllowanace(()=>selectedAllowance.filter((i)=> i.allowanceID!==item.allowanceID))
+     }else{
+         setSelectedAllowanace((prevData)=>[item,...prevData])
+     }
+  }
+
+
+  useEffect(()=>{
+     getAllowance()
+  },[])
 
   return (
   <DndProvider backend={HTML5Backend}>
@@ -131,6 +168,53 @@ function AddStourPlan() {
            <input onChange={(e)=>setTourPlanName(e.target.value)} value={tourPlanName} type='text' name='tourPlanName' id='tourName' className='border outline-none w-1/4 py-1.5 px-2 rounded-md' placeholder='Enter Tour Name'></input>
            {errors.tourplan && <span className='text-sm text-red-500'>{errors.tourplan}</span>}
         </div>
+
+        <div className='flex md:flex-row flex-col w-full items-start gap-4 md:gap-6'>
+            <div className='flex flex-col gap-2'>
+              <label htmlFor='tourtype' className='font-bold'>Tour Type <span className='text-red-500'>*</span></label>
+              <div className='flex items-center gap-4'>
+               <div className='flex items-center gap-2'>
+                <input onChange={()=>setTourType(0)} checked={tourType===0} value={0} type='radio' id='local'></input>
+                <label htmlFor='local'>Local</label>
+               </div>
+               <div className='flex items-center gap-2'>
+                <input onChange={()=>setTourType(1)} checked={tourType==1} value={1} type='radio' id='outstation'></input>
+                <label htmlFor='outstation'>Outstation</label>
+               </div>
+              </div>
+            </div>
+
+            <div className='flex flex-col gap-2'>
+               <label className='font-bold' htmlFor='perKm'>Per Km <span className='text-red-500'>*</span></label>
+               <input value={perKm} onChange={(e)=>setPerKm(e.target.value)} id='perKm' type='number' className='border outline-none py-.5 px-2 rounded-md' placeholder='Enter km'></input>
+               {errors.perKm && <span className='text-sm text-red-500'>{errors.perKm}</span>}
+            </div>
+
+            <div className='flex w-52 flex-col gap-2'>
+               <label className='font-bold' htmlFor='allowance'>Allowance <span className='text-red-500'>*</span></label>
+               <div className='relative w-full'>
+                <div onClick={()=>setOpen((prev)=>!prev)} className='p-1.5 cursor-pointer border flex gap-2 justify-between items-center rounded-md '>
+                  <span>Select Allowance</span>
+                  <span >{open ? <ChevronUp className='w-5 h-5 text-gray-600'></ChevronUp>:<ChevronDown className='w-5 h-5 text-gray-600'></ChevronDown>}</span>
+                </div>
+                {
+                  open && 
+                  <div className='absolute h-24 overflow-scroll w-full shadow bg-white z-40'>
+                  {
+                    allowance.map((item,index) =>(
+                      <div key={index} className='flex p-2 justify-between items-center gap-2'>
+                         <input onChange={()=>handleSelectAllowance(item)} checked={selectedAllowance.includes(item)} type='checkbox'></input>
+                         <span className='text-xs'>{item.allowanceName} (Rs. {item.allowanceAmount})</span>
+                      </div>
+                    ))
+                  }
+                  </div>
+                }
+                {errors.selectedAllowance && <span className='text-sm text-red-500'>{errors.selectedAllowance}</span>}
+               </div>
+            </div>
+        </div>
+        
         <div className='flex items-center gap-3'>
             <span className='text-themeblue'><PlaceOutlinedIcon style={{fontSize:'2.2rem'}}></PlaceOutlinedIcon></span>
             <h1 className='text-xl font-bold tracking-wide'>Places Visited Today</h1>
@@ -140,7 +224,7 @@ function AddStourPlan() {
               <input onChange={(e)=>setNewPlace(e.target.value)} value={newPlace} type='text' className='col-span-3 outline-none p-2.5 border rounded-md ' placeholder='Enter place name...'></input>
               {errors.places && <span className='text-sm text-red-500'>{errors.places}</span>}
             </div>
-            <button onClick={addNewPlace} className='p-2.5 col-span-1 flex justify-center items-center gap-2 text-white bg-themeblue rounded-md font-medium'><span><AddOutlinedIcon></AddOutlinedIcon></span> Add Place</button>
+            <button onClick={addNewPlace} className='p-2.5 md:w-36 w-36 col-span-1 flex justify-center items-center gap-2 text-white bg-themeblue rounded-md font-medium'><span><AddOutlinedIcon></AddOutlinedIcon></span> Add Place</button>
         </div>
 
         <div className='overflow-scroll flex flex-col gap-2 h-80 w-full'>
