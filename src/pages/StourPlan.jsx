@@ -8,18 +8,16 @@ import NODATA from '../assets/computer.png'
 import Loader from '../assets/loader.svg'
 
 //Importing icons
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import { Rows2 } from 'lucide-react';
+import { Calendar } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { toast } from 'react-toastify'
 
 function StourPlan() {
    const { user } = useSelector((state) => state.auth);
    const [stpPlan,setStpPlan] = useState([])
-   const [activeState,setActiveState] = useState('approve')
    const [loading,setLoading] = useState(false)
-   const [activeCounts, setActiveCounts] = useState(0);
-   const [pendingCounts, setPendingCounts] = useState(0);
-   const [rejectCounts, setRejectCounts] = useState(0);
+  
 
    const getDate = (orgdate) => {
     if (!orgdate) return "";
@@ -46,9 +44,8 @@ function StourPlan() {
         reportingTo:0,
         tourType:0
        })
-       if(response.data.data.length>0){
-        setStpPlan(response.data.data[0].tours.filter((tour)=> tour.tourType === 0))
-       }
+       console.log(response.data.data)
+       setStpPlan(response.data.data)
      }catch(err){
       toast.error("Something went wrong.")
       console.log(err)
@@ -57,150 +54,11 @@ function StourPlan() {
      }
    }
 
-   useEffect(()=>{
-     setActiveCounts(stpPlan.filter((item)=>item.status==="Approved").length)
-     setPendingCounts(stpPlan.filter((item)=>item.status==="Pending").length)
-     setRejectCounts(stpPlan.filter((item)=>item.status==="Rejected").length)
-   },[stpPlan])
-
-
 
    useEffect(()=>{
     getAllTourPlan()
    },[])
 
-   const renderSTP = () =>{
-    switch(activeState) {
-      case "approve":
-        return activeCounts > 0 ? (
-          stpPlan.filter((plan) => plan.status === "Approved")
-          .map((item,index) => (
-          <div key={index} className='rounded-md custom-shadow border-l-4 border-black  bg-white p-4 flex flex-col gap-2'>
-          <div className='w-full flex justify-between'>
-            <h1 className='text-lg font-bold'>{item.tourName || ""}</h1>
-            <div className='flex items-center gap-4'>
-              <span className='font-medium'>Approved By : {item.approvedBy || ""}</span>
-              <span className='bg-green-200 flex justify-center items-center px-2 p-1 rounded-2xl text-sm text-green-600'>Approved</span>
-            </div>
-          </div>
-          <div className='flex flex-col gap-1'>
-           <div className='flex gap-2 items-center'>
-             <span className='text-[#71717a]'><CalendarTodayIcon style={{fontSize:'1.1rem'}}></CalendarTodayIcon></span> 
-             <span className='text-[#71717a] font-medium'>{getDate(item.addedDate)}</span>
-           </div>
-           <p className='text-[15px] font-medium text-[#71717a]'>{item.comments || ""}</p>
-          </div>
-          <div className='flex flex-col mt-2 gap-2'>
-           <div className='flex items-center gap-2'>
-             <span className='text-[#71717a]'><LocationOnOutlinedIcon></LocationOnOutlinedIcon></span>
-             <span className='font-medium'>Tour Locations</span>
-           </div>
-           <hr></hr>
-           <div className='flex flex-col gap-1'>
-             {
-               item.tourLocations.map((location,index)=> <span key={index}>{location.locationSequence+1} {location.locationName || ""}</span>)
-             }
-           </div>
-          </div>
-       </div>
-       ))
-        ) : (
-        <div className="w-full h-full flex justify-center items-center">
-          <div className="flex flex-col gap-1 items-center">
-            <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
-            <span className="text-gray-600 font-medium">
-              No Approved Tour Plans
-            </span>
-          </div>
-        </div>
-        )
-
-      case "pending":
-        return pendingCounts > 0 ? (
-          stpPlan.filter((plan)=> plan.status==="Pending").
-          map((item,index) => (
-          <div key={index} className='rounded-md custom-shadow border-l-4 border-black  bg-white p-4 flex flex-col gap-2'>
-          <div className='w-full flex justify-between'>
-            <h1 className='text-lg font-bold'>{item.tourName || ""}</h1>
-            <span className='bg-orange-200 flex justify-center items-center px-2 rounded-2xl text-sm text-yellow-600'>Pending</span>
-          </div>
-          <div className='flex flex-col gap-1'>
-           <div className='flex gap-2 items-center'>
-             <span className='text-[#71717a]'><CalendarTodayIcon style={{fontSize:'1.1rem'}}></CalendarTodayIcon></span> 
-             <span className='text-[#71717a] font-medium'>{getDate(item.addedDate)}</span>
-           </div>
-           <p className='text-[15px] font-medium text-[#71717a]'>{item.comments || ""}</p>
-          </div>
-          <div className='flex flex-col mt-2 gap-2'>
-           <div className='flex items-center gap-2'>
-             <span className='text-[#71717a]'><LocationOnOutlinedIcon></LocationOnOutlinedIcon></span>
-             <span className='font-medium'>Tour Locations</span>
-           </div>
-           <hr></hr>
-           <div className='flex flex-col gap-1'>
-            {
-               item.tourLocations.map((location,index)=> <span key={index}>{location.locationSequence+1} {location.locationName || ""}</span>)
-             }
-           </div>
-          </div>
-         </div>
-        ))
-        ) : (
-          <div className="w-full h-full flex justify-center items-center">
-            <div className="flex flex-col gap-1 items-center">
-              <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
-              <span className="text-gray-600 font-medium">
-                No Pending Tour Plans
-              </span>
-            </div>
-          </div>
-          )
-        
-      case "rejected" : 
-        return rejectCounts > 0 ? (
-          stpPlan.filter((plan)=> plan.status==="Rejected").
-          map((item,index)=>(
-          <div key={index} className='rounded-md custom-shadow border-l-4 border-black  bg-white p-4 flex flex-col gap-2'>
-          <div className='w-full flex justify-between'>
-            <h1 className='text-lg font-bold'>{item.tourName || ""}</h1>
-            <div className='flex items-center gap-4'>
-              <span className='font-medium'>Reject By : {item.approvedBy || ""}</span>
-              <span className='bg-red-200 flex justify-center items-center px-2 p-1 rounded-2xl text-sm text-red-600'>Approved</span>
-            </div>
-          </div>
-          <div className='flex flex-col gap-1'>
-           <div className='flex gap-2 items-center'>
-             <span className='text-[#71717a]'><CalendarTodayIcon style={{fontSize:'1.1rem'}}></CalendarTodayIcon></span> 
-             <span className='text-[#71717a] font-medium'>{getDate(item.addedDate)}</span>
-           </div>
-           <p className='text-[15px] font-medium text-[#71717a]'>{item.comments || ""}</p>
-          </div>
-          <div className='flex flex-col mt-2 gap-2'>
-           <div className='flex items-center gap-2'>
-             <span className='text-[#71717a]'><LocationOnOutlinedIcon></LocationOnOutlinedIcon></span>
-             <span className='font-medium'>Tour Locations</span>
-           </div>
-           <hr></hr>
-           <div className='flex flex-col gap-1'>
-             {
-               item.tourLocations.map((location,index)=> <span key={index}>{location.locationSequence+1} {location.locationName || ""}</span>)
-             }
-           </div>
-          </div>
-       </div>))
-        ) : (
-          <div className="w-full h-full flex justify-center items-center">
-            <div className="flex flex-col gap-1 items-center">
-              <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
-              <span className="text-gray-600 font-medium">
-                No Rejected Tour Plans
-              </span>
-            </div>
-          </div>
-        )
-         
-    }
-   }
 
   return (
     <div className='flex h-full flex-col gap-3 md:gap-4'>
@@ -209,38 +67,6 @@ function StourPlan() {
           <h1 className="text-gray-600 text-base md:text-lg font-medium">
             Standard Tour Plan
           </h1>
-          <div className="flex items-center gap-2">
-            <span
-              onClick={() => setActiveState("approve")}
-              className={`w-20 ${
-                activeState === "approve"
-                  ? "bg-themeblue text-white"
-                  : "text-gray-600"
-              } cursor-pointer hover:bg-themeblue hover:text-white transition-colors duration-300 flex justify-center items-center text-sm p-1 border rounded-md`}
-            >
-              Approved
-            </span>
-            <span
-              onClick={() => setActiveState("pending")}
-              className={`w-20 ${
-                activeState === "pending"
-                  ? "bg-themeblue text-white"
-                  : "text-gray-600"
-              } cursor-pointer hover:bg-themeblue hover:text-white transition-colors duration-300 flex justify-center items-center text-sm p-1 border rounded-md`}
-            >
-              Pending
-            </span>
-            <span
-              onClick={() => setActiveState("rejected")}
-              className={`w-20 ${
-                activeState === "rejected"
-                  ? "bg-themeblue text-white"
-                  : "text-gray-600"
-              } cursor-pointer hover:bg-themeblue hover:text-white transition-colors duration-300 flex justify-center items-center text-sm p-1 border rounded-md`}
-            >
-              Rejected
-            </span>
-          </div>
         </div>
         <div className="flex items-center gap-3">
           <Link
@@ -253,13 +79,48 @@ function StourPlan() {
         </div>
       </div>
 
-      <div className='flex h-full flex-col overflow-scroll gap-4'>
+      <div className='h-full w-full overflow-scroll gap-4'>
         {loading ? (
           <div className="w-full h-full flex justify-center items-center">
             <img src={Loader} alt="loader" className="w-10 h-10"></img>
           </div>
         ) : (
-          renderSTP()
+          <div className='h-full gap-4 w-full grid md:grid-cols-3 grid-cols-1 items-start'>
+            {
+              stpPlan.map((stp,index)=>(
+                  <div key={index} className='flex rounded-md shadow overflow-hidden flex-col'>
+                    <div className='flex bg-neutral-300 items-center text-black justify-between p-3'>
+                       <h1>{stp.tourName}</h1>
+                       <span className='bg-green-500 rounded-md text-white font-medium px-2 py-1'>{stp.tourType===0?"Local":"OutStation"}</span>
+                    </div>
+                    <div className='flex gap-3 flex-col p-3 bg-neutral-100'>
+                      {
+                        stp?.tourLocation && 
+                        <div className='flex items-center gap-2'>
+                          <MapPin className='text-violet-500 w-5 h-5'></MapPin>
+                          <span className='text-violet-500 text-sm'>{stp?.tourLocation?.split(',')}</span>
+                         </div>
+                      }
+                      <div className='flex items-center gap-2'>
+                         <Calendar className='text-blue-500 w-5 h-5'></Calendar>
+                         <span className='text-blue-500 text-sm font-medium'>Added On {getDate(stp.addedDate)}</span>
+                      </div>
+                      <div className='flex items-center gap-2'>
+                         <MapPin className='text-indigo-500 w-5 h-5'></MapPin>
+                         <span className='text-sm text-indigo-500'>{stp.perKm} KM</span>
+                      </div>
+                      {
+                        stp?.tourAllowance && 
+                        <div className='flex items-center gap-2'>
+                          <Rows2 className='text-sky-500 w-5 h-5'></Rows2>
+                          <span className='text-sky-500 text-sm'>{stp?.tourAllowance?.split(',')}</span>
+                       </div>
+                      }
+                    </div>
+                  </div>
+              ))
+            }
+          </div>
         )}
       </div>
     </div>

@@ -12,6 +12,8 @@ import { LoaderCircle } from 'lucide-react';
 import {toast} from 'react-toastify'
 import api from '../api';
 
+import { mtpcolumns } from '../data/mtpTable';
+
 
 function AddMtp() {
     const { user } = useSelector((state) => state.auth);
@@ -22,16 +24,10 @@ function AddMtp() {
     const [stp,setStp] = useState([])
     const [loading,setLoading] = useState(false)
     const [errors,setErrors] = useState({})
+    const [mtpRow,setMtpRow] = useState([])
 
     let docchem = [...doctors,...chemist]
 
-    const [selectedUser,setSelectedUser] = useState(null)
-    const [selectedDoc,setSelectedDoc] = useState(null)
-    const [selectedStp,setSelectdStp] = useState(null)
-    
-
-    const [description,setDescription] = useState('')
-    const [mtpDate,setMtpDate] = useState(null)
 
     const [formData,setFormData] = useState({
       user:null,
@@ -84,6 +80,7 @@ function AddMtp() {
 
     }
 
+
     const validateData = () =>{
        let newErrors = {}
 
@@ -99,30 +96,54 @@ function AddMtp() {
     }
 
     const handleSubmit = async () =>{
-       if(validateData()){
         try{
           setLoading(true)
-          let Obj = {
-            mtpID: 0,
-            stPid: selectedStp,
-            docID: selectedDoc,
-            superiorID: selectedUser,
-            userID: user.id,
-            mtpDate: mtpDate,
-            insertDate: "2025-03-31T06:37:38.928Z",
-            insertBy: "string",
-            description: description,
-            prodIDs: [0]
-          }
-          const response = await api.post("/STPMTP",Obj)
+          
+          Promise.all(mtpRow.map(async (mtp)=>{
+            let obj = {
+              mtpID:0,
+              stPid:mtp.stp?.tourID,
+              docID:mtp.doctor?.drCode || mtp.doctor?.chemistCode,
+              superiorID:mtp.user.id,
+              userID:user.id,
+              mtpDate:mtp.mtpDate,
+              insertDate:new Date(),
+              insertBy:"String",
+              description:mtp.description,
+              prodIDs:[0]
+            }
+
+            console.log(obj)
+
+            await api.post('/STPMTP/addMTP',obj)
+
+          }))
+          
           toast.success("Successfully mtp created.")
+          setMtpRow([])
         }catch(err){
           console.log(err)
           toast.error("Something went wrong.")
         }finally{
           setLoading(false)
         }
-       }
+    }
+
+    const handleAdd = () =>{
+      if(validateData()){
+          setMtpRow((prevData)=>[{id:prevData.length+1,...formData},...prevData])
+          setFormData({
+            user:null,
+            doctor:null,
+            stp:null,
+            mtpDate:'',
+            description:''
+          })
+      }
+    }
+
+    const handleRemove = (id) =>{
+        setMtpRow(()=>mtpRow.filter((item)=> item.id!==id))
     }
     
   return (
@@ -153,11 +174,11 @@ function AddMtp() {
           </div>
           <div className='flex flex-col gap-2'>
              <label className='font-medium text-gray-700'>Select Users <span className='text-sm text-red-500'>*</span></label>
-             <select name='user' value={selectedUser} onChange={handleChange} className='p-2 border border-gray-200 outline-none'>
+             <select name='user' value={JSON.stringify(formData.user)} onChange={handleChange} className='p-2 border border-gray-200 outline-none'>
                <option value={''}>--Select User ---</option>
                {
                  users.map((item, index)=>(
-                  <option key={index} value={item.id}>{item.firstName} {item.lastName}</option>
+                  <option key={index} value={JSON.stringify(item)}>{item.firstName} {item.lastName}</option>
                  ))
                }
              </select>
@@ -168,11 +189,11 @@ function AddMtp() {
           </div>
           <div className='flex flex-col gap-2'>
              <label className='font-medium text-gray-700'>Select STP <span className='text-sm text-red-500'>*</span></label>
-             <select value={selectedStp} onChange={(e)=>setSelectdStp(e.target.value)} className='p-2 border border-gray-200 outline-none'>
+             <select name='stp' value={JSON.stringify(formData.stp)} onChange={handleChange} className='p-2 border border-gray-200 outline-none'>
                <option value={''}>--Select Stp---</option>
                {
                  stp.map((item, index)=>(
-                  <option key={index} value={item.tourID}>{item.tourName}</option>
+                  <option key={index} value={JSON.stringify(item)}>{item.tourName}</option>
                  ))
                }
              </select>
@@ -183,7 +204,7 @@ function AddMtp() {
           </div>
           <div className='flex flex-col gap-2'>
             <label className='font-medium text-gray-700'>Select MTP Date <span className='text-sm text-red-500'>*</span></label>
-            <input type='date' onChange={(e)=>setMtpDate(e.target.value)} value={mtpDate} className='p-2 border border-gray-200 outline-none'></input>
+            <input name='mtpDate' type='date' onChange={handleChange} value={formData.mtpDate} className='p-2 border border-gray-200 outline-none'></input>
             {
                errors.mtpDate && 
                <span className='text-sm text-red-500'>{errors.mtpDate}</span>
@@ -192,7 +213,7 @@ function AddMtp() {
 
           <div className='flex flex-col gap-2'>
             <label className='font-medium text-gray-700'>Description <span className='text-sm text-red-500'>*</span></label>
-            <textarea onChange={(e)=>setDescription(e.target.value)} type='text' value={description} placeholder='enter description' className='p-2 border border-gray-200 outline-none'></textarea>
+            <textarea name='description' onChange={handleChange} type='text' value={formData.description} placeholder='enter description' className='p-2 border border-gray-200 outline-none'></textarea>
             {
                errors.description && 
                <span className='text-sm text-red-500'>{errors.description}</span>
@@ -202,23 +223,23 @@ function AddMtp() {
 
         </div>
         <div className='flex w-full place-content-end'>
-             <button onClick={handleSubmit} disabled={loading} className='bg-themeblue cursor-pointer text-white p-2 w-20'>
+             <button onClick={handleAdd} disabled={loading} className='bg-themeblue cursor-pointer text-white p-2 w-20'>
                {
                 loading ? 
                 <LoaderCircle className='animate-spin'></LoaderCircle>
-                : <span>Submit</span>
+                : <span>Add</span>
                }
              </button>
           </div>
      </div>
      <div className='h-full py-4 px-3 custom-shadow rounded-md bg-white'>
-        {/* <Box sx={{height:"100%",
+        <Box sx={{height:"100%",
           '& .super-app-theme--header': {
             backgroundColor: '#edf3fd',
           },}}>
            <DataGrid
-            rows={}
-            columns={}
+            rows={mtpRow}
+            columns={mtpcolumns(handleRemove)}
             loading={loading}
             initialState={{
             pagination: {
@@ -230,7 +251,16 @@ function AddMtp() {
            pageSizeOptions={[5,10]}
            disableRowSelectionOnClick
           />
-         </Box> */}
+         </Box>
+     </div>
+     <div onClick={handleSubmit} className='p-2 bg-white flex place-content-end'>
+         <button disabled={mtpRow.length===0} className='w-36  disabled:bg-gray-500 disabled:cursor-not-allowed p-2 font-medium flex justify-center items-center bg-themeblue text-white'>
+            {
+              loading? 
+              <LoaderCircle className='animate-spin'></LoaderCircle>
+              :<span>Submit</span>
+            }
+         </button>
      </div>
     </div>
   
