@@ -244,14 +244,6 @@ function App() {
             )
           },
           {
-            path:'pendingstp',
-            element:(
-              <ProtectedRoute requiredRole="admin">
-                <PendingStp></PendingStp>
-              </ProtectedRoute>
-            )
-          },
-          {
             path:'mtpplan',
             element:(
               <ProtectedRoute requiredRole="admin">
@@ -264,14 +256,6 @@ function App() {
             element:(
               <ProtectedRoute requiredRole="admin">
                 <AddMtp></AddMtp>
-              </ProtectedRoute>
-            )
-          },
-          {
-            path:'pendingmtp',
-            element:(
-              <ProtectedRoute requiredRole="admin">
-                <PendingMtp></PendingMtp>
               </ProtectedRoute>
             )
           },

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../api'
 import { useSelector } from 'react-redux'
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 //importing images
 import NODATA from '../assets/computer.png'
@@ -10,17 +12,19 @@ import Loader from '../assets/loader.svg'
 //Importing icons
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
+import NearMeOutlinedIcon from '@mui/icons-material/NearMeOutlined';
 import { toast } from 'react-toastify'
 
 function MTP() {
    const { user } = useSelector((state) => state.auth);
+   const [userDetails,setUserDetails] = useState(null)
    const [mtpPlan,setMtpPlan] = useState([])
-   const [activeState,setActiveState] = useState('approve')
    const [loading,setLoading] = useState(false)
-   const [activeCounts, setActiveCounts] = useState(1);
-   const [pendingCounts, setPendingCounts] = useState(1);
-   const [rejectCounts, setRejectCounts] = useState(1);
-   
+   const [openDate,setOpenDate] = useState(false)
+
+   const [date,setDate] = useState(new Date())
 
    const getDate = (orgdate) => {
     if (!orgdate) return "";
@@ -36,21 +40,24 @@ function MTP() {
     return formattedDate;
   };
 
+  const getShortName = (name) =>{
+     if(!name) return ''
+
+     return name.split(' ').map((char)=>char.charAt(0).toUpperCase()).join('')
+  }
+
 
    const getAllTourPlan = async () =>{
      try{
        setLoading(true)
-       const response = await api.post(`/STPMTP/GetAll`,
+       const response = await api.post(`/STPMTP/getMTP`,
        {
-        pageNumber:0,
-        pageSize:0,
-        criteria:'string',
-        reportingTo:0,
-        tourType:1
+          mtpDate:date
        })
-       if(response.data.data.length>0){
-        setMtpPlan(response.data.data[0].tours.filter((tour)=> tour.tourType === 1))
-       }
+   
+       console.log(response.data)
+       setUserDetails(response.data?.data?.userDetails)
+       setMtpPlan(response.data.data.mtpdetails)
        
      }catch(err){
       console.log(err)
@@ -61,148 +68,10 @@ function MTP() {
    }
 
    useEffect(()=>{
-    setActiveCounts(mtpPlan.filter((item)=>item.status==="Approved").length)
-    setPendingCounts(mtpPlan.filter((item)=>item.status==="Pending").length)
-    setRejectCounts(mtpPlan.filter((item)=>item.status==="Rejected").length)
-  },[mtpPlan])
-
-
-   useEffect(()=>{
     getAllTourPlan()
-   },[])
+   },[date])
 
-   const renderMTP = () =>{
-    switch(activeState) {
-      case "approve":
-        return activeCounts > 0 ? (
-          mtpPlan.filter((plan) => plan.status === "Approved")
-          .map((item,index) => (
-          <div key={index} className='rounded-md custom-shadow border-l-4 border-black  bg-white p-4 flex flex-col gap-2'>
-          <div className='w-full flex justify-between'>
-            <h1 className='text-lg font-bold'>{item.tourName || ""}</h1>
-            <div className='flex items-center gap-4'>
-              <span className='font-medium'>Approved By : {item.approvedBy || ""}</span>
-              <span className='bg-green-200 flex justify-center items-center px-2 p-1 rounded-2xl text-sm text-green-600'>Approved</span>
-            </div>
-          </div>
-          <div className='flex flex-col gap-1'>
-           <div className='flex gap-2 items-center'>
-             <span className='text-[#71717a]'><CalendarTodayIcon style={{fontSize:'1.1rem'}}></CalendarTodayIcon></span> 
-             <span className='text-[#71717a] font-medium'>{getDate(item.addedDate)}</span>
-           </div>
-           <p className='text-[15px] font-medium text-[#71717a]'>{item.comments || ""}</p>
-          </div>
-          <div className='flex flex-col mt-2 gap-2'>
-           <div className='flex items-center gap-2'>
-             <span className='text-[#71717a]'><LocationOnOutlinedIcon></LocationOnOutlinedIcon></span>
-             <span className='font-medium'>Tour Locations</span>
-           </div>
-           <hr></hr>
-           <div className='flex flex-col gap-1'>
-             {
-               item.tourLocations.map((location,index)=> <span key={index}>{location.locationSequence+1} {location.locationName || ""}</span>)
-             }
-           </div>
-          </div>
-       </div>
-       ))
-        ) : (
-        <div className="w-full h-full flex justify-center items-center">
-          <div className="flex flex-col gap-1 items-center">
-            <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
-            <span className="text-gray-600 font-medium">
-              No Approved Tour Plan
-            </span>
-          </div>
-        </div>
-        )
-
-      case "pending":
-        return pendingCounts > 0 ? (
-          mtpPlan.filter((plan)=> plan.status==="Pending").
-          map((item,index) => (
-          <div key={index} className='rounded-md custom-shadow border-l-4 border-black  bg-white p-4 flex flex-col gap-2'>
-          <div className='w-full flex justify-between'>
-            <h1 className='text-lg font-bold'>{item.tourName || ""}</h1>
-            <span className='bg-orange-200 flex justify-center items-center px-2 rounded-2xl text-sm text-yellow-600'>Pending</span>
-          </div>
-          <div className='flex flex-col gap-1'>
-           <div className='flex gap-2 items-center'>
-             <span className='text-[#71717a]'><CalendarTodayIcon style={{fontSize:'1.1rem'}}></CalendarTodayIcon></span> 
-             <span className='text-[#71717a] font-medium'>{getDate(item.addedDate)}</span>
-           </div>
-           <p className='text-[15px] font-medium text-[#71717a]'>{item.comments || ""}</p>
-          </div>
-          <div className='flex flex-col mt-2 gap-2'>
-           <div className='flex items-center gap-2'>
-             <span className='text-[#71717a]'><LocationOnOutlinedIcon></LocationOnOutlinedIcon></span>
-             <span className='font-medium'>Tour Locations</span>
-           </div>
-           <hr></hr>
-           <div className='flex flex-col gap-1'>
-            {
-               item.tourLocations.map((location,index)=> <span key={index}>{location.locationSequence+1} {location.locationName || ""}</span>)
-             }
-           </div>
-          </div>
-         </div>
-        ))
-        ) : (
-          <div className="w-full h-full flex justify-center items-center">
-            <div className="flex flex-col gap-1 items-center">
-              <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
-              <span className="text-gray-600 font-medium">
-                No Pending Tour Plan
-              </span>
-            </div>
-          </div>
-          )
-        
-      case "rejected" : 
-        return rejectCounts > 0 ? (
-          mtpPlan.filter((plan)=> plan.status==="Rejected").
-          map((item,index)=>(
-          <div key={index} className='rounded-md custom-shadow border-l-4 border-black  bg-white p-4 flex flex-col gap-2'>
-          <div className='w-full flex justify-between'>
-            <h1 className='text-lg font-bold'>{item.tourName || ""}</h1>
-            <div className='flex items-center gap-4'>
-              <span className='font-medium'>Reject By : {item.approvedBy || ""}</span>
-              <span className='bg-red-200 flex justify-center items-center px-2 p-1 rounded-2xl text-sm text-red-600'>Approved</span>
-            </div>
-          </div>
-          <div className='flex flex-col gap-1'>
-           <div className='flex gap-2 items-center'>
-             <span className='text-[#71717a]'><CalendarTodayIcon style={{fontSize:'1.1rem'}}></CalendarTodayIcon></span> 
-             <span className='text-[#71717a] font-medium'>{getDate(item.addedDate)}</span>
-           </div>
-           <p className='text-[15px] font-medium text-[#71717a]'>{item.comments || ""}</p>
-          </div>
-          <div className='flex flex-col mt-2 gap-2'>
-           <div className='flex items-center gap-2'>
-             <span className='text-[#71717a]'><LocationOnOutlinedIcon></LocationOnOutlinedIcon></span>
-             <span className='font-medium'>Tour Locations</span>
-           </div>
-           <hr></hr>
-           <div className='flex flex-col gap-1'>
-             {
-               item.tourLocations.map((location,index)=> <span key={index}>{location.locationSequence+1} {location.locationName || ""}</span>)
-             }
-           </div>
-          </div>
-       </div>))
-        ) : (
-          <div className="w-full h-full flex justify-center items-center">
-            <div className="flex flex-col gap-1 items-center">
-              <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
-              <span className="text-gray-600 font-medium">
-                No Rejected Tour Plan
-              </span>
-            </div>
-          </div>
-        )  
-    }
-   }
-
+  
   return (
     <div className='flex h-full flex-col gap-3 md:gap-4'>
       <div className="bg-white custom-shadow rounded-md md:py-4 py-3 px-3 flex items-center justify-between">
@@ -210,40 +79,18 @@ function MTP() {
           <h1 className="text-gray-600 text-base md:text-lg font-medium">
             Monthly Tour Plan
           </h1>
-          <div className="flex items-center gap-2">
-            <span
-              onClick={() => setActiveState("approve")}
-              className={`w-20 ${
-                activeState === "approve"
-                  ? "bg-themeblue text-white"
-                  : "text-gray-600"
-              } cursor-pointer hover:bg-themeblue hover:text-white transition-colors duration-300 flex justify-center items-center text-sm p-1 border rounded-md`}
-            >
-              Approved
-            </span>
-            <span
-              onClick={() => setActiveState("pending")}
-              className={`w-20 ${
-                activeState === "pending"
-                  ? "bg-themeblue text-white"
-                  : "text-gray-600"
-              } cursor-pointer hover:bg-themeblue hover:text-white transition-colors duration-300 flex justify-center items-center text-sm p-1 border rounded-md`}
-            >
-              Pending
-            </span>
-            <span
-              onClick={() => setActiveState("rejected")}
-              className={`w-20 ${
-                activeState === "rejected"
-                  ? "bg-themeblue text-white"
-                  : "text-gray-600"
-              } cursor-pointer hover:bg-themeblue hover:text-white transition-colors duration-300 flex justify-center items-center text-sm p-1 border rounded-md`}
-            >
-              Rejected
-            </span>
-          </div>
         </div>
+
         <div className="flex items-center gap-3">
+          <div className='relative w-44 border md:p-2 p-1.5 rounded-md'>
+             <span onClick={()=>setOpenDate((prev)=>!prev)} className='text-center cursor-pointer'>Date: {getDate(date)}</span>
+            {
+              openDate && 
+              <div className='absolute -right-16 top-12'>
+                <Calendar onChange={setDate} value={date}></Calendar>
+              </div>
+            }
+          </div>
           <Link
             to={user.isAdmin?"/admin/mtpplan/add":"/employee/mtpplan/add"}
           >
@@ -260,7 +107,80 @@ function MTP() {
             <img src={Loader} alt="loader" className="w-10 h-10"></img>
           </div>
         ) : (
-          renderMTP()
+          <div className='flex flex-col gap-4 w-full h-full'>
+          <div className='bg-white custom-shadow rounded-md flex justify-between md:py-4 py-3 px-3'>
+             <div className='flex gap-2 items-center'>
+               <div className='text-white font-bold bg-[#14b8a6] rounded-full w-12 h-12 flex justify-center items-center'>
+                  {getShortName(userDetails?.fullName)}
+               </div>
+               <div className='flex flex-col'>
+                  <span className='font-medium'>{userDetails?.fullName}</span>
+                  <span className='text-sm'>{userDetails?.headQuater ? userDetails?.headQuater : "No HeadQuater"}</span>
+               </div>
+             </div>
+             <div className='flex flex-col'>
+              <div className='flex gap-2'>
+                 <span className='font-medium'>Reporting To:</span>
+                 <span className='text-gray-600'>{userDetails?.reportToName ? userDetails?.reportToName : "No Repoting"}</span>
+              </div>
+              <div className='flex gap-2'>
+                 <span className='font-medium'>Reporting To HeadQuater:</span>
+                 <span className='text-gray-600'>{userDetails?.reportingToHeadQuater ? userDetails?.reportingToHeadQuater : "No Headquater"}</span>
+              </div>
+             </div>
+          </div>
+          <div className='grid grid-cols-3 items-center gap-2'>
+            {
+               mtpPlan.map((mtp)=>(
+                <div className='flex p-4 border-t-2 bg-white custom-shadow rounded-md border-[#14b8a6] flex-col gap-4'>
+                <div className='flex justify-between items-center'>
+                   <span>{mtp?.drName}</span>
+                   <span className='p-1 px-2 text-sm text-white bg-[#14b8a6] rounded-md font-medium'>
+                     Class {mtp?.className}
+                   </span>
+                </div>
+                <div className='flex items-center gap-2'>
+                   <span className='p-1 text-center text-xs bg-green-200 rounded-md text-green-600 w-20'>
+                      {mtp?.speciality}
+                   </span>
+                   <span className='p-1 text-center text-xs bg-violet-200 rounded-md text-violet-500 w-20'>
+                      {mtp?.qualification}
+                   </span>
+                   <span className='p-1 text-center text-xs bg-neutral-400 rounded-md text-black w-20'>
+                     {mtp?.gender==="M"?"MALE":"FEMALE"}
+                   </span>
+                </div>
+                <div className='flex flex-col gap-2'>
+                  <div className='flex items-center gap-2'>
+                     <CalendarTodayIcon className='text-[#14b8a6]' style={{fontSize:'1.2rem'}}></CalendarTodayIcon>
+                     <span className='text-sm'>{mtp?.mtpdate}</span>
+                  </div>
+                  <div className='flex items-center gap-2'>
+                     <LocationOnOutlinedIcon className='text-[#14b8a6]' style={{fontSize:'1.2rem'}}></LocationOnOutlinedIcon>
+                     <span className='text-sm'>{mtp?.address},{mtp?.pinCode}</span>
+                  </div>
+                  <div className='flex items-center gap-2'>
+                     <AccessTimeOutlinedIcon className='text-[#14b8a6]' style={{fontSize:'1.2rem'}}></AccessTimeOutlinedIcon>
+                     <span className='text-sm'>V Freq: {mtp?.vfreq}</span>
+                  </div>
+                  <div className='flex items-center gap-2'>
+                     <LocalHospitalOutlinedIcon className='text-[#14b8a6]' style={{fontSize:'1.2rem'}}></LocalHospitalOutlinedIcon>
+                     <span className='text-sm'>Area: {mtp?.doctorArea}</span>
+                  </div>
+                  <div className='flex items-center gap-2'>
+                     <NearMeOutlinedIcon className='text-[#14b8a6]' style={{fontSize:'1.2rem'}}></NearMeOutlinedIcon>
+                     <span className='text-sm'>MTP: {mtp?.mtp}</span>
+                  </div>
+                </div>
+                <div className='bg-gray-100 flex  gap-1 flex-col p-2 rounded-md'>
+                    <span>Products</span>
+                    <span className='text-sm'>{mtp?.products}</span>
+                </div>
+             </div>
+               ))
+            }
+          </div>
+          </div>
         )}
       </div>
     </div>

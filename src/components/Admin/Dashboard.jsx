@@ -202,7 +202,7 @@ export default function Dashboard() {
                </div>
                {isMenuOpen && <span className="text-gray-700">{openPlan?<KeyboardArrowDownIcon></KeyboardArrowDownIcon>:<ChevronRightIcon></ChevronRightIcon>}</span>}
               </div>
-              <div className={`px-2 flex flex-col ${openPlan?"h-40":"h-0"} transition-all duration-300 overflow-hidden`}>            
+              <div className={`px-2 flex flex-col ${openPlan?"h-20":"h-0"} transition-all duration-300 overflow-hidden`}>            
                 <div onClick={()=>handleNavigate('stpplan')} className={`group flex ${isActive("stpplan") && "text-blue-600"} hover:bg-blue-50 py-2 cursor-pointer px-8 items-center gap-2`}>
                   <span className={`${isActive('stpplan') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><HorizontalRuleIcon style={{fontSize:'1.5rem'}}></HorizontalRuleIcon></span>
                   {isMenuOpen && <span className={`${isActive("stpplan") && "text-themeblue"} group-hover:text-themeblue font-medium`}>STP Plan</span>}
@@ -210,14 +210,6 @@ export default function Dashboard() {
                 <div onClick={()=>handleNavigate('mtpplan')} className={`group flex ${isActive("mtpplan") && "text-blue-600"} hover:bg-blue-50 py-2 cursor-pointer px-8 items-center gap-2`}>
                  <span className={`${isActive('mtpplan') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><HorizontalRuleIcon style={{fontSize:'1.5rem'}}></HorizontalRuleIcon></span>
                  {isMenuOpen && <span className={`${isActive("mtpplan") && "text-themeblue"} group-hover:text-themeblue font-medium`}>MTP Plan</span>}
-                </div>
-                <div onClick={()=>handleNavigate('pendingstp')} className={`group flex ${isActive("pendingstp") && "text-blue-600"} hover:bg-blue-50 py-2 cursor-pointer px-8 items-center gap-2`}>
-                  <span className={`${isActive('pendingstp') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><HorizontalRuleIcon style={{fontSize:'1.5rem'}}></HorizontalRuleIcon></span>
-                  {isMenuOpen && <span className={`${isActive("pendingstp") && "text-themeblue"} group-hover:text-themeblue font-medium`}>Pending STP</span>}
-                </div>
-                <div onClick={()=>handleNavigate('pendingmtp')} className={`group flex ${isActive("pendingmtp") && "text-blue-600"} hover:bg-blue-50 py-2 cursor-pointer px-8 items-center gap-2`}>
-                  <span className={`${isActive('pendingmtp') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><HorizontalRuleIcon style={{fontSize:'1.5rem'}}></HorizontalRuleIcon></span>
-                  {isMenuOpen && <span className={`${isActive("pendingmtp") && "text-themeblue"} group-hover:text-themeblue font-medium`}>Pending MTP</span>}
                 </div>
               </div>
             </div>
@@ -283,7 +275,7 @@ export default function Dashboard() {
                 </div>
                  <span className="text-gray-700">{openPlan?<KeyboardArrowDownIcon></KeyboardArrowDownIcon>:<ChevronRightIcon></ChevronRightIcon>}</span>
               </div>
-              <div className={`flex flex-col ${openPlan?"h-40":"h-0"} px-2 transition-all duration-300 overflow-hidden`}>
+              <div className={`flex flex-col ${openPlan?"h-20":"h-0"} px-2 transition-all duration-300 overflow-hidden`}>
                 <div onClick={()=>handleNavigate('stpplan')} className={`group flex ${isActive("stpplan") && "text-themeblue"} hover:bg-blue-50 py-2 cursor-pointer px-8 items-center gap-2`}>
                   <span className={`${isActive('stpplan') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><HorizontalRuleIcon style={{fontSize:'1.5rem'}}></HorizontalRuleIcon></span>
                   <span className={`${isActive("stpplan") && "text-themeblue"} group-hover:text-themeblue font-medium `}>STP Plan</span>
@@ -292,14 +284,7 @@ export default function Dashboard() {
                   <span className={`${isActive('mtpplan') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><HorizontalRuleIcon style={{fontSize:'1.5rem'}}></HorizontalRuleIcon></span>
                   <span className={`${isActive("mtpplan") && "text-themeblue"} group-hover:text-themeblue font-medium`}>MTP Plan</span>
                 </div>
-                <div onClick={()=>handleNavigate('pendingstp')} className={`group flex ${isActive("pendingstp") && "text-themeblue"} hover:bg-blue-50 py-2 cursor-pointer px-8 items-center gap-2`}>
-                  <span className={`${isActive('pendingstp') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><HorizontalRuleIcon style={{fontSize:'1.5rem'}}></HorizontalRuleIcon></span>
-                  <span className={`${isActive("pendingstp") && "text-themeblue"} group-hover:text-themeblue font-medium`}>Pending STP</span>
-                </div>
-                <div onClick={()=>handleNavigate('pendingmtp')} className={`group flex ${isActive("pendingmtp") && "text-themeblue"} hover:bg-blue-50 py-2 cursor-pointer px-8 items-center gap-2`}>
-                  <span className={`${isActive('pendingmtp') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><HorizontalRuleIcon style={{fontSize:'1.5rem'}}></HorizontalRuleIcon></span>
-                  <span className={`${isActive("pendingmtp") && "text-themeblue"} group-hover:text-themeblue font-medium`}>Pending MTP</span>
-                </div>
+
               </div>
             </div>
 
