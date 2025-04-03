@@ -16,12 +16,16 @@ import { columns, getDoctors, getDoctorsForEmployee } from '../data/doctorsDataT
 import { toast } from 'react-toastify';
 
 export default function Doctors() {
+  const fileUrl = '/DoctorList.xlsx'
   const { user } = useSelector((state) => state.auth);
   const [doctors,setDoctors] = useState([])
   const [filteredDoctors,setFilteredDoctors] = useState([])
   const [searchQuery,setSearchQuery] = useState('')
   const [loading,setLoading] = useState(false)
   const [selectedId,setSelectedId] = useState(null)
+  const [uploadLoading,setUploadLoading] = useState(false)
+  const [uploadModal,setUploadModal] = useState(false)
+  const [file,setFile] = useState(null)
 
   const [openConfirmPopUp,setOpenConfirmPopUp] = useState(false)
 
@@ -187,8 +191,63 @@ export default function Doctors() {
     }
   }
 
+  const handleFile = (e) => {
+    let selectedFile = e.target.files[0];
+
+    if (selectedFile) {
+      // Validate file type
+      const validTypes = ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel"];
+      if (!validTypes.includes(selectedFile.type)) {
+        toast.error("Invalid file type. Please upload an Excel file.");
+        return;
+      }
+      setFile(selectedFile);
+    }
+  };
+
+  const handleUpload = async () =>{
+    if(!file){
+      return toast.error("Please select any file.")
+    }
+     try{ 
+        setUploadLoading(true)
+        let formData = new FormData()
+        formData.append('file',file)
+        await api.post('/ExcelFileUpload/UploadExcelForDoctor',formData)
+        setFile(null)
+        setUploadModal(false)
+        toast.success("Your data inserted successfully.")
+     }catch(err){
+      console.log(err)
+      toast.error("Something went wrong.")
+     }finally{
+      setUploadLoading(false)
+     }
+  }
+
   return (
   <>
+    {
+      uploadModal && 
+     <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+       <h2 className="text-lg font-bold mb-4">Upload Excel File</h2>
+       <input onChange={handleFile} type="file" accept=".xlsx, .xls" />
+       <div className="mt-4 flex justify-end space-x-2">
+         <button className="px-4 py-2 bg-gray-500 text-white rounded" onClick={()=>setUploadModal(false)}>
+           Cancel
+         </button>
+         <button disabled={updateLoading} onClick={handleUpload} className="px-4 flex justify-center items-center py-2 bg-blue-600 text-white rounded">
+           {
+            uploadLoading ? 
+            <LoaderCircle className='animate-spin'></LoaderCircle>
+            : <span>Upload</span>
+           }
+         </button>
+       </div>
+      </div>
+     </div> 
+    }
     {
       openConfirmPopUp && (
        <div className="fixed z-50 flex justify-center items-center inset-0 bg-black/50">
@@ -344,7 +403,11 @@ export default function Doctors() {
            <Link to={'/admin/doctors/addnew'}><button className='md:p-2 p-1.5 bg-themeblue md:text-base text-sm text-white rounded-md'>Add New Doctor</button></Link>
          </div>
        </div>
-       <div className='h-full py-4 px-3 custom-shadow rounded-md bg-white'>
+       <div className='h-full flex flex-col gap-2 py-4 px-3 custom-shadow rounded-md bg-white'>
+         <div className='flex gap-2 w-full place-content-end'>
+            <button onClick={()=>setUploadModal(true)} className='bg-indigo-500 rounded-md p-1.5 px-2 text-white '>Upload File</button>
+            <a href={fileUrl} download={'doctor.xlsx'}><button className='bg-green-500 px-2 text-white p-1.5 rounded-md'>Download File</button></a>
+         </div>
          <Box sx={{height:"100%",
           '& .super-app-theme--header': {
             backgroundColor: '#edf3fd',
