@@ -5,6 +5,10 @@ import { toast } from "react-toastify";
 import api from '../api';
 import { useSelector } from 'react-redux';
 
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+
 //Importing icons
 import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
@@ -57,10 +61,24 @@ export default function MyDashboard() {
    getEmployeeData()
    fetchCounts()
  },[])
+
+ const localizer = momentLocalizer(moment);
+ const [events, setEvents] = useState([
+  {
+    title: "Meeting with Team",
+    start: new Date(2025, 3, 5), // Year, Month (0-based), Day, Hours, Minutes
+    end: new Date(2025, 3, 5),
+  },
+  {
+    title: "Doctor Appointment",
+    start: new Date(2025, 3, 14),
+    end: new Date(2025, 3, 18),
+  },
+]);
  
   return (
-  <div className='flex h-full flex-col gap-4'>
-    <div className='grid md:grid-cols-3 grid-cols-1 gap-4'>
+  <div className='h-full overflow-y-scroll gap-4'>
+    <div className='grid mb-4 md:grid-cols-3 grid-cols-1 gap-4'>
       <div className='flex custom-shadow p-4 bg-gradient-to-r from-blue-400 to-blue-600  rounded-lg flex-col gap-2'>
          <h1 className='text-lg text-white font-semibold'>DOCTORS</h1>
          <span className='text-2xl font-bold text-gray-100'>{doctorsCount}</span>
@@ -86,6 +104,19 @@ export default function MyDashboard() {
          </div>
       </div>
     </div>
+
+    <div className='w-full mb-4 h-[500px]'>
+      <Calendar
+        localizer={localizer}
+        events={events}
+        startAccessor="start"
+        endAccessor="end"
+        style={{ height: "100%" }}
+      />
+    
+    </div>
+
+
     <div className="h-full flex flex-col gap-2 py-4 px-3 custom-shadow rounded-md bg-white">
         <h1 className='font-medium text-lg'>New Employees</h1>
         <Box
@@ -104,8 +135,10 @@ export default function MyDashboard() {
             disableRowSelectionOnClick
           />
         </Box>
-
     </div>
+    
+
+    
   </div>
     
   )
