@@ -21,19 +21,22 @@ export default function MyDashboard() {
   const { user } = useSelector((state) => state.auth);
   const [doctorsCount,setDoctorsCount] = useState(0)
   const [chemistCount,setChemistCount] = useState(0)
-  const [productCount,setProductCount] = useState(0)
+  const [myTeamCount,setMyTeamCount] = useState(0)
 
   const fetchCounts = async ()=>{
      try{
-        const [doctorsResponse, chemistResponse] = await Promise.all(user.isAdmin?[
+        const [doctorsResponse, chemistResponse,myTeamResponse] = await Promise.all(user.isAdmin?[
           api.get('/Doctor/GetAllDoctor'),
-          api.get('/Chemist/GetAllChemist')
+          api.get('/Chemist/GetAllChemist'),
+          api.get('/User/MyTeam')
         ]:[
           api.get('/DoctorMapping/GetAllDoctorMappingData'),
-          api.get('/ChemistMapping/GetAllChemistMappingData')
+          api.get('/ChemistMapping/GetAllChemistMappingData'),
+          api.get('/User/MyTeam')
         ])
         setDoctorsCount(doctorsResponse.data.data.length)
         setChemistCount(chemistResponse.data.data.length)
+        setMyTeamCount(myTeamResponse.data.data.length)
      }catch(err){
        console.log(err)
        toast.error("Something went wrong.")
@@ -96,10 +99,10 @@ export default function MyDashboard() {
          </div>
       </div>
       <div className='flex p-4 bg-gradient-to-r from-emerald-400 to-teal-600 custom-shadow rounded-lg flex-col gap-2'>
-         <h1 className='text-lg text-white font-semibold'>PRODUCTS</h1>
-         <span className='text-2xl font-bold text-gray-100'>120</span>
+         <h1 className='text-lg text-white font-semibold'>My Team</h1>
+         <span className='text-2xl font-bold text-gray-100'>{myTeamCount}</span>
          <div className='flex justify-between items-center'>
-            <span className='underline cursor-pointer text-white'>See all products</span>
+            <Link to={user.isAdmin?'/admin/myteam':'/employee/myteam'}><span className='underline cursor-pointer text-white'>See all Member</span></Link>
             <span className='bg-themeblue text-white w-10 h-10 flex justify-center items-center rounded-md'><Inventory2OutlinedIcon style={{fontSize:'1.8rem'}}></Inventory2OutlinedIcon></span>
          </div>
       </div>

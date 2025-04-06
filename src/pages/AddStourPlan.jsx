@@ -65,6 +65,8 @@ function AddStourPlan() {
   const [open,setOpen] = useState(false)
   const [selectedAllowance,setSelectedAllowanace] = useState([])
   const [loading,setLoading] = useState(false)
+  const [headQuater,setHeadQuater] = useState([])
+  const [selectedHeadQuater,setSelectedHeadquater] = useState('')
 
   const movePlace = (fromIndex, toIndex) => {
     const updatedPlaces = [...places];
@@ -99,6 +101,7 @@ function AddStourPlan() {
      if(places.length===0) newErrors.places = "Add one or more place."
      if(selectedAllowance.length===0) newErrors.selectedAllowance = 'Please select any one allowance.'
      if(!perKm) newErrors.perKm = 'Please enter km value'
+     if(!selectedHeadQuater) newErrors.headQuater = "Please select headquater."
 
      setErrors(newErrors)
 
@@ -148,9 +151,22 @@ function AddStourPlan() {
      }
   }
 
+  const fetchHeadquater = async () =>{
+    try{
+      const response = await api.get('/Headquarters')
+      setHeadQuater(response.data)
+    }catch(err){
+      console.log(err)
+      toast.error(err?.response?.data?.message || "Something went wrong.")
+    }
+}
+
+
+
 
   useEffect(()=>{
      getAllowance()
+     fetchHeadquater()
   },[])
 
   return (
@@ -173,6 +189,10 @@ function AddStourPlan() {
             <div className='flex flex-col gap-2'>
               <label htmlFor='tourtype' className='font-bold'>Tour Type <span className='text-red-500'>*</span></label>
               <div className='flex items-center gap-4'>
+               <div className='flex items-center gap-2'>
+                <input onChange={()=>setTourType(2)} checked={tourType===2} value={2} type='radio' id='ex-station'></input>
+                <label htmlFor='ex-station'>Ex - Station</label>
+               </div>
                <div className='flex items-center gap-2'>
                 <input onChange={()=>setTourType(0)} checked={tourType===0} value={0} type='radio' id='local'></input>
                 <label htmlFor='local'>Local</label>
@@ -212,6 +232,19 @@ function AddStourPlan() {
                 }
                 {errors.selectedAllowance && <span className='text-sm text-red-500'>{errors.selectedAllowance}</span>}
                </div>
+            </div>
+
+            <div className='flex w-52 flex-col gap-2'>
+              <label>HeadQuaters <span className='text-sm text-red-500'>*</span></label>
+              <select value={selectedHeadQuater} onChange={(e)=>setSelectedHeadquater(e.target.value)} className='p-2 border '>
+                 <option value={''}>--- Select Headquarters ---</option>
+                 {
+                   headQuater.map((hd)=>(
+                    <option value={hd.hqid}>{hd.hqName}</option>
+                   ))
+                 }
+              </select>
+              {errors.headQuater && <span className='text-sm text-red-500'>{errors.headQuater}</span>}
             </div>
         </div>
         

@@ -12,10 +12,8 @@ import { chemistMapColumns, getAllChemist } from '../data/chemistDataTable';
 import { empMapColumns, fetchAllUsers } from '../data/EmployeeDataTable';
 import api from '../api';
 
-const prepareObj = (chemistList, employeeList) => 
-  employeeList.flatMap(employee => 
+const prepareObj = (chemistList, employee) => 
     chemistList.map(chemist => ({ chemistCode:chemist.chemistCode, employeeCode:employee.id }))
-  );
 
 
 function ChemistMapping() {
@@ -26,7 +24,7 @@ function ChemistMapping() {
   const [users,setUsers] = useState([])
   const [chemist,setChemist] = useState([])
   const [selectedChemist,setSelectedChemist] = useState([])
-  const [selectedEmployee,setSelectedEmployee] = useState([])
+  const [selectedEmployee,setSelectedEmployee] = useState(null)
   const [selectedEmpIdx,setSelectedEmpIdx] = useState([])
   const [selectedChemIdx,setSelectedChemIdx] = useState([])
 
@@ -75,7 +73,7 @@ function ChemistMapping() {
  
  const handleSelectEmployee = (newEmployee) => {
     setSelectedEmpIdx(newEmployee)
-    setSelectedEmployee(users.filter((item, index) => newEmployee.includes(index + 1)));
+    setSelectedEmployee(users.find((item, index) => newEmployee.includes(index + 1)));
 };
 
  const handleSave = async () =>{
@@ -86,6 +84,7 @@ function ChemistMapping() {
       createdBy:0
      }
      try{
+       console.log(mappingObj)
        setSaveLoader(true)
        await api.post('/ChemistMapping/AddChemistMapping',mappingObj)
        setSelectedChemist([])
@@ -134,9 +133,13 @@ function ChemistMapping() {
               },
             }}
             pageSizeOptions={[5,10]}
-            checkboxSelection
+            // checkboxSelection
             rowSelectionModel={selectedEmpIdx}
-            onRowSelectionModelChange={(newSelected)=>handleSelectEmployee(newSelected)}
+            onRowSelectionModelChange={(newSelected) => {
+              // Allow only one selection
+              const selected = Array.isArray(newSelected) ? newSelected[0] : newSelected;
+              handleSelectEmployee(selected ? [selected] : []);
+            }}
           />
          </Box>
          </div>

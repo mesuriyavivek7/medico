@@ -122,8 +122,8 @@ function EditEmp() {
       } = formData;
       
       try {
-        await api.put(
-          `/User/${formData.id}`,
+        await api.post(
+          `/User/UpdateUser?id=${formData.id}`,
           {
             firstName,
             lastName,

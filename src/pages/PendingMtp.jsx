@@ -1,6 +1,8 @@
 import React , {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
 import api from '../api'
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 //importing images
 import NODATA from '../assets/computer.png'
@@ -18,6 +20,9 @@ function PendingMtp() {
   const [activeCounts, setActiveCounts] = useState(1);
   const [pendingCounts, setPendingCounts] = useState(1);
   const [rejectCounts, setRejectCounts] = useState(1);
+  const [openDate,setOpenDate] = useState(false)
+
+  const [date,setDate] = useState(new Date())
 
   const getDate = (orgdate) => {
     if (!orgdate) return "";
@@ -36,17 +41,15 @@ function PendingMtp() {
   const getAllTourPlan = async () =>{
     try{
       setLoading(true)
-      const response = await api.post(`/STPMTP/GetAll`,
+      const response = await api.post(`/STPMTP/getMTP`,
       {
-       pageNumber:0,
-       pageSize:0,
-       criteria:'string',
-       reportingTo:1,
-       tourType:1
+        mtpDate: date
       })
-      if(response.data.data.length>0){
-       setMtpPlan(response.data.data[0].tours.filter((tour)=> tour.tourType === 1))
-      }
+      console.log(response.data.data)
+
+      // if(response.data.data.mtpdetails.length>0){
+      //  setMtpPlan(response.data.data[0].tours.filter((tour)=> tour.tourType === 1))
+      // }
       
     }catch(err){
      console.log(err)
@@ -64,7 +67,7 @@ function PendingMtp() {
 
   useEffect(()=>{
     getAllTourPlan()
-  },[])
+  },[date])
 
   const renderMTP = () =>{
     switch(activeState) {
@@ -238,6 +241,16 @@ function PendingMtp() {
           </span>
         </div>
       </div>
+
+      <div className='relative w-44 border md:p-2 p-1.5 rounded-md'>
+             <span onClick={()=>setOpenDate((prev)=>!prev)} className='text-center cursor-pointer'>Date: {getDate(date)}</span>
+            {
+              openDate && 
+              <div className='absolute right-0 top-12'>
+                <Calendar onChange={setDate} value={date}></Calendar>
+              </div>
+            }
+       </div>
      
     </div>
 
