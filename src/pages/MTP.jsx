@@ -129,7 +129,7 @@ function MTP() {
               </div>
              </div>
           </div>
-          <div className='grid grid-cols-3 items-center gap-2'>
+          <div className='grid grid-cols-3 items-start gap-4'>
             {
                mtpPlan.map((mtp)=>(
                 <div className='flex p-4 border-t-2 bg-white custom-shadow rounded-md border-[#14b8a6] flex-col gap-4'>

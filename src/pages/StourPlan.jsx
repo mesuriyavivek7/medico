@@ -12,6 +12,7 @@ import { Rows2 } from 'lucide-react';
 import { Calendar } from 'lucide-react';
 import { MapPin } from 'lucide-react';
 import { toast } from 'react-toastify'
+import SearchIcon from '@mui/icons-material/Search';
 
 function StourPlan() {
    const { user } = useSelector((state) => state.auth);
@@ -44,7 +45,7 @@ function StourPlan() {
         reportingTo:0,
         tourType:0
        })
-       console.log(response.data.data)
+       console.log('stp--->',response.data.data)
        setStpPlan(response.data.data)
      }catch(err){
       toast.error("Something went wrong.")
@@ -69,6 +70,10 @@ function StourPlan() {
           </h1>
         </div>
         <div className="flex items-center gap-3">
+           <div className='bg-gray-100 md:flex p-1.5 rounded-md hidden gap-1 items-center'>
+            <span><SearchIcon></SearchIcon></span>
+            <input className='outline-none bg-transparent' placeholder='Search STP...' type='text'></input>
+           </div>
           <Link
             to={user.isAdmin?"/admin/stpplan/add":"/employee/stpplan/add"}
           >
@@ -85,10 +90,10 @@ function StourPlan() {
             <img src={Loader} alt="loader" className="w-10 h-10"></img>
           </div>
         ) : (
-          <div className='h-full gap-4 w-full grid md:grid-cols-3 grid-cols-1 items-start'>
+          <div className='h-full gap-4 gap-y-4 w-full grid md:grid-cols-3 grid-cols-1 items-start'>
             {
               stpPlan.map((stp,index)=>(
-                  <div key={index} className='flex rounded-md shadow overflow-hidden flex-col'>
+                  <div key={index} className='flex rounded-md shadow  flex-col'>
                     <div className='flex bg-neutral-300 items-center text-black justify-between p-3'>
                        <h1>{stp.tourName}</h1>
                        <span className='bg-green-500 rounded-md text-white font-medium px-2 py-1'>{stp.tourType===0?"Local":"OutStation"}</span>

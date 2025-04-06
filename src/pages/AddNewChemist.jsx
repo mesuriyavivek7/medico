@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { Link } from 'react-router-dom';
@@ -29,6 +29,7 @@ export default function AddNewChemist() {
           isActive:1,
           createdBy:0
   })
+  const [headQuater,setHeadQuater] = useState([])
 
   const validateData = () =>{
      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -55,7 +56,16 @@ export default function AddNewChemist() {
      return Object.keys(newErrors).length===0
   }
 
-  console.log(formData)
+  const fetchHeadquater = async () =>{
+    try{
+      const response = await api.get('/Headquarters')
+      setHeadQuater(response.data)
+    }catch(err){
+      console.log(err)
+      toast.error(err?.response?.data?.message || "Something went wrong.")
+    }
+}
+
 
   const handleSubmit = async () =>{
     if(validateData()){
@@ -92,6 +102,10 @@ export default function AddNewChemist() {
     const {name, value} = e.target
     setFormData((prevData)=>({...prevData,[name]:value}))
   }
+
+  useEffect(()=>{
+    fetchHeadquater()
+  },[])
   
   return (
     <div className='flex h-full flex-col gap-3 md:gap-4'>
@@ -166,6 +180,17 @@ export default function AddNewChemist() {
              <label htmlFor='vfreq' className='font-medium text-gray-700'>Visit Frequency <span className='text-red-500'>*</span></label>
              <input value={formData.vfreq} onChange={handleChange} name='vfreq' type='number' id='vfreq' className='p-2 outline-none border-b-2 border-gray-200' placeholder='Ex. 3'></input>
              {errors.vfreq && <span className='text-sm text-red-500'>{errors.vfreq}</span>}
+         </div>
+         <div className='flex flex-col gap-2'>
+             <label htmlFor='headQuater' className='font-medium text-gray-700'>HeadQuater <span className='text-red-500'>*</span></label>
+             <select className='border-2 border-gray-200 p-2 outline-none'>
+               <option value={''}>--- Select Headquarters ---</option>
+               {
+                headQuater.map((hd)=>(
+                  <option value={hd.hqid}>{hd.hqName}</option>                  
+                ))
+               }
+             </select>
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='dob' className='font-medium text-gray-700'>Date of Birth <span className='text-red-500'>*</span></label>

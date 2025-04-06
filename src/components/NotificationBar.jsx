@@ -26,6 +26,7 @@ function NotificationBar({notificationOpen, ref}) {
      try{
         setLoader(true)
         const response = await api.get('/Notifications')
+        console.log(response.data)
         setNotification(response.data)
      }catch(err){
        console.log(err)
@@ -37,6 +38,7 @@ function NotificationBar({notificationOpen, ref}) {
 
    const addMarkAsRead = async (id) =>{
       try{
+        console.log(id)
         setAddLoader(true)
         const response = await api.put(`/Notifications/mark-as-read/${id}`)
         console.log(response)

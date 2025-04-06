@@ -25,6 +25,7 @@ function AddMtp() {
     const [loading,setLoading] = useState(false)
     const [errors,setErrors] = useState({})
     const [mtpRow,setMtpRow] = useState([])
+    const [modeOfWork,setModeOfWork] = useState('')
 
     let docchem = [...doctors,...chemist]
 
@@ -218,6 +219,18 @@ function AddMtp() {
                errors.description && 
                <span className='text-sm text-red-500'>{errors.description}</span>
              }
+          </div>
+
+          <div className='flex flex-col gap-2'>
+             <label className='font-medium text-gray-700'>Mode Of Work <span className='text-sm text-red-500'>*</span></label>
+             <select className='p-2 outline-none border-2 border-gray-200 '>
+               <option value={''}>--- Select Mode Of Work ---</option>
+               <option value={'MEETING'}>MEETING</option>
+               <option value={'TRANSIT'}>TRANSIT</option>
+               <option value={'STRIKE'}>STRIKE</option>
+               <option value={'CAMP'}>CAMP</option>
+               <option value={'Other'}>Other</option>
+             </select>
           </div>
 
 

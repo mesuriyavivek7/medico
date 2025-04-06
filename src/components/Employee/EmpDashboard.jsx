@@ -88,7 +88,7 @@ export default function EmpDashboard() {
       {/* Navbar */}
       <div className="fixed bg-white z-40 top-0 right-0 left-0 md:h-24 h-20 flex items-center">
         <div className={`${isMenuOpen?"md:w-72":"md:w-28"} w-28 duration-300 transition-all px-5 h-full flex items-center gap-2`}>
-          {isMenuOpen ? <img className="w-36 h-14" alt="logo" src={LOGO}></img> : <span className="text-2xl text-green-500">Elvira</span>}
+          {isMenuOpen ? <img className="md:w-36  md:h-14 h-8" alt="logo" src={LOGO}></img> : <span className="text-2xl text-green-500">Elvira</span>}
         </div>
         <div className="flex justify-between px-2 md:px-8 h-full w-full items-center">
           <div className="flex items-center gap-3">

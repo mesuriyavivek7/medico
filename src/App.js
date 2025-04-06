@@ -43,10 +43,11 @@ import AddStourPlan from "./pages/AddStourPlan";
 // ProtectedRoute Component
 const ProtectedRoute = ({ children , requiredRole }) => {
   const { user } = useSelector((state) => state.auth);
+  console.log("protected user---->",user)
   if (!user) {
     return <Navigate to="/" />;
   }
-  console.log(requiredRole)
+
   if (!user.isAdmin && requiredRole==="admin") {
     console.log("you are not employee")
     return <Navigate to='/employee/dashboard'></Navigate>
@@ -59,6 +60,8 @@ function App() {
   const { user, api_token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   
+ console.log('App user --->',user)
+
   //Set bearer token
   useEffect(()=>{
      const token = api_token
@@ -256,6 +259,14 @@ function App() {
             element:(
               <ProtectedRoute requiredRole="admin">
                 <AddMtp></AddMtp>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'pendingmtp',
+            element:(
+              <ProtectedRoute requiredRole="admin">
+                <PendingMtp></PendingMtp>
               </ProtectedRoute>
             )
           },

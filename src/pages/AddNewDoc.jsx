@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 //Importing icons
@@ -9,6 +9,7 @@ import api from '../api';
 export default function AddNewDoc() {
   const [errors,setErrors] = useState({})
   const [loading,setLoading] = useState(false)
+  const [headQuater,setHeadQuater] = useState([])
    
   const [formData,setFormData] = useState({
     drName:'',
@@ -98,6 +99,20 @@ export default function AddNewDoc() {
    }
   }
 
+  const fetchHeadquater = async () =>{
+    try{
+      const response = await api.get('/Headquarters')
+      setHeadQuater(response.data)
+    }catch(err){
+      console.log(err)
+      toast.error(err?.response?.data?.message || "Something went wrong.")
+    }
+}
+
+ useEffect(()=>{
+   fetchHeadquater()
+ })
+
   return (
     <div className='flex h-full flex-col gap-3 md:gap-4'>
       <div className='bg-white custom-shadow rounded-md md:py-4 py-3 px-3 md:px-4 flex items-center justify-between'>
@@ -180,6 +195,17 @@ export default function AddNewDoc() {
              <label htmlFor='vfreq' className='font-medium text-gray-700'>Visiting Freq <span className='text-red-500'>*</span></label>
              <input name='vfreq' onChange={handleChange} type='text' placeholder='Ex. 2' value={formData.vfreq} id='vfreq' className='p-2 outline-none border-b-2 border-gray-200'></input>
              {errors.vfreq && <span className='text-sm text-red-400'>{errors.vfreq}</span>}
+         </div>
+         <div className='flex flex-col gap-2'>
+             <label htmlFor='headQuater' className='font-medium text-gray-700'>HeadQuater <span className='text-red-500'>*</span></label>
+             <select className='border-2 border-gray-200 p-2 outline-none'>
+               <option value={''}>--- Select Headquarters ---</option>
+               {
+                headQuater.map((hd)=>(
+                  <option value={hd.hqid}>{hd.hqName}</option>                  
+                ))
+               }
+             </select>
          </div>
       </div>
        <div className='flex place-content-end bg-white custom-shadow rounded-md py-3 px-3 md:py-4 md:px-4'>

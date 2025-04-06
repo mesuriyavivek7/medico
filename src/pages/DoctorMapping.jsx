@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { DataGrid, selectedGridRowsSelector } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import { toast } from 'react-toastify';
 import { useSelector } from "react-redux";
@@ -12,10 +12,9 @@ import { docMapColumn, getDoctors } from '../data/doctorsDataTable';
 import { empMapColumns, fetchAllUsers } from '../data/EmployeeDataTable';
 import api from '../api';
 
-const prepareObj = (doctorList, employeeList) => 
-  employeeList.flatMap(employee => 
+const prepareObj = (doctorList, employee) => 
     doctorList.map(doctor => ({ doctorCode:doctor.drCode, employeeCode:employee.id }))
-  );
+  
 
 
 function DoctorMapping() {
@@ -26,7 +25,7 @@ function DoctorMapping() {
   const [users,setUsers] = useState([])
   const [doctor,setDoctor] = useState([])
   const [selectedDoctor,setSelectedDoctor] = useState([])
-  const [selectedEmployee,setSelectedEmployee] = useState([])
+  const [selectedEmployee,setSelectedEmployee] = useState(null)
   const [selectedEmpIdx,setSelectedEmpIdx] = useState([])
   const [selctedDocIdx,setSelectedDocIdx] = useState([])
 
@@ -76,8 +75,9 @@ const handleSelectDoctors = (newDoctor) =>{
 
  
 const handleSelectEmployee = (newEmployee) => {
+  console.log(newEmployee)
   setSelectedEmpIdx(newEmployee)
-  setSelectedEmployee(users.filter((item, index) => newEmployee.includes(index + 1)));
+  setSelectedEmployee(users.find((item, index) => newEmployee.includes(index + 1)));
 };
 
 
@@ -92,7 +92,7 @@ const handleSave = async () =>{
   console.log(mappingObj)
   try{
     setSaveLoader(true)
-    // await api.post('/ChemistMapping/AddChemistMapping',mappingObj)
+    await api.post('/ChemistMapping/AddChemistMapping',mappingObj)
     setSelectedDoctor([])
     setSelectedEmployee([])
     setSelectedEmpIdx([])
@@ -139,9 +139,13 @@ const handleSave = async () =>{
            },
          }}
          pageSizeOptions={[5,10]}
-         checkboxSelection
+        //  checkboxSelection
          rowSelectionModel={selectedEmpIdx}
-         onRowSelectionModelChange={(newSelected)=>handleSelectEmployee(newSelected)}
+         onRowSelectionModelChange={(newSelected) => {
+          // Allow only one selection
+          const selected = Array.isArray(newSelected) ? newSelected[0] : newSelected;
+          handleSelectEmployee(selected ? [selected] : []);
+        }}
        />
       </Box>
       </div>

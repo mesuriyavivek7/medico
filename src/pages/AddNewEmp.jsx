@@ -20,6 +20,7 @@ export default function AddNewEmp() {
   const [loading,setLoading] = useState(false)
   const [previewImage,setPreviewImage] = useState(null)
   const [imageFile,setImageFile] = useState(null)
+  const [headQuater,setHeadQuater] = useState([])
 
   const [designation,setDesignation] = useState([])
   const [reporting,setReporting] = useState([])
@@ -40,6 +41,16 @@ export default function AddNewEmp() {
     }else{
       toast.error("Please select valid file type under 10mb.")
     }
+  }
+
+  const fetchHeadquater = async () =>{
+      try{
+        const response = await api.get('/Headquarters')
+        setHeadQuater(response.data)
+      }catch(err){
+        console.log(err)
+        toast.error(err?.response?.data?.message || "Something went wrong.")
+      }
   }
 
   const [formData , setFormData ] = useState({
@@ -65,7 +76,7 @@ export default function AddNewEmp() {
     headQuater: ""
   })
 
-  console.log(formData)
+  
 
   const [errors,setErrors] = useState({})
 
@@ -113,7 +124,8 @@ export default function AddNewEmp() {
     setLoading(true)
     try{
       console.log(formData)
-      await api.post(`${process.env.REACT_APP_API_BASE_URL}/User/AddUser`,formData)
+      const res = await api.post(`${process.env.REACT_APP_API_BASE_URL}/User/AddUser`,formData)
+      console.log('res---->',res)
       setImageFile(null)
       setPreviewImage(null)
       setFormData({
@@ -168,7 +180,9 @@ export default function AddNewEmp() {
 
   },[])
 
-  
+  useEffect(()=>{
+    fetchHeadquater()
+  },[])
 
 
   return (
@@ -273,7 +287,15 @@ export default function AddNewEmp() {
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='headQuater' className='font-medium text-gray-700'>Headquater <span className='text-red-500'>*</span></label>
-             <input name='headQuater' onChange={handleChange} type='text' value={formData.headQuater} placeholder='Ex. Mumbai' id='headQuater' className='p-2 outline-none border-b-2 border-gray-200'></input>
+             {/* <input name='headQuater' onChange={handleChange} type='text' value={formData.headQuater} placeholder='Ex. Mumbai' id='headQuater' className='p-2 outline-none border-b-2 border-gray-200'></input> */}
+             <select name='headQuater' onChange={handleChange} value={formData.headQuater} className='p-2 outline-none border-2 border-gray-200'>
+                <option value={''}>--- Select Headquater ---</option>
+                {
+                  headQuater.map((hd)=>(
+                    <option value={hd.hqid}>{hd.hqName}</option>
+                  ))
+                }
+             </select>
              {errors.headQuater && <span className='text-sm text-red-400'>{errors.headQuater}</span>}
          </div>
          <div className='flex flex-col gap-2'>

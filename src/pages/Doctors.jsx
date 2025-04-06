@@ -180,7 +180,7 @@ export default function Doctors() {
   const handleRemoveDoctor = async () =>{
     if(selectedId){
       try{
-        await api.post('/Doctor/DeleteDoctor/',{doctorCode:selectedId})
+        await api.post(`/Doctor/DeleteDoctor?doctorCode=${selectedId}`)
         fetchData()
         handleCloseConfirmPopUp()
         toast.success("Doctor deleted successfully.")
