@@ -34,7 +34,7 @@ function DoctorMapping() {
   setLoading(true)
   try{
      const users = await fetchAllUsers()
-     setUsers(users.map((item,index)=>({...item,id:index+1})))
+     setUsers(users)
   }catch(err){
     console.log(err)
     toast.error("Something went wrong while fetching data.")
@@ -77,7 +77,7 @@ const handleSelectDoctors = (newDoctor) =>{
 const handleSelectEmployee = (newEmployee) => {
   console.log(newEmployee)
   setSelectedEmpIdx(newEmployee)
-  setSelectedEmployee(users.find((item, index) => newEmployee.includes(index + 1)));
+  setSelectedEmployee(users.find((item, index) => item.id === newEmployee[0]));
 };
 
 

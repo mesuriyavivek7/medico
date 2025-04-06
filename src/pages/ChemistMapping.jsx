@@ -12,8 +12,10 @@ import { chemistMapColumns, getAllChemist } from '../data/chemistDataTable';
 import { empMapColumns, fetchAllUsers } from '../data/EmployeeDataTable';
 import api from '../api';
 
-const prepareObj = (chemistList, employee) => 
-    chemistList.map(chemist => ({ chemistCode:chemist.chemistCode, employeeCode:employee.id }))
+const prepareObj = (chemistList, employee) => {
+    console.log(employee)
+    return chemistList.map(chemist => ({ chemistCode:chemist.chemistCode, employeeCode:employee.id }))
+}
 
 
 function ChemistMapping() {
@@ -47,7 +49,7 @@ function ChemistMapping() {
     setLoading(true)
     try{
        const users = await fetchAllUsers()
-       setUsers(users.map((item,index)=>({...item,id:index+1})))
+       setUsers(users)
     }catch(err){
       console.log(err)
       toast.error("Something went wrong while fetching data.")
@@ -72,15 +74,18 @@ function ChemistMapping() {
 
  
  const handleSelectEmployee = (newEmployee) => {
+    console.log(newEmployee)
     setSelectedEmpIdx(newEmployee)
-    setSelectedEmployee(users.find((item, index) => newEmployee.includes(index + 1)));
+    setSelectedEmployee(users.find((item, index) => item.id===newEmployee[0]));
 };
+
+console.log("Selected Employee",selectedEmployee)
 
  const handleSave = async () =>{
      let mappingObj ={
       chemistsMappingList:prepareObj(selectedChemist,selectedEmployee),
       employeeCode:user.id,
-      isActive:0,
+      isActive:1,
       createdBy:0
      }
      try{
