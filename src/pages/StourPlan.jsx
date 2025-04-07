@@ -14,10 +14,13 @@ import { MapPin } from 'lucide-react';
 import { toast } from 'react-toastify'
 import SearchIcon from '@mui/icons-material/Search';
 
+
 function StourPlan() {
    const { user } = useSelector((state) => state.auth);
    const [stpPlan,setStpPlan] = useState([])
    const [loading,setLoading] = useState(false)
+   const [searchQuery,setSearchQuery] = useState(0)
+   const [headQuater,setHeadQuater] = useState([])
   
 
    const getDate = (orgdate) => {
@@ -42,10 +45,10 @@ function StourPlan() {
         pageNumber:0,
         pageSize:0,
         criteria:'string',
+        headquarter:Number(searchQuery),
         reportingTo:0,
         tourType:0
        })
-       console.log('stp--->',response.data.data)
        setStpPlan(response.data.data)
      }catch(err){
       toast.error("Something went wrong.")
@@ -58,7 +61,21 @@ function StourPlan() {
 
    useEffect(()=>{
     getAllTourPlan()
-   },[])
+   },[searchQuery])
+
+   const fetchHeadquater = async () =>{
+    try{
+      const response = await api.get('/Headquarters')
+      setHeadQuater(response.data)
+    }catch(err){
+      console.log(err)
+      toast.error(err?.response?.data?.message || "Something went wrong.")
+    }
+}
+
+  useEffect(()=>{
+    fetchHeadquater()
+  },[])
 
 
   return (
@@ -70,9 +87,16 @@ function StourPlan() {
           </h1>
         </div>
         <div className="flex items-center gap-3">
-           <div className='bg-gray-100 md:flex p-1.5 rounded-md hidden gap-1 items-center'>
-            <span><SearchIcon></SearchIcon></span>
-            <input className='outline-none bg-transparent' placeholder='Search STP...' type='text'></input>
+           <div className='bg-gray-100 md:flex  p-1.5 rounded-md hidden gap-1 items-center'>
+              <label className='text-neutral-600'>Search By Headquarters: </label>
+              <select className='outline-none p-1.5 ' onChange={(e)=>setSearchQuery(e.target.value)}>
+                <option value={0}>--- Select Headquarters ---</option>
+                {
+                  headQuater.map((hd)=>(
+                    <option value={hd.hqid}>{hd.hqName}</option>
+                  ))
+                }
+              </select>
            </div>
           <Link
             to={user.isAdmin?"/admin/stpplan/add":"/employee/stpplan/add"}

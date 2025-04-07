@@ -112,14 +112,21 @@ function AddStourPlan() {
     if(validateData()){
       try{
         let locations = places.map((item,index)=> ({tourLocationID:0,locationName:item,locationSequence:index}))
-        await api.post(`STPMTP`,{
-         tourId:0,
-         tourName:tourPlanName,
-         tourType:tourType,
-         perKm:perKm,
-         lstAllowance:selectedAllowance,
-         tourLocations:locations
-        })
+
+        const obj = {
+          tourId:0,
+          tourName:tourPlanName,
+          headQuarter:Number(selectedHeadQuater),
+          tourType:tourType,
+          perKm:perKm,
+          lstAllowance:selectedAllowance,
+          tourLocations:locations
+        }
+
+        console.log(obj)
+        
+        await api.post(`STPMTP`,obj)
+        console.log("stp added")
         setTourPlanName('')
         setPlaces([])
         toast.success("Tour plan added successfully.")
