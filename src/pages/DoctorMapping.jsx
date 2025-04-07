@@ -86,13 +86,13 @@ const handleSave = async () =>{
    doctorMappingList:prepareObj(selectedDoctor,selectedEmployee),
    employeeCode:user.id,
    drCode:0,
-   isActive:0,
+   isActive:1,
    createdBy:0
   }
   console.log(mappingObj)
   try{
     setSaveLoader(true)
-    await api.post('/ChemistMapping/AddChemistMapping',mappingObj)
+    await api.post('/DoctorMapping/AddDoctorMapping',mappingObj)
     setSelectedDoctor([])
     setSelectedEmployee([])
     setSelectedEmpIdx([])
