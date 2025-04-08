@@ -12,13 +12,6 @@ const formateDate = (dateString)=>{
 }
 
 export const columns = (handleNavigateToEdit,handleOpenConfirmPopUp,handleNavigateToPreview)=>[
-  // {
-  //   field: 'srno',
-  //   headerClassName: 'super-app-theme--header',
-  //   headerName: 'Sr No.',
-  //   flex: 0.5, // Proportional width
-  //   minWidth: 80, // Minimum width to prevent shrinking
-  // },
   {
     field: 'username',
     headerClassName: 'super-app-theme--header',
@@ -115,6 +108,86 @@ export const columns = (handleNavigateToEdit,handleOpenConfirmPopUp,handleNaviga
       </div>
     ),
   },
+]
+
+export const empColumns = (handleNavigateToEdit,handleOpenConfirmPopUp,handleNavigateToPreview)=>[
+  {
+    field: 'username',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Username',
+    flex: 0.5, // Proportional width
+    minWidth: 140, // Minimum width to prevent shrinking
+  },
+  {
+    field: 'empname',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Emp Name',
+    flex: 0.5, // Proportional width
+    minWidth: 150, // Minimum width to prevent shrinking
+    renderCell:(params)=>(
+      <div className='w-full h-full flex items-center'>
+         <span>{params.row.firstName} {params.row.lastName}</span>
+      </div>
+    )
+  },
+  {
+    field: 'email',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Email',
+    flex: 0.5, // Proportional width
+    minWidth: 200, // Minimum width to prevent shrinking
+  },
+  {
+    field: 'gender',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Gender',
+    flex: 0.5, // Proportional width
+    minWidth: 120, // Minimum width to prevent shrinking
+    renderCell:(params)=>(
+      <div className='flex w-full items-center h-full'>
+        <span>{params.row.gender==="M"||params.row.gender==="m"?"Male":"Female"}</span>
+      </div>
+    )
+  },
+  {
+    field: 'phoneNumber',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Mobile No',
+    flex: 0.5, // Proportional width
+    minWidth: 140, // Minimum width to prevent shrinking
+  },
+  {
+     field:'dob',
+     headerClassName: 'super-app-theme--header',
+     headerName: 'Date of birth',
+     flex: 0.5, // Proportional width
+     minWidth: 140, // Minimum width to prevent shrinking
+     renderCell:(params)=>(
+      <div className='flex w-full h-full items-center'>
+         <span>{formateDate(params.value)}</span>
+      </div>
+     )
+  },
+  {
+    field: 'joiningDate',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Joining Date',
+    flex: 0.5, // Proportional width
+    minWidth: 120, // Minimum width to prevent shrinking
+    renderCell:(params)=>(
+      <div className='w-full h-full flex items-center'>
+         <span>{formateDate(params.value)}</span>
+      </div>
+    )
+  },
+  {
+    field: 'panCard',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Pancard',
+    flex: 0.5, // Proportional width
+    minWidth: 140, // Minimum width to prevent shrinking
+  },
+
 ]
 
 export const latestColumns = [

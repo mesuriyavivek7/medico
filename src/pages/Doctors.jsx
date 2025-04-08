@@ -12,7 +12,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { LoaderCircle } from 'lucide-react';
 
 //Importing data
-import { columns, getDoctors, getDoctorsForEmployee } from '../data/doctorsDataTable';
+import { columns,filterDoctorColumns, getDoctors, getDoctorsForEmployee } from '../data/doctorsDataTable';
 import { toast } from 'react-toastify';
 
 export default function Doctors() {
@@ -149,6 +149,7 @@ export default function Doctors() {
      setUpdatePopUp(false)
   }
 
+
   const handleUpdateData = async (e) =>{
       e.preventDefault();   
       if(validateData){
@@ -224,6 +225,9 @@ export default function Doctors() {
       setUploadLoading(false)
      }
   }
+
+  let docColumns = (user.isAdmin)?columns:filterDoctorColumns
+
 
   return (
   <>
@@ -414,7 +418,7 @@ export default function Doctors() {
           },}}>
            <DataGrid
             rows={filteredDoctors}
-            columns={columns(handleOpenUpdateData,handleOpenConfirmPopUp)}
+            columns={docColumns(handleOpenUpdateData,handleOpenConfirmPopUp)}
             loading={loading}
             initialState={{
             pagination: {

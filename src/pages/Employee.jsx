@@ -7,7 +7,7 @@ import api from '../api';
 import { useSelector } from 'react-redux';
 
 //importing data
-import { columns, fetchAllUsers } from '../data/EmployeeDataTable';
+import { columns,empColumns, fetchAllUsers } from '../data/EmployeeDataTable';
 
 //Importing icons
 import SearchIcon from '@mui/icons-material/Search';
@@ -82,6 +82,9 @@ export default function Employee() {
     }
   }
 
+  let filterColumns = (user.isAdmin)?columns:empColumns
+
+
   return (
   <>
      {
@@ -117,7 +120,7 @@ export default function Employee() {
           },}}>
            <DataGrid
             rows={filteredData}
-            columns={columns(handleNavigateToEdit,handleOpenConfirmPopUp,handleNavigateToPreview)}
+            columns={filterColumns(handleNavigateToEdit,handleOpenConfirmPopUp,handleNavigateToPreview)}
             loading={loader}
             initialState={{
             pagination: {
