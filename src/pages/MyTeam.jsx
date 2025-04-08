@@ -3,11 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import { toast } from 'react-toastify';
-
+import { useSelector } from 'react-redux';
 import api from '../api';
 
 //importing data
-import { columns, fetchTeam } from '../data/EmployeeDataTable';
+import { columns, empColumns, fetchTeam } from '../data/EmployeeDataTable';
 
 //Importing icons
 import SearchIcon from '@mui/icons-material/Search';
@@ -15,7 +15,7 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';
 
 
 function MyTeam() {
-
+  const { user } = useSelector((state) => state.auth);
   const [searchQuery,setSearchQuery] = useState('')
   const [filteredData,setFilteredData] = useState([])
   const navigate = useNavigate()
@@ -82,6 +82,9 @@ function MyTeam() {
     fetchData()
   },[])
 
+  let filterColumns = user.isAdmin?columns:empColumns
+
+
   return (
     <>
     {
@@ -117,7 +120,7 @@ function MyTeam() {
        },}}>
         <DataGrid
          rows={filteredData}
-         columns={columns(handleNavigateToEdit,handleOpenConfirmPopUp,handleNavigateToPreview)}
+         columns={filterColumns(handleNavigateToEdit,handleOpenConfirmPopUp,handleNavigateToPreview)}
          loading={loader}
          initialState={{
          pagination: {

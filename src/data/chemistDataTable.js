@@ -8,17 +8,10 @@ const formateDate = (dateString)=>{
   
     const options = { month: 'short', day: 'numeric', year: 'numeric' };
     return date.toLocaleDateString('en-US', options).replace(',', '');
-  }
-  
+}
+
 
 export const columns = (handleOpenUpdateData,handleOpenConfirmPopUp) => [
-    // {
-    //     field: 'id',
-    //     headerClassName: 'super-app-theme--header',
-    //     headerName: 'Sr No.',
-    //     flex: 0.5, // Proportional width
-    //     minWidth: 80, // Minimum width to prevent shrinking
-    // },
     {
         field: 'chemistName',
         headerClassName: 'super-app-theme--header',
@@ -137,6 +130,112 @@ export const columns = (handleOpenUpdateData,handleOpenConfirmPopUp) => [
           </div>
         ),
       },
+]
+
+
+
+export const empChemistColumn = (handleOpenUpdateData,handleOpenConfirmPopUp) => [
+    {
+        field: 'chemistName',
+        headerClassName: 'super-app-theme--header',
+        headerName: 'Chemist Name',
+        flex: 0.5, // Proportional width
+        minWidth: 180, // Minimum width to prevent shrinking
+    },
+    {
+        field: 'mobileNo',
+        headerClassName: 'super-app-theme--header',
+        headerName: 'Mobile No',
+        flex: 0.5, // Proportional width
+        minWidth: 150, // Minimum width to prevent shrinking
+    },
+    {
+        field:'addressLine1',
+        headerClassName: 'super-app-theme--header',
+        headerName:'Address Line 1',
+        flex: 0.5, // Proportional width
+        minWidth: 200, // Minimum width to prevent shrinking
+    },
+    {
+        field:'addressLine2',
+        headerClassName: 'super-app-theme--header',
+        headerName:'Address Line 2',
+        flex: 0.5, // Proportional width
+        minWidth: 200, // Minimum width to prevent shrinking
+    },
+    {
+        field:'pinCode',
+        headerClassName: 'super-app-theme--header',
+        headerName:'Pincode',
+        flex: 0.5, // Proportional width
+        minWidth: 150, // Minimum width to prevent shrinking
+    },
+    {
+        field:'chemistArea',
+        headerClassName: 'super-app-theme--header',
+        headerName:'Chemist Area',
+        flex: 0.5, // Proportional width
+        minWidth: 150, // Minimum width to prevent shrinking
+    },
+    {
+        field:'vfreq',
+        headerClassName: 'super-app-theme--header',
+        headerName:'Visit Frequency',
+        flex: 0.5, // Proportional width
+        minWidth: 150, // Minimum width to prevent shrinking
+    },
+    {
+        field:'phone',
+        headerClassName: 'super-app-theme--header',
+        headerName:'Phone',
+        flex: 0.5, // Proportional width
+        minWidth: 150, // Minimum width to prevent shrinking
+    },
+    {
+        field:'gender',
+        headerClassName: 'super-app-theme--header',
+        headerName:'Gender',
+        flex: 0.5, // Proportional width
+        minWidth: 140, // Minimum width to prevent shrinking
+        renderCell: (params)=>(
+            <div className='flex items-center w-full h-full'>
+                <span>{params.value==="M" || params.value==="m" ? "Male" : "Female"}</span>
+            </div>
+        )
+    },
+    {
+        field:'contactPerson',
+        headerClassName: 'super-app-theme--header',
+        headerName:'Contact Person',
+        flex: 0.5, // Proportional width
+        minWidth: 150, // Minimum width to prevent shrinking
+    },
+    {
+        field:'routeName',
+        headerClassName: 'super-app-theme--header',
+        headerName:'Route Name',
+        flex: 0.5, // Proportional width
+        minWidth: 150, // Minimum width to prevent shrinking
+    },
+    {
+        field:'dob',
+        headerClassName: 'super-app-theme--header',
+        headerName:'DOB',
+        flex: 0.5, // Proportional width
+        minWidth: 150, // Minimum width to prevent shrinking
+        renderCell: (params)=>(
+            <div className='w-full flex items-center'>
+                 <span>{formateDate(params.value)}</span>
+            </div>
+        )
+    },
+    {
+        field:'chemistType',
+        headerClassName: 'super-app-theme--header',
+        headerName:'Chemist Type',
+        flex: 0.5, // Proportional width
+        minWidth: 150, // Minimum width to prevent shrinking
+    },
 ]
 
 
@@ -328,7 +427,7 @@ export const getAllChemist = async ()=>{
 
 export const getAllChemistForEmployee = async () =>{
     try{
-        const response = await api.get('/ChemistMapping/GetAllChemistMappingData')
+        const response = await api.get('/Chemist/GetAllChemist')
         console.log(response)
         return response.data.data
     }catch(err){

@@ -7,7 +7,7 @@ import api from "../api";
 import { useSelector } from "react-redux";
 
 //Importing data
-import { columns, getAllChemist, getAllChemistForEmployee } from "../data/chemistDataTable";
+import { columns, empChemistColumn, getAllChemist, getAllChemistForEmployee } from "../data/chemistDataTable";
 
 //Importing icons
 import SearchIcon from '@mui/icons-material/Search';
@@ -221,6 +221,7 @@ export default function Chemist() {
      }
   }
 
+  let filterColumns = (user.isAdmin)?(columns):(empChemistColumn)
 
   return (
     <>
@@ -423,7 +424,7 @@ export default function Chemist() {
         >
           <DataGrid
             rows={filteredChemist}
-            columns={columns(handleOpenUpdateData,handleOpenConfirmPopUp)}
+            columns={filterColumns(handleOpenUpdateData,handleOpenConfirmPopUp)}
             loading={loading}
             initialState={{
               pagination: {
