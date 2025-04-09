@@ -138,6 +138,12 @@ console.log("Selected Employee",selectedEmployee)
               },
             }}
             pageSizeOptions={[5,10]}
+            sx={{
+              '& .MuiDataGrid-row.Mui-selected': {
+                backgroundColor: '#c8e6c9', // light green
+                color: '#2e7d32', // darker green text
+              },
+            }}
             // checkboxSelection
             rowSelectionModel={selectedEmpIdx}
             onRowSelectionModelChange={(newSelected) => {

@@ -229,9 +229,9 @@ function AddStourPlan() {
                   <div className='absolute h-24 overflow-scroll w-full shadow bg-white z-40'>
                   {
                     allowance.map((item,index) =>(
-                      <div key={index} className='flex p-2 justify-between items-center gap-2'>
-                         <input onChange={()=>handleSelectAllowance(item)} checked={selectedAllowance.includes(item)} type='checkbox'></input>
-                         <span className='text-xs'>{item.allowanceName} (Rs. {item.allowanceAmount})</span>
+                      <div key={index} className='grid p-2 grid-cols-4 items-start gap-2'>                        
+                         <input className='col-span-1' onChange={()=>handleSelectAllowance(item)} checked={selectedAllowance.includes(item)} type='checkbox'></input>
+                         <span className='col-span-3 text-sm'>{item.allowanceName} (Rs. {item.allowanceAmount})</span>
                       </div>
                     ))
                   }

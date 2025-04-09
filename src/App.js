@@ -393,22 +393,6 @@ function App() {
             )
           },
           {
-            path:'stpplan',
-            element:(
-              <ProtectedRoute requiredRole="employee">
-                <StourPlan></StourPlan>
-              </ProtectedRoute>
-            )
-          },
-          {
-            path:'stpplan/add',
-            element:(
-              <ProtectedRoute requiredRole="employee">
-                <AddStourPlan></AddStourPlan>
-              </ProtectedRoute>
-            )
-          },
-          {
             path:'mtpplan',
             element:(
               <ProtectedRoute requiredRole="employee">
@@ -421,6 +405,14 @@ function App() {
             element:(
               <ProtectedRoute requiredRole="employee">
                 <AddMtp></AddMtp>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'pendingmtp',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <PendingMtp></PendingMtp>
               </ProtectedRoute>
             )
           },
