@@ -7,7 +7,8 @@ import { DataGrid } from '@mui/x-data-grid';
 //Importing icons
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { LoaderCircle } from 'lucide-react';
-
+import { ChevronUp } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 import {toast} from 'react-toastify'
 import api from '../api';
@@ -26,7 +27,11 @@ function AddMtp() {
     const [errors,setErrors] = useState({})
     const [mtpRow,setMtpRow] = useState([])
     const [modeOfWork,setModeOfWork] = useState('')
+    const [product,setProduct] = useState([])
+    const [selectedProduct,setSelectedProduct] = useState([])
 
+    const [open,setOpen] = useState(false)
+ 
     let docchem = [...doctors,...chemist]
 
 
@@ -48,16 +53,18 @@ function AddMtp() {
         tourType: 0
       }
       try{
-          const [users,doctors,chemists,stps] = await Promise.all([api.get('/User/GetAllUsers'),
+          const [users,doctors,chemists,stps,products] = await Promise.all([api.get('/User/GetAllUsers'),
           api.get('/Doctor/GetAllDoctor'),
           api.get('/Chemist/GetAllChemist'),
-          api.post('/STPMTP/GetAll',stpObj)
+          api.post('/STPMTP/GetAll',stpObj),
+          api.get('/Product')
         ])
       
           setUsers(users.data.data)
           setDoctors(doctors.data.data)
           setChemist(chemists.data.data)
           setStp(stps.data.data)
+          setProduct(products.data.data)
           
       }catch(err){
         console.log(err)
@@ -111,7 +118,7 @@ function AddMtp() {
               insertDate:new Date(),
               insertBy:"String",
               description:mtp.description,
-              prodIDs:[0]
+              prodIDs:selectedProduct
             }
 
             console.log(obj)
@@ -145,6 +152,16 @@ function AddMtp() {
 
     const handleRemove = (id) =>{
         setMtpRow(()=>mtpRow.filter((item)=> item.id!==id))
+    }
+
+    const handleSelectProduct = (id) =>{
+       const existProduct = selectedProduct.find((pid)=>pid===id)
+
+       if(existProduct){
+        setSelectedProduct((prev)=> prev.filter((pid)=>pid!==id))
+       }else{
+        setSelectedProduct([...selectedProduct,id])
+       }
     }
     
   return (
@@ -233,6 +250,29 @@ function AddMtp() {
              </select>
           </div>
 
+          <div className='flex w-52 flex-col gap-2'>
+               <label className='font-medium' htmlFor='allowance'>Products <span className='text-red-500'>*</span></label>
+               <div className='relative w-full'>
+                <div onClick={()=>setOpen((prev)=>!prev)} className='p-1.5 cursor-pointer border flex gap-2 justify-between items-center rounded-md '>
+                  <span>Select Products</span>
+                  <span >{open ? <ChevronUp className='w-5 h-5 text-gray-600'></ChevronUp>:<ChevronDown className='w-5 h-5 text-gray-600'></ChevronDown>}</span>
+                </div>
+                {
+                  open && 
+                  <div className='absolute h-24 overflow-scroll w-full shadow bg-white z-40'>
+                  {
+                    product.map((item,index) =>(
+                      <div key={index} className='grid p-2 grid-cols-4 items-center gap-2'>
+                         <input onChange={()=>handleSelectProduct(item.prodId)} className='col-span-1' checked={selectedProduct.includes(item.prodId)} type='checkbox'></input>
+                         <span className='text-xs col-span-3'>{item.productName}</span>
+                      </div>
+                    ))
+                  }
+                  </div>
+                }
+                {errors.selectedAllowance && <span className='text-sm text-red-500'>{errors.selectedAllowance}</span>}
+               </div>
+          </div>
 
         </div>
         <div className='flex w-full place-content-end'>

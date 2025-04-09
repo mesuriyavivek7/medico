@@ -411,8 +411,13 @@ export default function Chemist() {
       </div>
       <div className="h-full py-4 px-3 gap-2 flex flex-col custom-shadow rounded-md bg-white">
          <div className='flex gap-2 w-full place-content-end'>
-            <button onClick={()=>setUploadModal(true)} className='bg-indigo-500 rounded-md p-1.5 px-2 text-white '>Upload File</button>
-            <a href={fileUrl} download={'chemist.xlsx'}><button className='bg-green-500 px-2 text-white p-1.5 rounded-md'>Download File</button></a>
+         {
+           user.isAdmin &&
+           <>
+           <button onClick={()=>setUploadModal(true)} className='bg-indigo-500 rounded-md p-1.5 px-2 text-white '>Upload File</button>
+           <a href={fileUrl} download={'chemist.xlsx'}><button className='bg-green-500 px-2 text-white p-1.5 rounded-md'>Download File</button></a>
+           </>
+         }
          </div>
         <Box
           sx={{

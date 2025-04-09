@@ -71,7 +71,7 @@ export default function Employee() {
   const handleRemoveEmployee = async () =>{
     if(selectedId){
       try{
-        await api.delete(`/User/${selectedId}`)
+        await api.post(`/User/DeleteUser?id=${selectedId}`)
         fetchData()
         handleCloseConfirmPopUp()
         toast.success("Employee deleted successfully.")

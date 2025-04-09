@@ -409,8 +409,13 @@ export default function Doctors() {
        </div>
        <div className='h-full flex flex-col gap-2 py-4 px-3 custom-shadow rounded-md bg-white'>
          <div className='flex gap-2 w-full place-content-end'>
-            <button onClick={()=>setUploadModal(true)} className='bg-indigo-500 rounded-md p-1.5 px-2 text-white '>Upload File</button>
-            <a href={fileUrl} download={'doctor.xlsx'}><button className='bg-green-500 px-2 text-white p-1.5 rounded-md'>Download File</button></a>
+          {
+             user.isAdmin && 
+             <>
+             <button onClick={()=>setUploadModal(true)} className='bg-indigo-500 rounded-md p-1.5 px-2 text-white '>Upload File</button>
+             <a href={fileUrl} download={'doctor.xlsx'}><button className='bg-green-500 px-2 text-white p-1.5 rounded-md'>Download File</button></a>
+             </>
+          }
          </div>
          <Box sx={{height:"100%",
           '& .super-app-theme--header': {

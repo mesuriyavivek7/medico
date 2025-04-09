@@ -367,7 +367,7 @@ export const fetchAllUsers = async ()=>{
 
 export const fetchTeam = async ()=>{
   try{
-     const response = await api.get('User/MyTeam')
+     const response = await api.get('User/GetAllUsers')
      console.log(response.data.data)
      return response.data.data
   }catch(err){

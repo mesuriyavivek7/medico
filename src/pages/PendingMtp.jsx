@@ -11,6 +11,7 @@ import Loader from '../assets/loader.svg'
 //Importing icons
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import { CalendarCheck2 } from 'lucide-react';
 import { toast } from 'react-toastify'
 
 function PendingMtp() {
@@ -41,10 +42,7 @@ function PendingMtp() {
   const getAllTourPlan = async () =>{
     try{
       setLoading(true)
-      const response = await api.post(`/STPMTP/getMTP`,
-      {
-        mtpDate: date
-      })
+      const response = await api.post(`/STPMTP/getAllMTPAP`)
       console.log(response.data.data)
 
       // if(response.data.data.mtpdetails.length>0){
@@ -119,30 +117,54 @@ function PendingMtp() {
         return pendingCounts > 0 ? (
           mtpPlan.filter((plan)=> plan.status==="Pending").
           map((item,index) => (
-          <div key={index} className='rounded-md custom-shadow border-l-4 border-black  bg-white p-4 flex flex-col gap-2'>
-          <div className='w-full flex justify-between'>
-            <h1 className='text-lg font-bold'>{item.tourName || ""}</h1>
-            <span className='bg-orange-200 flex justify-center items-center px-2 rounded-2xl text-sm text-yellow-600'>Pending</span>
-          </div>
-          <div className='flex flex-col gap-1'>
-           <div className='flex gap-2 items-center'>
-             <span className='text-[#71717a]'><CalendarTodayIcon style={{fontSize:'1.1rem'}}></CalendarTodayIcon></span> 
-             <span className='text-[#71717a] font-medium'>{getDate(item.addedDate)}</span>
-           </div>
-           <p className='text-[15px] font-medium text-[#71717a]'>{item.comments || ""}</p>
-          </div>
-          <div className='flex flex-col mt-2 gap-2'>
-           <div className='flex items-center gap-2'>
-             <span className='text-[#71717a]'><LocationOnOutlinedIcon></LocationOnOutlinedIcon></span>
-             <span className='font-medium'>Tour Locations</span>
-           </div>
-           <hr></hr>
-           <div className='flex flex-col gap-1'>
-            {
-               item.tourLocations.map((location,index)=> <span key={index}>{location.locationSequence+1} {location.locationName || ""}</span>)
-             }
-           </div>
-          </div>
+            <div className='bg-white p-4 flex flex-col gap-3 rounded-md shadow-sm'>
+            <div className='bg-neutral-300 flex flex-col p-2 rounded-md'>
+               <span className='text-lg font-semibold'>new stp</span>
+               <span className='text-sm'>STP ID: 13 . MTP ID:1</span>
+            </div>
+            <div className='flex flex-col gap-2'>
+            <div className='flex gap-2 items-center'>
+               <div className='flex flex-col gap-1'>
+                 <span className='text-neutral-600 font-medium'>MTP Details</span>
+                 <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
+                     <div className='flex items-center gap-2'>
+                        <span className='text-sm'>MTP Date:</span>
+                        <div className='flex items-center gap-2'>
+                           <span><CalendarCheck2 className='w-4 h-4'></CalendarCheck2> </span>
+                           <span className='text-sm'>March, 20th 2025</span>
+                        </div>
+                     </div>
+                     <hr></hr>
+                     <div className='flex items-center gap-2'>
+                       <span className='text-sm'>is Active:</span>
+                       <span>No</span>
+                     </div>
+                 </div>
+               </div>
+               <div className='flex flex-col gap-1'>
+                 <span className='text-neutral-600 font-medium'>Creation Information</span>
+                 <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
+                     <div className='flex items-center gap-2'>
+                           <span className='text-sm'>Created By:</span>
+                           <span className='text-sm'>March, 20th 2025</span>
+                     </div>
+                     <hr></hr>
+                     <div className='flex items-center gap-2'>
+                       <span className='text-sm'>Created Date:</span>
+                       <span>N/A</span>
+                     </div>
+                 </div>
+               </div>
+            </div>
+            <div className='w-full rounded-md bg-slate-100 p-2'>
+               <span className='font-medium'>Reporting To: </span>
+               <span className='text-neutral-500'>Jigar vandariya</span>
+            </div>
+            </div>
+            <div className='w-full flex items-center gap-2 justify-center'>
+               <button className='bg-themeblue w-28 rounded-md p-1.5 text-white'>Approve</button>
+               <button className='bg-red-500 p-1.5 rounded-md w-28 text-white'>Reject</button>
+            </div>
          </div>
         ))
         ) : (
@@ -260,7 +282,59 @@ function PendingMtp() {
           <img src={Loader} alt="loader" className="w-10 h-10"></img>
         </div>
       ) : (
-        renderMTP()
+        // renderMTP()
+
+        <div className='grid w-full h-full grid-cols-3'>
+           <div className='bg-white p-4 flex flex-col gap-3 rounded-md shadow-sm'>
+              <div className='bg-neutral-300 flex flex-col p-2 rounded-md'>
+                 <span className='text-lg font-semibold'>new stp</span>
+                 <span className='text-sm'>STP ID: 13 . MTP ID:1</span>
+              </div>
+              <div className='flex flex-col gap-2'>
+              <div className='flex gap-2 items-center'>
+                 <div className='flex flex-col gap-1'>
+                   <span className='text-neutral-600 font-medium'>MTP Details</span>
+                   <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
+                       <div className='flex items-center gap-2'>
+                          <span className='text-sm'>MTP Date:</span>
+                          <div className='flex items-center gap-2'>
+                             <span><CalendarCheck2 className='w-4 h-4'></CalendarCheck2> </span>
+                             <span className='text-sm'>March, 20th 2025</span>
+                          </div>
+                       </div>
+                       <hr></hr>
+                       <div className='flex items-center gap-2'>
+                         <span className='text-sm'>is Active:</span>
+                         <span>No</span>
+                       </div>
+                   </div>
+                 </div>
+                 <div className='flex flex-col gap-1'>
+                   <span className='text-neutral-600 font-medium'>Creation Information</span>
+                   <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
+                       <div className='flex items-center gap-2'>
+                             <span className='text-sm'>Created By:</span>
+                             <span className='text-sm'>March, 20th 2025</span>
+                       </div>
+                       <hr></hr>
+                       <div className='flex items-center gap-2'>
+                         <span className='text-sm'>Created Date:</span>
+                         <span>N/A</span>
+                       </div>
+                   </div>
+                 </div>
+              </div>
+              <div className='w-full rounded-md bg-slate-100 p-2'>
+                 <span className='font-medium'>Reporting To: </span>
+                 <span className='text-neutral-500'>Jigar vandariya</span>
+              </div>
+              </div>
+              <div className='w-full flex items-center gap-2 justify-center'>
+                 <button className='bg-themeblue w-28 rounded-md p-1.5 text-white'>Approve</button>
+                 <button className='bg-red-500 p-1.5 rounded-md w-28 text-white'>Reject</button>
+              </div>
+           </div>
+        </div>
       )}
     </div>
   </div>
