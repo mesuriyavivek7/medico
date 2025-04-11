@@ -26,9 +26,10 @@ function AddMtp() {
     const [loading,setLoading] = useState(false)
     const [errors,setErrors] = useState({})
     const [mtpRow,setMtpRow] = useState([])
-    const [modeOfWork,setModeOfWork] = useState('')
     const [product,setProduct] = useState([])
-    const [selectedProduct,setSelectedProduct] = useState([])
+
+    const [selectedStp,setSelectedStp] = useState(null)
+    const [mtpDate,setSelectedMtpDate] = useState(null)
 
     const [open,setOpen] = useState(false)
  
@@ -38,9 +39,9 @@ function AddMtp() {
     const [formData,setFormData] = useState({
       user:null,
       doctor:null,
-      stp:null,
-      mtpDate:'',
-      description:''
+      description:'',
+      modeOfWork:'',
+      product:[]
     })
   
 
@@ -81,6 +82,10 @@ function AddMtp() {
        
        if(name==="user" || name==="stp" || name==="doctor"){
           let parsedValue = JSON.parse(value)
+          if(name==="stp"){
+            setSelectedStp(parsedValue)
+            return 
+          }
           setFormData((prevData)=>({...prevData,[name]:parsedValue}))
        }else{
         setFormData((prevData)=>({...prevData,[name]:value}))
@@ -93,10 +98,8 @@ function AddMtp() {
        let newErrors = {}
 
        if(!formData.doctor) newErrors.doc = "Please select doctor or chemist."
-       if(!formData.user) newErrors.user = "Please select user."
-       if(!formData.stp) newErrors.stp = "Please select stp."
        if(!formData.description) newErrors.description = "Please enter description."
-       if(!formData.mtpDate) newErrors.mtpDate = "Please enter mtp date."
+       if(formData.product.length===0) newErrors.product = "Please select any one product"
 
        setErrors(newErrors)
 
@@ -107,21 +110,23 @@ function AddMtp() {
         try{
           setLoading(true)
           
-          Promise.all(mtpRow.map(async (mtp)=>{
+          await Promise.all(mtpRow.map(async (mtp)=>{
             let obj = {
               mtpID:0,
-              stPid:mtp.stp?.tourID,
+              stPid:selectedStp?.tourID,
               docID:mtp.doctor?.drCode || mtp.doctor?.chemistCode,
               superiorID:mtp.user.id,
               userID:user.id,
-              mtpDate:mtp.mtpDate,
+              mtpDate:mtpDate,
               insertDate:new Date(),
-              insertBy:"String",
+              ModeOfWork:mtp.modeOfWork,
+              insertBy:user.id,
+              status:"",
               description:mtp.description,
-              prodIDs:selectedProduct
+              prodIDs:mtp.product
             }
 
-            console.log(obj)
+            console.log('mtp--->',obj)
 
             await api.post('/STPMTP/addMTP',obj)
 
@@ -143,9 +148,9 @@ function AddMtp() {
           setFormData({
             user:null,
             doctor:null,
-            stp:null,
-            mtpDate:'',
-            description:''
+            product:[],
+            description:'',
+            modeOfWork:''
           })
       }
     }
@@ -155,14 +160,18 @@ function AddMtp() {
     }
 
     const handleSelectProduct = (id) =>{
-       const existProduct = selectedProduct.find((pid)=>pid===id)
+       const existProduct = formData.product.find((pid)=>pid===id)
 
        if(existProduct){
-        setSelectedProduct((prev)=> prev.filter((pid)=>pid!==id))
+        let filterProduct = formData.product.filter((pid)=>pid!==id)
+        setFormData((prevData)=> ({...prevData,product:filterProduct}))
        }else{
-        setSelectedProduct([...selectedProduct,id])
+        let addProduct = [...formData.product,id]
+        setFormData((prev)=>({...prev,product:addProduct}))
        }
     }
+
+    console.log("mtp row -->",mtpRow)
     
   return (
     
@@ -174,6 +183,34 @@ function AddMtp() {
         </div>
      </div>
      <div className='bg-white h-full custom-shadow flex flex-col gap-4 rounded-md md:py-4 py-3 px-3 md:px-4'>
+       <div className='grid md:grid-cols-2 gap-4 grid-cols-1 mb-2 items-center'>
+        <div className='flex flex-col gap-2'>
+            <label className='font-medium text-gray-700'>Select STP <span className='text-sm text-red-500'>*</span></label>
+             <select name='stp' value={JSON.stringify(formData.stp)} onChange={handleChange} className='p-2 border border-gray-200 outline-none'>
+               <option value={''}>--Select Stp---</option>
+               {
+                 stp.map((item, index)=>(
+                  <option key={index} value={JSON.stringify(item)}>{item.tourName}</option>
+                 ))
+               }
+             </select>
+             {
+               errors.stp && 
+               <span className='text-sm text-red-500'>{errors.stp}</span>
+             }
+        </div>
+        <div className='flex flex-col gap-2'>
+            <label className='font-medium text-gray-700'>Select MTP Date <span className='text-sm text-red-500'>*</span></label>
+            <input name='mtpDate' type='date' onChange={(e)=>setSelectedMtpDate(e.target.value)} value={formData.mtpDate} className='p-2 border border-gray-200 outline-none'></input>
+            {
+               errors.mtpDate && 
+               <span className='text-sm text-red-500'>{errors.mtpDate}</span>
+             }
+          </div>
+       </div>
+      <div className='flex flex-col gap-4'>
+         <h1 className='font-medium text-lg'>Select Mtp Details</h1>
+      
         <div className='grid gap-4 md:grid-cols-2 grid-cols-1'>
           <div className='flex flex-col gap-2'>
              <label className='font-medium text-gray-700'>Select Doctor/Chemist <span className='text-sm text-red-500'>*</span></label>
@@ -191,7 +228,7 @@ function AddMtp() {
              }
           </div>
           <div className='flex flex-col gap-2'>
-             <label className='font-medium text-gray-700'>Select Users <span className='text-sm text-red-500'>*</span></label>
+             <label className='font-medium text-gray-700'>Select Users </label>
              <select name='user' value={JSON.stringify(formData.user)} onChange={handleChange} className='p-2 border border-gray-200 outline-none'>
                <option value={''}>--Select User ---</option>
                {
@@ -205,30 +242,7 @@ function AddMtp() {
                <span className='text-sm text-red-500'>{errors.user}</span>
              }
           </div>
-          <div className='flex flex-col gap-2'>
-             <label className='font-medium text-gray-700'>Select STP <span className='text-sm text-red-500'>*</span></label>
-             <select name='stp' value={JSON.stringify(formData.stp)} onChange={handleChange} className='p-2 border border-gray-200 outline-none'>
-               <option value={''}>--Select Stp---</option>
-               {
-                 stp.map((item, index)=>(
-                  <option key={index} value={JSON.stringify(item)}>{item.tourName}</option>
-                 ))
-               }
-             </select>
-             {
-               errors.stp && 
-               <span className='text-sm text-red-500'>{errors.stp}</span>
-             }
-          </div>
-          <div className='flex flex-col gap-2'>
-            <label className='font-medium text-gray-700'>Select MTP Date <span className='text-sm text-red-500'>*</span></label>
-            <input name='mtpDate' type='date' onChange={handleChange} value={formData.mtpDate} className='p-2 border border-gray-200 outline-none'></input>
-            {
-               errors.mtpDate && 
-               <span className='text-sm text-red-500'>{errors.mtpDate}</span>
-             }
-          </div>
-
+         
           <div className='flex flex-col gap-2'>
             <label className='font-medium text-gray-700'>Description <span className='text-sm text-red-500'>*</span></label>
             <textarea name='description' onChange={handleChange} type='text' value={formData.description} placeholder='enter description' className='p-2 border border-gray-200 outline-none'></textarea>
@@ -240,7 +254,7 @@ function AddMtp() {
 
           <div className='flex flex-col gap-2'>
              <label className='font-medium text-gray-700'>Mode Of Work <span className='text-sm text-red-500'>*</span></label>
-             <select className='p-2 outline-none border-2 border-gray-200 '>
+             <select name='modeOfWork' value={formData.modeOfWork} onChange={handleChange} className='p-2 outline-none border-2 border-gray-200 '>
                <option value={''}>--- Select Mode Of Work ---</option>
                <option value={'MEETING'}>MEETING</option>
                <option value={'TRANSIT'}>TRANSIT</option>
@@ -254,7 +268,7 @@ function AddMtp() {
                <label className='font-medium' htmlFor='allowance'>Products <span className='text-red-500'>*</span></label>
                <div className='relative w-full'>
                 <div onClick={()=>setOpen((prev)=>!prev)} className='p-1.5 cursor-pointer border flex gap-2 justify-between items-center rounded-md '>
-                  <span>Select Products</span>
+                  <span>{formData.product.length===0?"Select Products":`${formData.product.length} Products`}</span>
                   <span >{open ? <ChevronUp className='w-5 h-5 text-gray-600'></ChevronUp>:<ChevronDown className='w-5 h-5 text-gray-600'></ChevronDown>}</span>
                 </div>
                 {
@@ -263,17 +277,18 @@ function AddMtp() {
                   {
                     product.map((item,index) =>(
                       <div key={index} className='grid p-2 grid-cols-4 items-center gap-2'>
-                         <input onChange={()=>handleSelectProduct(item.prodId)} className='col-span-1' checked={selectedProduct.includes(item.prodId)} type='checkbox'></input>
+                         <input onChange={()=>handleSelectProduct(item.prodId)} className='col-span-1' checked={formData.product.includes(item.prodId)} type='checkbox'></input>
                          <span className='text-xs col-span-3'>{item.productName}</span>
                       </div>
                     ))
                   }
                   </div>
                 }
-                {errors.selectedAllowance && <span className='text-sm text-red-500'>{errors.selectedAllowance}</span>}
+                {errors.product && <span className='text-sm text-red-500'>{errors.product}</span>}
                </div>
           </div>
 
+        </div>
         </div>
         <div className='flex w-full place-content-end'>
              <button onClick={handleAdd} disabled={loading} className='bg-themeblue cursor-pointer text-white p-2 w-20'>

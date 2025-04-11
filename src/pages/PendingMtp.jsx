@@ -14,6 +14,33 @@ import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import { CalendarCheck2 } from 'lucide-react';
 import { toast } from 'react-toastify'
 
+const FormateDate = (date) =>{
+  if(!date) return ''
+
+  let d = new Date(date)
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  const day = d.getDate();
+  const month = monthNames[d.getMonth()];
+  const year = d.getFullYear();
+
+  // Function to get ordinal suffix
+  function getOrdinal(n) {
+    if (n > 3 && n < 21) return 'th'; // special case for 11th-13th
+    switch (n % 10) {
+      case 1: return "st";
+      case 2: return "nd";
+      case 3: return "rd";
+      default: return "th";
+    }
+  }
+
+  return `${month}, ${day}${getOrdinal(day)} ${year}`;
+}
+
 function PendingMtp() {
   const [mtpPlan,setMtpPlan] = useState([])
   const [activeState,setActiveState] = useState('approve')
@@ -43,12 +70,8 @@ function PendingMtp() {
     try{
       setLoading(true)
       const response = await api.post(`/STPMTP/getAllMTPAP`)
-      console.log(response.data.data)
-
-      // if(response.data.data.mtpdetails.length>0){
-      //  setMtpPlan(response.data.data[0].tours.filter((tour)=> tour.tourType === 1))
-      // }
-      
+      console.log('mtp---->',response.data.data)
+      setMtpPlan(response.data.data)
     }catch(err){
      console.log(err)
      toast.error("Something went wrong.")
@@ -73,37 +96,72 @@ function PendingMtp() {
         return activeCounts > 0 ? (
           mtpPlan.filter((plan) => plan.status === "Approved")
           .map((item,index) => (
-          <div key={index} className='rounded-md custom-shadow border-l-4 border-black  bg-white p-4 flex flex-col gap-2'>
-          <div className='w-full flex justify-between'>
-            <h1 className='text-lg font-bold'>{item.tourName || ""}</h1>
-            <div className='flex items-center gap-4'>
-              <span className='font-medium'>Approved By : {item.approvedBy || ""}</span>
-              <span className='bg-green-200 flex justify-center items-center px-2 p-1 rounded-2xl text-sm text-green-600'>Approved</span>
-            </div>
-          </div>
-          <div className='flex flex-col gap-1'>
-           <div className='flex gap-2 items-center'>
-             <span className='text-[#71717a]'><CalendarTodayIcon style={{fontSize:'1.1rem'}}></CalendarTodayIcon></span> 
-             <span className='text-[#71717a] font-medium'>{getDate(item.addedDate)}</span>
+          
+           <div className='bg-white h-80 p-4 flex flex-col gap-3 rounded-md shadow-sm'>
+              <div className='bg-neutral-300 flex flex-col p-2 rounded-md'>
+                 <span className='text-lg font-semibold'>new stp</span>
+                 <span className='text-sm'>STP ID: 13 . MTP ID:1</span>
+              </div>
+              <div className='flex flex-col gap-2'>
+              <div className='flex gap-2 items-center'>
+                 <div className='flex flex-col gap-1'>
+                   <span className='text-neutral-600 font-medium'>MTP Details</span>
+                   <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
+                       <div className='flex items-center gap-2'>
+                          <span className='text-sm'>MTP Date:</span>
+                          <div className='flex items-center gap-2'>
+                             <span><CalendarCheck2 className='w-4 h-4'></CalendarCheck2> </span>
+                             <span className='text-sm'>March, 20th 2025</span>
+                          </div>
+                       </div>
+                       <hr></hr>
+                       <div className='flex items-center gap-2'>
+                         <span className='text-sm'>is Active:</span>
+                         <span>No</span>
+                       </div>
+                   </div>
+                 </div>
+                 <div className='flex flex-col gap-1'>
+                   <span className='text-neutral-600 font-medium'>Creation Information</span>
+                   <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
+                       <div className='flex items-center gap-2'>
+                             <span className='text-sm'>Created By:</span>
+                             <span className='text-sm'>March, 20th 2025</span>
+                       </div>
+                       <hr></hr>
+                       <div className='flex items-center gap-2'>
+                         <span className='text-sm'>Created Date:</span>
+                         <span>N/A</span>
+                       </div>
+                   </div>
+                 </div>
+              </div>
+              
+                <div className='flex w-full items-center gap-2 rounded-md bg-slate-100 p-2'>
+                   <span className='font-medium'>Reporting To: </span>
+                   <span className='text-neutral-500'>Jigar vandariya</span>
+                </div>
+                <div className='flex w-full flex-col gap-1 rounded-md bg-slate-100 p-2'>
+                  <div className='flex items-center gap-2'>
+                     <span>Approved By:</span>
+                     <span className='text-neutral-500'>Raj Patle</span>
+                  </div>
+                  <div className='flex items-center gap-1'>
+                     <span>Approved Date:</span>
+                     <span className='text-neutral-500'>09-03-2024</span>
+                  </div>
+                
+              </div>
+              </div>
+              <div className='w-full flex items-center gap-2 justify-center'>
+                 <button className='bg-themeblue w-28 rounded-md p-1.5 text-white'>Approve</button>
+                 <button className='bg-red-500 p-1.5 rounded-md w-28 text-white'>Reject</button>
+              </div>
            </div>
-           <p className='text-[15px] font-medium text-[#71717a]'>{item.comments || ""}</p>
-          </div>
-          <div className='flex flex-col mt-2 gap-2'>
-           <div className='flex items-center gap-2'>
-             <span className='text-[#71717a]'><LocationOnOutlinedIcon></LocationOnOutlinedIcon></span>
-             <span className='font-medium'>Tour Locations</span>
-           </div>
-           <hr></hr>
-           <div className='flex flex-col gap-1'>
-             {
-               item.tourLocations.map((location,index)=> <span key={index}>{location.locationSequence+1} {location.locationName || ""}</span>)
-             }
-           </div>
-          </div>
-       </div>
+        
        ))
         ) : (
-        <div className="w-full h-full flex justify-center items-center">
+        <div className="w-full col-span-3  h-full flex justify-center items-center">
           <div className="flex flex-col gap-1 items-center">
             <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
             <span className="text-gray-600 font-medium">
@@ -117,58 +175,61 @@ function PendingMtp() {
         return pendingCounts > 0 ? (
           mtpPlan.filter((plan)=> plan.status==="Pending").
           map((item,index) => (
-            <div className='bg-white p-4 flex flex-col gap-3 rounded-md shadow-sm'>
-            <div className='bg-neutral-300 flex flex-col p-2 rounded-md'>
-               <span className='text-lg font-semibold'>new stp</span>
-               <span className='text-sm'>STP ID: 13 . MTP ID:1</span>
-            </div>
-            <div className='flex flex-col gap-2'>
-            <div className='flex gap-2 items-center'>
-               <div className='flex flex-col gap-1'>
-                 <span className='text-neutral-600 font-medium'>MTP Details</span>
-                 <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
-                     <div className='flex items-center gap-2'>
-                        <span className='text-sm'>MTP Date:</span>
+            
+            <div className='bg-white h-80 p-4 flex flex-col gap-3 rounded-md shadow-sm'>
+               <div className='bg-neutral-300 flex flex-col p-2 rounded-md'>
+                  <span className='text-lg font-semibold'>{item?.stpName || ""}</span>
+                  <span className='text-sm'>STP ID: {item?.stpID || 0} . MTP ID:{item?.mtpID
+|| 0}</span>
+               </div>
+               <div className='flex flex-col gap-2'>
+               <div className='flex gap-2 items-center'>
+                  <div className='flex flex-col gap-1'>
+                    <span className='text-neutral-600 font-medium'>MTP Details</span>
+                    <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
                         <div className='flex items-center gap-2'>
-                           <span><CalendarCheck2 className='w-4 h-4'></CalendarCheck2> </span>
-                           <span className='text-sm'>March, 20th 2025</span>
+                           <span className='text-sm'>MTP Date:</span>
+                           <div className='flex items-center gap-2'>
+                              <span><CalendarCheck2 className='w-4 h-4'></CalendarCheck2> </span>
+                              <span className='text-sm'>{FormateDate(item?.mtpDate)}</span>
+                           </div>
                         </div>
-                     </div>
-                     <hr></hr>
-                     <div className='flex items-center gap-2'>
-                       <span className='text-sm'>is Active:</span>
-                       <span>No</span>
-                     </div>
-                 </div>
+                        <hr></hr>
+                        <div className='flex items-center gap-2'>
+                          <span className='text-sm'>is Active:</span>
+                          <span>{item?.isActive ? "Yes":"No"}</span>
+                        </div>
+                    </div>
+                  </div>
+                  <div className='flex flex-col gap-1'>
+                    <span className='text-neutral-600 font-medium'>Creation Information</span>
+                    <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
+                        <div className='flex items-center gap-2'>
+                              <span className='text-sm'>Created By:</span>
+                              <span className='text-sm'>{item?.insertBy || ""}</span>
+                        </div>
+                        <hr></hr>
+                        <div className='flex items-center gap-2'>
+                          <span className='text-sm'>Created Date:</span>
+                          <span>{FormateDate(item?.insertDate) || "N/A"}</span>
+                        </div>
+                    </div>
+                  </div>
                </div>
-               <div className='flex flex-col gap-1'>
-                 <span className='text-neutral-600 font-medium'>Creation Information</span>
-                 <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
-                     <div className='flex items-center gap-2'>
-                           <span className='text-sm'>Created By:</span>
-                           <span className='text-sm'>March, 20th 2025</span>
-                     </div>
-                     <hr></hr>
-                     <div className='flex items-center gap-2'>
-                       <span className='text-sm'>Created Date:</span>
-                       <span>N/A</span>
-                     </div>
-                 </div>
+               <div className='w-full rounded-md bg-slate-100 p-2'>
+                  <span className='font-medium'>Reporting To: </span>
+                  <span className='text-neutral-500'>{item?.reportingtoName}</span>
+               </div>
+               </div>
+               <div className='w-full flex items-center gap-2 justify-center'>
+                  <button className='bg-themeblue w-28 rounded-md p-1.5 text-white'>Approve</button>
+                  <button className='bg-red-500 p-1.5 rounded-md w-28 text-white'>Reject</button>
                </div>
             </div>
-            <div className='w-full rounded-md bg-slate-100 p-2'>
-               <span className='font-medium'>Reporting To: </span>
-               <span className='text-neutral-500'>Jigar vandariya</span>
-            </div>
-            </div>
-            <div className='w-full flex items-center gap-2 justify-center'>
-               <button className='bg-themeblue w-28 rounded-md p-1.5 text-white'>Approve</button>
-               <button className='bg-red-500 p-1.5 rounded-md w-28 text-white'>Reject</button>
-            </div>
-         </div>
+         
         ))
         ) : (
-          <div className="w-full h-full flex justify-center items-center">
+          <div className="w-full col-span-3 h-full flex justify-center items-center">
             <div className="flex flex-col gap-1 items-center">
               <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
               <span className="text-gray-600 font-medium">
@@ -182,36 +243,72 @@ function PendingMtp() {
         return rejectCounts > 0 ? (
           mtpPlan.filter((plan)=> plan.status==="Rejected").
           map((item,index)=>(
-          <div key={index} className='rounded-md custom-shadow border-l-4 border-black  bg-white p-4 flex flex-col gap-2'>
-          <div className='w-full flex justify-between'>
-            <h1 className='text-lg font-bold'>{item.tourName || ""}</h1>
-            <div className='flex items-center gap-4'>
-              <span className='font-medium'>Reject By : {item.approvedBy || ""}</span>
-              <span className='bg-red-200 flex justify-center items-center px-2 p-1 rounded-2xl text-sm text-red-600'>Approved</span>
+            
+            <div className='bg-white h-80 p-4 flex flex-col gap-3 rounded-md shadow-sm'>
+               <div className='bg-neutral-300 flex flex-col p-2 rounded-md'>
+                  <span className='text-lg font-semibold'>new stp</span>
+                  <span className='text-sm'>STP ID: 13 . MTP ID:1</span>
+               </div>
+               <div className='flex flex-col gap-2'>
+               <div className='flex gap-2 items-center'>
+                  <div className='flex flex-col gap-1'>
+                    <span className='text-neutral-600 font-medium'>MTP Details</span>
+                    <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
+                        <div className='flex items-center gap-2'>
+                           <span className='text-sm'>MTP Date:</span>
+                           <div className='flex items-center gap-2'>
+                              <span><CalendarCheck2 className='w-4 h-4'></CalendarCheck2> </span>
+                              <span className='text-sm'>March, 20th 2025</span>
+                           </div>
+                        </div>
+                        <hr></hr>
+                        <div className='flex items-center gap-2'>
+                          <span className='text-sm'>is Active:</span>
+                          <span>No</span>
+                        </div>
+                    </div>
+                  </div>
+                  <div className='flex flex-col gap-1'>
+                    <span className='text-neutral-600 font-medium'>Creation Information</span>
+                    <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
+                        <div className='flex items-center gap-2'>
+                              <span className='text-sm'>Created By:</span>
+                              <span className='text-sm'>March, 20th 2025</span>
+                        </div>
+                        <hr></hr>
+                        <div className='flex items-center gap-2'>
+                          <span className='text-sm'>Created Date:</span>
+                          <span>N/A</span>
+                        </div>
+                    </div>
+                  </div>
+               </div>
+               
+                 <div className='flex w-full items-center gap-2 rounded-md bg-slate-100 p-2'>
+                    <span className='font-medium'>Reporting To: </span>
+                    <span className='text-neutral-500'>Jigar vandariya</span>
+                 </div>
+                 <div className='flex w-full flex-col gap-1 rounded-md bg-slate-100 p-2'>
+                   <div className='flex items-center gap-2'>
+                      <span>Rejected By:</span>
+                      <span className='text-neutral-500'>Raj Patle</span>
+                   </div>
+                   <div className='flex items-center gap-1'>
+                      <span>Rejected Date:</span>
+                      <span className='text-neutral-500'>09-03-2024</span>
+                   </div>
+                 
+               </div>
+               </div>
+               <div className='w-full flex items-center gap-2 justify-center'>
+                  <button className='bg-themeblue w-28 rounded-md p-1.5 text-white'>Approve</button>
+                  <button className='bg-red-500 p-1.5 rounded-md w-28 text-white'>Reject</button>
+               </div>
             </div>
-          </div>
-          <div className='flex flex-col gap-1'>
-           <div className='flex gap-2 items-center'>
-             <span className='text-[#71717a]'><CalendarTodayIcon style={{fontSize:'1.1rem'}}></CalendarTodayIcon></span> 
-             <span className='text-[#71717a] font-medium'>{getDate(item.addedDate)}</span>
-           </div>
-           <p className='text-[15px] font-medium text-[#71717a]'>{item.comments || ""}</p>
-          </div>
-          <div className='flex flex-col mt-2 gap-2'>
-           <div className='flex items-center gap-2'>
-             <span className='text-[#71717a]'><LocationOnOutlinedIcon></LocationOnOutlinedIcon></span>
-             <span className='font-medium'>Tour Locations</span>
-           </div>
-           <hr></hr>
-           <div className='flex flex-col gap-1'>
-             {
-               item.tourLocations.map((location,index)=> <span key={index}>{location.locationSequence+1} {location.locationName || ""}</span>)
-             }
-           </div>
-          </div>
-       </div>))
+         
+          ))
         ) : (
-          <div className="w-full h-full flex justify-center items-center">
+          <div className="w-full col-span-3 h-full flex justify-center items-center">
             <div className="flex flex-col gap-1 items-center">
               <img src={NODATA} alt="nodata" className="w-24 h-24"></img>
               <span className="text-gray-600 font-medium">
@@ -282,58 +379,8 @@ function PendingMtp() {
           <img src={Loader} alt="loader" className="w-10 h-10"></img>
         </div>
       ) : (
-        // renderMTP()
-
-        <div className='grid w-full h-full grid-cols-3'>
-           <div className='bg-white p-4 flex flex-col gap-3 rounded-md shadow-sm'>
-              <div className='bg-neutral-300 flex flex-col p-2 rounded-md'>
-                 <span className='text-lg font-semibold'>new stp</span>
-                 <span className='text-sm'>STP ID: 13 . MTP ID:1</span>
-              </div>
-              <div className='flex flex-col gap-2'>
-              <div className='flex gap-2 items-center'>
-                 <div className='flex flex-col gap-1'>
-                   <span className='text-neutral-600 font-medium'>MTP Details</span>
-                   <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
-                       <div className='flex items-center gap-2'>
-                          <span className='text-sm'>MTP Date:</span>
-                          <div className='flex items-center gap-2'>
-                             <span><CalendarCheck2 className='w-4 h-4'></CalendarCheck2> </span>
-                             <span className='text-sm'>March, 20th 2025</span>
-                          </div>
-                       </div>
-                       <hr></hr>
-                       <div className='flex items-center gap-2'>
-                         <span className='text-sm'>is Active:</span>
-                         <span>No</span>
-                       </div>
-                   </div>
-                 </div>
-                 <div className='flex flex-col gap-1'>
-                   <span className='text-neutral-600 font-medium'>Creation Information</span>
-                   <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
-                       <div className='flex items-center gap-2'>
-                             <span className='text-sm'>Created By:</span>
-                             <span className='text-sm'>March, 20th 2025</span>
-                       </div>
-                       <hr></hr>
-                       <div className='flex items-center gap-2'>
-                         <span className='text-sm'>Created Date:</span>
-                         <span>N/A</span>
-                       </div>
-                   </div>
-                 </div>
-              </div>
-              <div className='w-full rounded-md bg-slate-100 p-2'>
-                 <span className='font-medium'>Reporting To: </span>
-                 <span className='text-neutral-500'>Jigar vandariya</span>
-              </div>
-              </div>
-              <div className='w-full flex items-center gap-2 justify-center'>
-                 <button className='bg-themeblue w-28 rounded-md p-1.5 text-white'>Approve</button>
-                 <button className='bg-red-500 p-1.5 rounded-md w-28 text-white'>Reject</button>
-              </div>
-           </div>
+        <div className='grid gap-4 grid-cols-1 w-full h-full md:grid-cols-3'>
+          { renderMTP() }
         </div>
       )}
     </div>

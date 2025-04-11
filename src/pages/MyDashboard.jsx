@@ -16,6 +16,7 @@ import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
 
 import { latestColumns, fetchAllUsers } from '../data/EmployeeDataTable';
 import { Link } from 'react-router-dom';
+import { X } from 'lucide-react';
 
 export default function MyDashboard() {
   const { user } = useSelector((state) => state.auth);
@@ -65,19 +66,62 @@ export default function MyDashboard() {
    fetchCounts()
  },[])
 
+
+
  const localizer = momentLocalizer(moment);
- const [events, setEvents] = useState([
-  {
-    title: "Meeting with Team",
-    start: new Date(2025, 3, 5), // Year, Month (0-based), Day, Hours, Minutes
-    end: new Date(2025, 3, 5),
-  },
-  {
-    title: "Doctor Appointment",
-    start: new Date(2025, 3, 14),
-    end: new Date(2025, 3, 18),
-  },
-]);
+ const [events, setEvents] = useState([]);
+
+ const fetchCalenderData = async () =>{
+  try{
+    const response = await api.post('/User/dashboard',{
+      year:2025,
+      month:4
+    })
+    let data = response.data.data.result
+    console.log('calender--->',data)
+    setEvents(data.map((item)=>
+    (
+      {
+        title:item.daystatus,
+        start:new Date(item.daydt),
+        end:new Date(item.daydt),
+        color:item.color
+      }
+    )
+    ))
+  }catch(err){
+    console.log(err)
+  }
+ }
+
+ useEffect(()=>{
+   fetchCalenderData()
+ },[])
+
+ console.log(events)
+
+ const [selectedDate,setSelectedDate] = useState(null)
+ const [showPopUp,setShowPopUp] = useState(false)
+ const [mtpDetails,setMtpDetails] = useState(null)
+
+ useEffect(()=>{
+ if(selectedDate){ 
+   const fetchMtpDetails = async () =>{
+    try{
+
+    }catch(err){
+      console.log(err)
+    }
+   }
+ }
+ },[selectedDate])
+
+ const handleSelectSlot = ({ start }) => {
+  setSelectedDate(start);
+  setShowPopUp(true);
+};
+
+console.log(selectedDate)
  
   return (
   <div className='h-full overflow-y-scroll gap-4'>
@@ -108,14 +152,42 @@ export default function MyDashboard() {
       </div>
     </div>
 
-    <div className='w-full mb-4 h-[500px]'>
+    <div className='w-full relative mb-4 h-[500px]'>
       <Calendar
+        selectable
         localizer={localizer}
         events={events}
         startAccessor="start"
         endAccessor="end"
         style={{ height: "100%" }}
+        onSelectSlot={handleSelectSlot}
+        eventPropGetter={(event) => {
+          const backgroundColor = event.color || '#3174ad'; // default color if none provided
+          return {
+            style: {
+              backgroundColor,
+              borderRadius: '5px',
+              opacity: 0.9,
+              color: 'white',
+              border: '0px',
+              display: 'block',
+            },
+          };
+        }}
       />
+
+      {showPopUp && selectedDate && (
+        <div
+          className='absolute z-50 inset-0 flex justify-center items-center'
+        >
+          <div className='w-96 h-96 rounded-md shadow-sm p-4 bg-white border'>
+              <div className='flex justify-between items-center'>
+                  <h1 className='font-medium'>MTP Details</h1>
+                  <button className='text-red-500 hover:text-red-600' onClick={() => setShowPopUp(false)}><X></X></button>
+              </div>
+          </div>
+        </div>
+      )}
     
     </div>
 
