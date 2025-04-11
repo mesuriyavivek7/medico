@@ -29,24 +29,18 @@ export const mtpcolumns = (handleRemove) => [
         )  
     },
     {
-        field: 'stp',
+        field: 'product',
         headerClassName: 'super-app-theme--header',
-        headerName: 'Stp',
+        headerName: 'Products',
         flex: 1,
-        minWidth: 150,   
-        renderCell: (params) =>(
-            <span>{params.value.tourName}</span>
-        )
+        minWidth: 150, 
     },
-    {     
-        field: 'mtpDate',
+    {
+        field: 'modeOfWork',
         headerClassName: 'super-app-theme--header',
-        headerName: 'MTP Date',
+        headerName: 'Mode Of Work',
         flex: 1,
-        minWidth: 150,  
-        renderCell: (params) =>(
-            <span>{formateDate(params.value)}</span>
-        )
+        minWidth: 150, 
     },
     {
         field: 'description',
