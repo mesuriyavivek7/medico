@@ -110,7 +110,7 @@ export default function Employee() {
             <input value={searchQuery} onChange={(e)=>setSearchQuery(e.target.value)} className='outline-none bg-transparent' placeholder='Search Employee...' type='text'></input>
            </div>
            <span onClick={fetchData} className='cursor-pointer md:w-9 md:h-9 w-8 h-8 border border-slate-200 flex justify-center items-center rounded-md'><AutorenewIcon></AutorenewIcon></span>
-           <Link to={user.isAdmin?'/admin/employee/addnew':'/employee/user/addnew'}><button className='md:p-2 p-1.5 bg-themeblue md:text-base text-sm text-white rounded-md'>Add New Employee</button></Link>
+           <Link to={user.isAdmin?'/admin/employee/addnew':'/employee/myteam/addnew'}><button className='md:p-2 p-1.5 bg-themeblue md:text-base text-sm text-white rounded-md'>Add New Employee</button></Link>
          </div>
        </div>
        <div className='h-full py-4 px-3 custom-shadow rounded-md bg-white'>

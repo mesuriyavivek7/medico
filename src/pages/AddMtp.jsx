@@ -81,12 +81,16 @@ function AddMtp() {
        const {name, value} = e.target
        
        if(name==="user" || name==="stp" || name==="doctor"){
+        if(value){
           let parsedValue = JSON.parse(value)
           if(name==="stp"){
             setSelectedStp(parsedValue)
             return 
           }
           setFormData((prevData)=>({...prevData,[name]:parsedValue}))
+        }else{
+          setFormData((prevData)=>({...prevData,[name]:null}))
+        }
        }else{
         setFormData((prevData)=>({...prevData,[name]:value}))
        }
@@ -99,14 +103,27 @@ function AddMtp() {
 
        if(!formData.doctor) newErrors.doc = "Please select doctor or chemist."
        if(!formData.description) newErrors.description = "Please enter description."
-       if(formData.product.length===0) newErrors.product = "Please select any one product"
+       if(formData.product.length===0) newErrors.product = "Please select any one product."
+       if(!formData.modeOfWork) newErrors.modeOfWork = "Please select Mode of work."
 
        setErrors(newErrors)
 
        return Object.keys(newErrors).length===0
     }
 
+    const validateFinaleData = () =>{
+      let newErrors = {}
+
+      if(!selectedStp) newErrors.stp = "Please select stp."
+      if(!mtpDate) newErrors.mtpDate = 'Please select mtp date.'
+
+      setErrors(newErrors)
+
+      return Object.keys(newErrors).length === 0
+    }
+
     const handleSubmit = async () =>{
+       if(validateFinaleData()){
         try{
           setLoading(true)
           
@@ -125,9 +142,6 @@ function AddMtp() {
               description:mtp.description,
               prodIDs:mtp.product
             }
-
-            console.log('mtp--->',obj)
-
             await api.post('/STPMTP/addMTP',obj)
 
           }))
@@ -140,9 +154,12 @@ function AddMtp() {
         }finally{
           setLoading(false)
         }
+      }
     }
 
+
     const handleAdd = () =>{
+      console.log("Add clicked")
       if(validateData()){
           setMtpRow((prevData)=>[{id:prevData.length+1,...formData},...prevData])
           setFormData({
@@ -170,8 +187,6 @@ function AddMtp() {
         setFormData((prev)=>({...prev,product:addProduct}))
        }
     }
-
-    console.log("mtp row -->",mtpRow)
     
   return (
     
@@ -230,7 +245,7 @@ function AddMtp() {
           <div className='flex flex-col gap-2'>
              <label className='font-medium text-gray-700'>Select Users </label>
              <select name='user' value={JSON.stringify(formData.user)} onChange={handleChange} className='p-2 border border-gray-200 outline-none'>
-               <option value={''}>--Select User ---</option>
+               <option value={''}>--- Select User ---</option>
                {
                  users.map((item, index)=>(
                   <option key={index} value={JSON.stringify(item)}>{item.firstName} {item.lastName}</option>
@@ -262,6 +277,9 @@ function AddMtp() {
                <option value={'CAMP'}>CAMP</option>
                <option value={'Other'}>Other</option>
              </select>
+             {
+              errors.modeOfWork && <span className='text-sm text-red-500'>{errors.modeOfWork}</span>
+             }
           </div>
 
           <div className='flex w-52 flex-col gap-2'>

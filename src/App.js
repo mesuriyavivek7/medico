@@ -43,7 +43,8 @@ import AddStourPlan from "./pages/AddStourPlan";
 // ProtectedRoute Component
 const ProtectedRoute = ({ children , requiredRole }) => {
   const { user } = useSelector((state) => state.auth);
-  console.log("protected user---->",user)
+
+  console.log("protected user ---->",user)
   if (!user) {
     return <Navigate to="/" />;
   }
@@ -76,13 +77,15 @@ function App() {
        dispatch(loginStart())
        try{
           await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/verify_token`,{api_token:api_token})
+          console.log("validation successfully")
        }catch(err){
-         console.log(err)
+         console.log('validation---->',err)
+
          dispatch(loginFailure("Validation failed"))
        }
     }
     validateUser()
-  },[dispatch])
+  },[])
 
   const AppRouter = createBrowserRouter(
     [
@@ -337,7 +340,7 @@ function App() {
             )
           },
           {
-            path:'user',
+            path:'myteam',
             element:(
               <ProtectedRoute requiredRole="employee">
                 <Employee></Employee>
@@ -345,7 +348,7 @@ function App() {
             )
           },
           {
-            path:'user/addnew',
+            path:'myteam/addnew',
             element:(
               <ProtectedRoute requiredRole="employee">
                 <AddNewEmp></AddNewEmp>
@@ -353,7 +356,7 @@ function App() {
             )
           },
           {
-            path:'user/edit',
+            path:'myteam/edit',
             element:(
               <ProtectedRoute requiredRole="employee">
                 <EditEmp></EditEmp>
@@ -361,7 +364,7 @@ function App() {
             )
           },
           {
-            path:'user/preview',
+            path:'myteam/preview',
             element:(
             <ProtectedRoute requiredRole="admin">
               <PreviewEmp></PreviewEmp>
