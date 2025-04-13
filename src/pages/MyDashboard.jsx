@@ -24,35 +24,6 @@ export default function MyDashboard() {
   const [chemistCount, setChemistCount] = useState(0);
   const [myTeamCount, setMyTeamCount] = useState(0);
 
-  const fetchCounts = async () => {
-    try {
-      const [doctorsResponse, chemistResponse, myTeamResponse] =
-        await Promise.all(
-          user.isAdmin
-            ? [
-                api.get("/Doctor/GetAllDoctor"),
-                api.get("/Chemist/GetAllChemist"),
-                api.get("/User/MyTeam"),
-              ]
-            : [
-                api.get("/DoctorMapping/GetAllDoctorMappingData"),
-                api.get("/ChemistMapping/GetAllChemistMappingData"),
-                api.get("/User/MyTeam"),
-              ]
-        );
-      console.log(chemistResponse.data.data);
-      setDoctorsCount(doctorsResponse.data.data.length);
-      setChemistCount(
-        user.isAdmin
-          ? chemistResponse.data.data.length
-          : chemistResponse.data.data.result.length
-      );
-      setMyTeamCount(myTeamResponse.data.data.length);
-    } catch (err) {
-      console.log(err);
-      toast.error("Something went wrong.");
-    }
-  };
 
   const [employee, setEmployee] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -61,21 +32,16 @@ export default function MyDashboard() {
     try {
       setLoading(true);
       const data = await fetchAllUsers();
+      console.log("employee--->",data)
       setEmployee(
         data.map((item, index) => ({ ...item, id: index + 1 }))?.slice(0, 5)
       );
     } catch (err) {
       console.log(err);
-      toast.error(err.response.data.message || "Something went wrong.");
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    getEmployeeData();
-    fetchCounts();
-  }, []);
 
   const localizer = momentLocalizer(moment);
   const [events, setEvents] = useState([]);
@@ -87,7 +53,10 @@ export default function MyDashboard() {
         month: 4,
       });
       let data = response.data.data.result;
-      console.log(data);
+
+      setDoctorsCount(data[0].noofdoc)
+      setChemistCount(data[0].noofChemist)
+      setMyTeamCount(data[0].noofTeam)
       setEvents(
         data.map((item) => ({
           title: item.daystatus,
@@ -104,6 +73,7 @@ export default function MyDashboard() {
 
   useEffect(() => {
     fetchCalenderData();
+    getEmployeeData()
   }, []);
 
   const [showPopUp, setShowPopUp] = useState(false);
@@ -142,8 +112,6 @@ export default function MyDashboard() {
       setShowPopUp(true);
     }
   };
-
-  console.log(mtpDetails);
 
   return (
     <div className="h-full overflow-y-scroll gap-4">
@@ -297,7 +265,7 @@ export default function MyDashboard() {
       </div>
 
       <div className="h-full flex flex-col gap-2 py-4 px-3 custom-shadow rounded-md bg-white">
-        <h1 className="font-medium text-lg">New Employees</h1>
+        <h1 className="font-medium text-lg">My Team</h1>
         <Box
           sx={{
             height: "100%",

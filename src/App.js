@@ -18,7 +18,7 @@ import StourPlan from "./pages/StourPlan";
 import MTP from "./pages/MTP";
 import AddMtp from "./pages/AddMtp";
 import PreviewEmp from "./pages/PreviewEmp";
-import PendingStp from "./pages/PendingStp";
+import Report from "./pages/Report";
 import PendingMtp from "./pages/PendingMtp";
 
 //Importing General Components
@@ -286,6 +286,14 @@ function App() {
             element:(
               <ProtectedRoute requiredRole='admin'>
                 <DoctorMapping></DoctorMapping>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:"report",
+            element:(
+              <ProtectedRoute requiredRole='admin'>
+                <Report></Report>
               </ProtectedRoute>
             )
           }

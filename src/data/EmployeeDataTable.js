@@ -39,16 +39,11 @@ export const columns = (handleNavigateToEdit,handleOpenConfirmPopUp,handleNaviga
     minWidth: 200, // Minimum width to prevent shrinking
   },
   {
-    field: 'gender',
+    field: 'designationName',
     headerClassName: 'super-app-theme--header',
-    headerName: 'Gender',
+    headerName: 'Designation',
     flex: 0.5, // Proportional width
     minWidth: 120, // Minimum width to prevent shrinking
-    renderCell:(params)=>(
-      <div className='flex w-full items-center h-full'>
-        <span>{params.row.gender==="M"||params.row.gender==="m"?"Male":"Female"}</span>
-      </div>
-    )
   },
   {
     field: 'phoneNumber',
@@ -138,16 +133,11 @@ export const empColumns = (handleNavigateToEdit,handleOpenConfirmPopUp,handleNav
     minWidth: 200, // Minimum width to prevent shrinking
   },
   {
-    field: 'gender',
+    field: 'designationName',
     headerClassName: 'super-app-theme--header',
-    headerName: 'Gender',
+    headerName: 'Designation',
     flex: 0.5, // Proportional width
     minWidth: 120, // Minimum width to prevent shrinking
-    renderCell:(params)=>(
-      <div className='flex w-full items-center h-full'>
-        <span>{params.row.gender==="M"||params.row.gender==="m"?"Male":"Female"}</span>
-      </div>
-    )
   },
   {
     field: 'phoneNumber',
@@ -191,13 +181,6 @@ export const empColumns = (handleNavigateToEdit,handleOpenConfirmPopUp,handleNav
 ]
 
 export const latestColumns = [
-  // {
-  //   field: 'srno',
-  //   headerClassName: 'super-app-theme--header',
-  //   headerName: 'Sr No.',
-  //   flex: 0.5, // Proportional width
-  //   minWidth: 80, // Minimum width to prevent shrinking
-  // },
   {
     field: 'username',
     headerClassName: 'super-app-theme--header',
@@ -225,16 +208,11 @@ export const latestColumns = [
     minWidth: 200, // Minimum width to prevent shrinking
   },
   {
-    field: 'gender',
+    field: 'designationName',
     headerClassName: 'super-app-theme--header',
-    headerName: 'Gender',
+    headerName: 'Designation',
     flex: 0.5, // Proportional width
     minWidth: 120, // Minimum width to prevent shrinking
-    renderCell:(params)=>(
-      <div className='flex w-full items-center h-full'>
-        <span>{params.row.gender==="M"||params.row.gender==="m"?"Male":"Female"}</span>
-      </div>
-    )
   },
   {
     field: 'phoneNumber',
@@ -304,23 +282,18 @@ export const empMapColumns = [
     minWidth: 200, // Minimum width to prevent shrinking
   },
   {
-    field: 'gender',
-    headerClassName: 'super-app-theme--header',
-    headerName: 'Gender',
-    flex: 0.5, // Proportional width
-    minWidth: 120, // Minimum width to prevent shrinking
-    renderCell:(params)=>(
-      <div className='flex w-full items-center h-full'>
-        <span>{params.row.gender==="M"||params.row.gender==="m"?"Male":"Female"}</span>
-      </div>
-    )
-  },
-  {
     field: 'phoneNumber',
     headerClassName: 'super-app-theme--header',
     headerName: 'Mobile No',
     flex: 0.5, // Proportional width
     minWidth: 140, // Minimum width to prevent shrinking
+  },
+  {
+    field: 'designationName',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Designation',
+    flex: 0.5, // Proportional width
+    minWidth: 120, // Minimum width to prevent shrinking
   },
   {
      field:'dob',
