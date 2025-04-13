@@ -30,6 +30,8 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 import { ClipboardMinus } from 'lucide-react';
 import { Beaker } from 'lucide-react';
+import { ChartColumnBig } from 'lucide-react';
+
 
 
 export default function Dashboard() {
@@ -228,6 +230,11 @@ export default function Dashboard() {
                {isMenuOpen && <span className={`${isActive("doctormapping") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Doctor Mapping</span>}
             </div>
 
+            <div onClick={()=>handleNavigate('report')} className={`group flex ${isActive("report") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('report') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ChartColumnBig className="w-5 h-5"></ChartColumnBig></span>
+               {isMenuOpen && <span className={`${isActive("report") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Report</span>}
+            </div>
+
  
  
 
@@ -306,6 +313,11 @@ export default function Dashboard() {
             <div onClick={()=>handleNavigate('doctormapping')} className={`group flex ${isActive("doctormapping") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
                <span className={`${isActive('doctormapping') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ClipboardMinus className="w-5 h-5"></ClipboardMinus></span>
                <span className={`${isActive("doctormapping") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Doctor Mapping</span>
+            </div>
+
+            <div onClick={()=>handleNavigate('report')} className={`group flex ${isActive("report") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('report') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ChartColumnBig className="w-5 h-5"></ChartColumnBig></span>
+               <span className={`${isActive("report") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Report</span>
             </div>
 
             

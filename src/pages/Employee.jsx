@@ -7,7 +7,7 @@ import api from '../api';
 import { useSelector } from 'react-redux';
 
 //importing data
-import { columns,empColumns, fetchAllUsers } from '../data/EmployeeDataTable';
+import { columns , empColumns, fetchAllUsers } from '../data/EmployeeDataTable';
 
 //Importing icons
 import SearchIcon from '@mui/icons-material/Search';
