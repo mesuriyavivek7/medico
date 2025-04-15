@@ -32,12 +32,13 @@ function AddMtp() {
     const [mtpDate,setSelectedMtpDate] = useState(null)
 
     const [open,setOpen] = useState(false)
+    const [openUser,setOpenUser] = useState(false)
  
     let docchem = [...doctors,...chemist]
 
 
     const [formData,setFormData] = useState({
-      user:null,
+      user:[],
       doctor:null,
       description:'',
       modeOfWork:'',
@@ -66,6 +67,8 @@ function AddMtp() {
           setChemist(chemists.data.data)
           setStp(stps.data.data)
           setProduct(products.data.data)
+
+          console.log(users.data.data)
           
       }catch(err){
         console.log(err)
@@ -132,7 +135,7 @@ function AddMtp() {
               mtpID:0,
               stPid:selectedStp?.tourID,
               docID:mtp.doctor?.drCode || mtp.doctor?.chemistCode,
-              superiorID:mtp.user.id,
+              superiorID:mtp.user.map((user)=>user.id),
               userID:user.id,
               mtpDate:mtpDate,
               insertDate:new Date(),
@@ -140,8 +143,10 @@ function AddMtp() {
               insertBy:user.id,
               status:"",
               description:mtp.description,
-              prodIDs:mtp.product
+              prodIDs:mtp.product.map((item)=> item.prodId)
             }
+
+            console.log('finale obj---->',obj)
             await api.post('/STPMTP/addMTP',obj)
 
           }))
@@ -163,7 +168,7 @@ function AddMtp() {
       if(validateData()){
           setMtpRow((prevData)=>[{id:prevData.length+1,...formData},...prevData])
           setFormData({
-            user:null,
+            user:[],
             doctor:null,
             product:[],
             description:'',
@@ -176,17 +181,33 @@ function AddMtp() {
         setMtpRow(()=>mtpRow.filter((item)=> item.id!==id))
     }
 
-    const handleSelectProduct = (id) =>{
-       const existProduct = formData.product.find((pid)=>pid===id)
+    const handleSelectProduct = (item) =>{
+       const existProduct = formData.product.find((pd)=>pd.prodId===item.prodId)
 
        if(existProduct){
-        let filterProduct = formData.product.filter((pid)=>pid!==id)
+        let filterProduct = formData.product.filter((pd)=>pd.prodId!==item.prodId)
         setFormData((prevData)=> ({...prevData,product:filterProduct}))
        }else{
-        let addProduct = [...formData.product,id]
+        let addProduct = [...formData.product,item]
         setFormData((prev)=>({...prev,product:addProduct}))
        }
     }
+
+    const handleSelectUser = (item) =>{
+       const existUser = formData.user.find((u)=>u.id===item.id)
+
+       if(existUser){
+        let filterUser = formData.user.filter((u)=> u.id !== item.id)
+        setFormData((prevData)=> ({...prevData,user:filterUser}))
+       }else{
+        if(formData.user.length>=3) return toast.warning("Maximum 3 user are allow to work with you.")
+        let addUser = [...formData.user,item]
+        setFormData((prev)=>({...prev,user:addUser}))
+       }
+    } 
+
+    console.log(formData)
+  
     
   return (
     
@@ -243,19 +264,30 @@ function AddMtp() {
              }
           </div>
           <div className='flex flex-col gap-2'>
-             <label className='font-medium text-gray-700'>Work With </label>
-             <select name='user' value={JSON.stringify(formData.user)} onChange={handleChange} className='p-2 border border-gray-200 outline-none'>
-               <option value={''}>--- Select User ---</option>
-               {
-                 users.map((item, index)=>(
-                  <option key={index} value={JSON.stringify(item)}>{item.firstName} {item.lastName}</option>
-                 ))
-               }
-             </select>
-             {
-               errors.user && 
-               <span className='text-sm text-red-500'>{errors.user}</span>
-             }
+             <label className='font-medium'>Work With</label>
+             <div className='relative w-full'>
+                <div onClick={()=>setOpenUser((prev)=>!prev)} className='p-1.5 cursor-pointer border flex gap-2 justify-between items-center rounded-md '>
+                  <span>{formData.user.length===0?"Select Users":`${formData.user.length} Users`}</span>
+                  <span >{openUser ? <ChevronUp className='w-5 h-5 text-gray-600'></ChevronUp>:<ChevronDown className='w-5 h-5 text-gray-600'></ChevronDown>}</span>
+                </div>
+                {
+                  openUser && 
+                  <div className='absolute h-24 overflow-scroll w-full shadow bg-white z-40'>
+                  {
+                    users.map((item,index) =>(
+                      <div key={index} className='grid p-2 grid-cols-8 items-center gap-2'>
+                         <input onChange={()=>handleSelectUser(item)} className='col-span-1' checked={formData.user.includes(item)} type='checkbox'></input>
+                         <span className='text-xs col-span-7'>{item.firstName} {item.lastName}</span>
+                      </div>
+                    ))
+                  }
+                  </div>
+                }
+                {
+                 errors.user && 
+                 <span className='text-sm text-red-500'>{errors.user}</span>
+                }
+               </div>
           </div>
          
           <div className='flex flex-col gap-2'>
@@ -295,7 +327,7 @@ function AddMtp() {
                   {
                     product.map((item,index) =>(
                       <div key={index} className='grid p-2 grid-cols-4 items-center gap-2'>
-                         <input onChange={()=>handleSelectProduct(item.prodId)} className='col-span-1' checked={formData.product.includes(item.prodId)} type='checkbox'></input>
+                         <input onChange={()=>handleSelectProduct(item)} className='col-span-1' checked={formData.product.includes(item)} type='checkbox'></input>
                          <span className='text-xs col-span-3'>{item.productName}</span>
                       </div>
                     ))

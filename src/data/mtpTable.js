@@ -1,11 +1,5 @@
 import { CircleMinus } from 'lucide-react';
 
-const formateDate = (dateString)=>{
-    const date = new Date(dateString);
-  
-    const options = { month: 'short', day: 'numeric', year: 'numeric' };
-    return date.toLocaleDateString('en-US', options).replace(',', '');
-}
 
 export const mtpcolumns = (handleRemove) => [
     {
@@ -21,11 +15,17 @@ export const mtpcolumns = (handleRemove) => [
     {
         field: 'user',
         headerClassName: 'super-app-theme--header',
-        headerName: 'User Name',
+        headerName: 'Work With',
         flex: 1,
         minWidth: 150, 
         renderCell: (params) =>(
-            <span>{params.value?.firstName} {params.value?.lastName}</span>
+           <div className='flex items-center gap-2'>
+              {
+                params.value.map((user,index)=> (
+                    <span key={index}>{user.firstName} {index!==params.value.length-1 && ','} </span>
+                ))
+              }
+           </div>
         )  
     },
     {
@@ -34,6 +34,15 @@ export const mtpcolumns = (handleRemove) => [
         headerName: 'Products',
         flex: 1,
         minWidth: 150, 
+        renderCell: (params) =>(
+            <div className='flex items-center gap-1'>
+                {
+                params.value.map((product,index)=>(
+                    <span key={index}>{product.productName} {index!==params.value.length-1 && ','}</span>
+                ))
+                }   
+            </div>
+        )
     },
     {
         field: 'modeOfWork',
