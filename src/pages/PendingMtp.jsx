@@ -70,7 +70,6 @@ function PendingMtp() {
     try{
       setLoading(true)
       const response = await api.post(`/STPMTP/getAllMTPAP`)
-      console.log('mtp---->',response.data.data)
       setMtpPlan(response.data.data)
     }catch(err){
      console.log(err)

@@ -60,8 +60,6 @@ const ProtectedRoute = ({ children , requiredRole }) => {
 function App() {
   const { user, api_token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  
- console.log('App user --->',user)
 
   //Set bearer token
   useEffect(()=>{
