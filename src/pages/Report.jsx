@@ -7,9 +7,11 @@ import { saveAs } from "file-saver";
 
 
 //Importing all columns
-import { filterDoctorColumns } from '../data/doctorsDataTable'
-import { empChemistColumn } from '../data/chemistDataTable'
-import { empColumns } from '../data/EmployeeDataTable'
+import { getDoctorReport } from '../data/doctorsDataTable';
+import { getChemistReport } from '../data/chemistDataTable'
+import { getUserReport } from '../data/EmployeeDataTable'
+import { getProductReport } from '../data/productDataTable';
+
 import { LoaderCircle } from 'lucide-react';
 
 const exportToExcel = (data, fileName = "Data") => {
@@ -21,6 +23,26 @@ const exportToExcel = (data, fileName = "Data") => {
    const fileData = new Blob([excelBuffer], { type: "application/octet-stream" });
    saveAs(fileData, `${fileName}.xlsx`);
  };
+
+
+ const getDataType = (userType) =>{
+    switch(userType){
+      case "DoctorList":
+         return getDoctorReport
+      
+      case "ChemistList":
+         return getChemistReport
+
+      case "EMList":
+         return getUserReport
+
+      case "ProductList":
+         return getProductReport
+
+      default:
+         return []
+    }
+ }
 
 
 function Report() {
@@ -67,7 +89,7 @@ function Report() {
       const response = await api.get(`/Report/Report?ReportType=${reportType}&HQ=${selectedHeadQuater}&fromDate=${fromDate}`)
       console.log('report data---->',response.data.data)
       let data = response.data.data
-      exportToExcel(data,reportType)
+      setReportData(data.map((item,index) => ({...item,id:index+1})))
      }catch(err){
       console.log(err)
      }finally{
@@ -76,12 +98,11 @@ function Report() {
    }
   }
 
-  
-
   return (
     <div className='flex h-full flex-col gap-3 md:gap-4'>
      <div className='bg-white custom-shadow rounded-md md:py-4 py-3 px-3 flex items-center justify-between'>
        <h1 className='text-gray-600 text-base md:text-lg font-medium'>Report</h1>
+       <button disabled={reportData.length===0} onClick={()=>exportToExcel(reportData,reportType)} className='text-white w-32 disabled:cursor-not-allowed disabled:bg-gray-400 flex justify-center items-center p-2 font-medium rounded-md bg-themeblue'>Download</button>
      </div>
      
      <div className='bg-white p-4 custom-shadow rounded-md flex flex-col gap-4'>
@@ -123,16 +144,42 @@ function Report() {
           </div>
        </div>
        <div className='w-full  flex justify-center items-center'>
-         <button onClick={fetchReport} className='text-white w-40 flex justify-center items-center p-2 font-medium rounded-md bg-themeblue'>
+         <button onClick={fetchReport} className='text-white w-36 flex justify-center items-center p-2 font-medium rounded-md bg-themeblue'>
          {
             loading ? 
             <LoaderCircle className="animate-spin"></LoaderCircle>
-            :<span>Download Report</span>
+            :<span>Get Report</span>
          }
          </button>
        </div>
      </div>
 
+     <div className=''>
+        {
+          reportData.length > 0 &&
+          (
+          <Box sx={{height:"100%",
+          '& .super-app-theme--header': {
+            backgroundColor: '#edf3fd',
+          },}}>
+           <DataGrid
+            rows={reportData}
+            columns={getDataType(reportType)}
+            loading={loading}
+            initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+              },
+            },
+           }}
+           pageSizeOptions={[5,10]}
+           disableRowSelectionOnClick
+          />
+         </Box>
+         )
+        }
+      </div>
     </div>
   )
 }

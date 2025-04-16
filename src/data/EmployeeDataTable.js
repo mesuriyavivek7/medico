@@ -329,6 +329,119 @@ export const empMapColumns = [
 ]
 
 
+export const getUserReport = [
+  {
+    field: 'Id',
+    headerName: 'ID',
+    headerClassName: 'super-app-theme--header',
+    flex: 0.5,
+    minWidth: 80,
+  },
+  {
+    field: 'FirstName',
+    headerName: 'First Name',
+    headerClassName: 'super-app-theme--header',
+    flex: 1,
+    minWidth: 120,
+  },
+  {
+    field: 'LastName',
+    headerName: 'Last Name',
+    headerClassName: 'super-app-theme--header',
+    flex: 1,
+    minWidth: 120,
+  },
+  {
+    field: 'FullName',
+    headerName: 'Full Name',
+    headerClassName: 'super-app-theme--header',
+    flex: 1.2,
+    minWidth: 160,
+  },
+  {
+    field: 'Gender',
+    headerName: 'Gender',
+    headerClassName: 'super-app-theme--header',
+    flex: 0.6,
+    minWidth: 100,
+    valueGetter: (params) => params.row.Gender?.toUpperCase() === 'M' ? 'Male' : 'Female',
+  },
+  {
+    field: 'Email',
+    headerName: 'Email',
+    headerClassName: 'super-app-theme--header',
+    flex: 1.5,
+    minWidth: 200,
+  },
+  {
+    field: 'Description',
+    headerName: 'Description',
+    headerClassName: 'super-app-theme--header',
+    flex: 1.5,
+    minWidth: 200,
+  },
+  {
+    field: 'Designation',
+    headerName: 'Designation ID',
+    headerClassName: 'super-app-theme--header',
+    flex: 1,
+    minWidth: 120,
+  },
+  {
+    field: 'Name',
+    headerName: 'Role Name',
+    headerClassName: 'super-app-theme--header',
+    flex: 1,
+    minWidth: 120,
+  },
+  {
+    field: 'RoleID',
+    headerName: 'Role ID',
+    headerClassName: 'super-app-theme--header',
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: 'IsActive',
+    headerName: 'Active',
+    headerClassName: 'super-app-theme--header',
+    flex: 0.6,
+    minWidth: 100,
+    valueGetter: (params) => (params.row.IsActive ? 'Yes' : 'No'),
+  },
+  {
+    field: 'PanCard',
+    headerName: 'PAN Card',
+    headerClassName: 'super-app-theme--header',
+    flex: 1,
+    minWidth: 130,
+  },
+  {
+    field: 'CreatedBy',
+    headerName: 'Created By',
+    headerClassName: 'super-app-theme--header',
+    flex: 1,
+    minWidth: 120,
+  },
+  {
+    field: 'CreatedDate',
+    headerName: 'Created Date',
+    headerClassName: 'super-app-theme--header',
+    flex: 1.2,
+    minWidth: 150,
+    valueGetter: (params) => params.row.CreatedDate?.split('T')[0],
+  },
+  {
+    field: 'JoiningDate',
+    headerName: 'Joining Date',
+    headerClassName: 'super-app-theme--header',
+    flex: 1.2,
+    minWidth: 150,
+    valueGetter: (params) => params.row.JoiningDate?.split('T')[0],
+  },
+];
+
+
 export const fetchAllUsers = async ()=>{
   try{
     const response = await api.get(`/User/GetAllUsers`)

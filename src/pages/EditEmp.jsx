@@ -15,12 +15,12 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 function EditEmp() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [headQuater,setHeadQuater] = useState([])
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({});
 
   const [errors, setErrors] = useState({});
-
 
   const [designation,setDesignation] = useState([])
   const [reporting,setReporting] = useState([])
@@ -32,7 +32,22 @@ function EditEmp() {
     setFormData(location.state);
   }, []);
 
-  console.log(formData);
+  useEffect(()=>{
+    const fetchHeadQauter = async () =>{
+      try{
+        const response = await api.get('/Headquarters')
+        console.log(response.data)
+        setHeadQuater(response.data)
+      }catch(err){
+        console.log(err)
+      }
+    }
+
+    fetchHeadQauter()
+  },[])
+
+  console.log('formdata---->',formData)
+
 
   const [previewImage, setPreviewImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
@@ -444,15 +459,20 @@ function EditEmp() {
             <label htmlFor="headQuater" className="font-medium text-gray-700">
               Headquater <span className="text-red-500">*</span>
             </label>
-            <input
+            <select
               name="headQuater"
               onChange={handleChange}
-              type="text"
               value={formData.headQuater}
-              placeholder="Ex. Mumbai"
               id="headQuater"
-              className="p-2 outline-none border-b-2 border-gray-200"
-            ></input>
+              className="p-2 outline-none border-2 border-gray-200"
+            >
+              <option value={''}>--- Select Headquater ---</option>
+              {
+                headQuater.map((item)=>(
+                    <option value={item.hqid}>{item.hqName}</option>
+                ))
+              }
+            </select>
             {errors.headQuater && (
               <span className="text-sm text-red-400">{errors.headQuater}</span>
             )}

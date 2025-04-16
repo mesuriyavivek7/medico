@@ -26,16 +26,39 @@ function ChemistMapping() {
   const [users,setUsers] = useState([])
   const [chemist,setChemist] = useState([])
   const [selectedChemist,setSelectedChemist] = useState([])
-  const [selectedEmployee,setSelectedEmployee] = useState(null)
+  const [selectedEmployee,setSelectedEmployee] = useState([])
   const [selectedEmpIdx,setSelectedEmpIdx] = useState([])
   const [selectedChemIdx,setSelectedChemIdx] = useState([])
+
+
+  //Get employee mapping data
+  const getEmpChemistMapping = async () =>{
+    try{
+       const response = await api.get(`/ChemistMapping/GetAllByUserID?userID=${selectedEmpIdx[0]}`)
+       console.log('emp chemist mapping--->',response.data.data.result)
+       let data = response.data.data.result
+
+       setSelectedChemIdx(data.map((item)=>item.chemistCode))
+    }catch(err){
+       console.log(err)
+    }
+  }
+
+
+  useEffect(()=>{
+     if(selectedEmpIdx.length > 0){
+      getEmpChemistMapping()
+     }
+  },[selectedEmpIdx])
+  
+
 
   //Fetch data get all chemist data
   const getChemistData = async ()=>{
     try{
      setLoading(true)
      const data = await getAllChemist()
-     setChemist(data.map((item,index)=>({...item,id:index+1})))
+     setChemist(data.map((item)=>({...item,id:item.chemistCode})))
     }catch(err){
      console.log(err)
      toast.error(err.response.data.message || "Something went wrong.")
@@ -74,12 +97,10 @@ function ChemistMapping() {
 
  
  const handleSelectEmployee = (newEmployee) => {
-    console.log(newEmployee)
+    console.log('selected employee--->',newEmployee)
     setSelectedEmpIdx(newEmployee)
     setSelectedEmployee(users.find((item, index) => item.id===newEmployee[0]));
 };
-
-console.log("Selected Employee",selectedEmployee)
 
  const handleSave = async () =>{
      let mappingObj ={
@@ -181,7 +202,7 @@ console.log("Selected Employee",selectedEmployee)
          </div>
       </div>
       <div className='flex place-content-center  items-center rounded-md custom-shadow p-2 bg-white'>
-            <button disabled={selectedChemist.length===0 || selectedEmployee.length===0} onClick={handleSave} className={`bg-themeblue disabled:bg-gray-400 disabled:cursor-not-allowed rounded-md hover:bg-blue-800 transition-all duration-300 text-white w-24 p-1`}>
+            <button  disabled={selectedChemist.length===0 || selectedEmployee.length===0} onClick={handleSave} className={`bg-themeblue disabled:bg-gray-400 disabled:cursor-not-allowed rounded-md hover:bg-blue-800 transition-all duration-300 text-white w-24 p-1`}>
               {
                 saveLoader ? (
                   <div className='flex items-center gap-2'>
@@ -199,3 +220,5 @@ console.log("Selected Employee",selectedEmployee)
 }
 
 export default ChemistMapping
+
+
