@@ -341,7 +341,165 @@ export const chemistMapColumns = [
         flex: 0.5, // Proportional width
         minWidth: 150, // Minimum width to prevent shrinking
     },
-]
+] 
+
+export const getChemistReport = [
+    {
+      field: 'ChemistCode',
+      headerName: 'Chemist Code',
+      headerClassName: 'super-app-theme--header',
+      flex: 0.8,
+      minWidth: 120,
+    },
+    {
+      field: 'ChemistName',
+      headerName: 'Chemist Name',
+      headerClassName: 'super-app-theme--header',
+      flex: 1.2,
+      minWidth: 160,
+    },
+    {
+      field: 'ChemistType',
+      headerName: 'Chemist Type',
+      headerClassName: 'super-app-theme--header',
+      flex: 0.6,
+      minWidth: 100,
+    },
+    {
+      field: 'ContactName',
+      headerName: 'Contact Name',
+      headerClassName: 'super-app-theme--header',
+      flex: 1,
+      minWidth: 150,
+    },
+    {
+      field: 'ContactPerson',
+      headerName: 'Contact Person',
+      headerClassName: 'super-app-theme--header',
+      flex: 1,
+      minWidth: 150,
+    },
+    {
+      field: 'ContactNumber',
+      headerName: 'Contact Number',
+      headerClassName: 'super-app-theme--header',
+      flex: 1,
+      minWidth: 140,
+      valueGetter: (params) => params.row.ContactNumber || 'N/A',
+    },
+    {
+      field: 'MobileNo',
+      headerName: 'Mobile No',
+      headerClassName: 'super-app-theme--header',
+      flex: 1,
+      minWidth: 130,
+      valueGetter: (params) => params.row.MobileNo || 'N/A',
+    },
+    {
+      field: 'Phone',
+      headerName: 'Phone',
+      headerClassName: 'super-app-theme--header',
+      flex: 1,
+      minWidth: 120,
+      valueGetter: (params) => params.row.Phone || 'N/A',
+    },
+    {
+      field: 'Gender',
+      headerName: 'Gender',
+      headerClassName: 'super-app-theme--header',
+      flex: 0.5,
+      minWidth: 80,
+    },
+    {
+      field: 'Dob',
+      headerName: 'DOB',
+      headerClassName: 'super-app-theme--header',
+      flex: 1,
+      minWidth: 140,
+      valueGetter: (params) => params.row.Dob || 'N/A',
+    },
+    {
+      field: 'AddressLine1',
+      headerName: 'Address Line 1',
+      headerClassName: 'super-app-theme--header',
+      flex: 1.2,
+      minWidth: 160,
+    },
+    {
+      field: 'AddressLine2',
+      headerName: 'Address Line 2',
+      headerClassName: 'super-app-theme--header',
+      flex: 1.2,
+      minWidth: 160,
+    },
+    {
+      field: 'ChemistArea',
+      headerName: 'Area',
+      headerClassName: 'super-app-theme--header',
+      flex: 1,
+      minWidth: 120,
+    },
+    {
+      field: 'RouteName',
+      headerName: 'Route Name',
+      headerClassName: 'super-app-theme--header',
+      flex: 1,
+      minWidth: 130,
+    },
+    {
+      field: 'Location',
+      headerName: 'Location',
+      headerClassName: 'super-app-theme--header',
+      flex: 1,
+      minWidth: 130,
+    },
+    {
+      field: 'PinCode',
+      headerName: 'Pin Code',
+      headerClassName: 'super-app-theme--header',
+      flex: 0.8,
+      minWidth: 100,
+    },
+    {
+      field: 'HQName',
+      headerName: 'HQ Name',
+      headerClassName: 'super-app-theme--header',
+      flex: 1,
+      minWidth: 130,
+    },
+    {
+      field: 'Vfreq',
+      headerName: 'Visit Frequency',
+      headerClassName: 'super-app-theme--header',
+      flex: 0.8,
+      minWidth: 120,
+    },
+    {
+      field: 'isActive',
+      headerName: 'Is Active',
+      headerClassName: 'super-app-theme--header',
+      flex: 0.6,
+      minWidth: 100,
+      valueGetter: (params) => (params.row.isActive === 1 ? 'Yes' : 'No'),
+    },
+    {
+      field: 'createdDate',
+      headerName: 'Created Date',
+      headerClassName: 'super-app-theme--header',
+      flex: 1,
+      minWidth: 150,
+      valueGetter: (params) => params.row.createdDate?.split('T')[0] || 'N/A',
+    },
+    {
+      field: 'updatedDate',
+      headerName: 'Updated Date',
+      headerClassName: 'super-app-theme--header',
+      flex: 1,
+      minWidth: 150,
+      valueGetter: (params) => params.row.updatedDate?.split('T')[0] || 'N/A',
+    },
+  ];
+  
 
 export const rows = [
     {

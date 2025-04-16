@@ -43,6 +43,7 @@ import AddStourPlan from "./pages/AddStourPlan";
 // ProtectedRoute Component
 const ProtectedRoute = ({ children , requiredRole }) => {
   const { user } = useSelector((state) => state.auth);
+  
 
   console.log("protected user ---->",user)
   if (!user) {
@@ -75,10 +76,7 @@ function App() {
        dispatch(loginStart())
        try{
           await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/verify_token`,{api_token:api_token})
-          console.log("validation successfully")
        }catch(err){
-         console.log('validation---->',err)
-
          dispatch(loginFailure("Validation failed"))
        }
     }

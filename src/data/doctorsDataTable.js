@@ -426,3 +426,112 @@ export const getDoctorsForEmployee = async () =>{
     throw err
   }
 }
+
+
+export const getDoctorReport = [
+  {
+    field: 'DrCode',
+    headerName: 'Dr Code',
+    headerClassName: 'super-app-theme--header',
+    flex: 0.8,
+    minWidth: 100,
+  },
+  {
+    field: 'DrName',
+    headerName: 'Doctor Name',
+    headerClassName: 'super-app-theme--header',
+    flex: 1.2,
+    minWidth: 160,
+  },
+  {
+    field: 'Gender',
+    headerName: 'Gender',
+    headerClassName: 'super-app-theme--header',
+    flex: 0.5,
+    minWidth: 80,
+  },
+  {
+    field: 'Qualification',
+    headerName: 'Qualification',
+    headerClassName: 'super-app-theme--header',
+    flex: 1,
+    minWidth: 140,
+  },
+  {
+    field: 'Speciality',
+    headerName: 'Speciality',
+    headerClassName: 'super-app-theme--header',
+    flex: 1,
+    minWidth: 120,
+  },
+  {
+    field: 'ClassName',
+    headerName: 'Class Name',
+    headerClassName: 'super-app-theme--header',
+    flex: 0.8,
+    minWidth: 100,
+  },
+  {
+    field: 'DoctorArea',
+    headerName: 'Area',
+    headerClassName: 'super-app-theme--header',
+    flex: 1,
+    minWidth: 120,
+  },
+  {
+    field: 'RouteName',
+    headerName: 'Route Name',
+    headerClassName: 'super-app-theme--header',
+    flex: 1,
+    minWidth: 120,
+  },
+  {
+    field: 'HQName',
+    headerName: 'HQ Name',
+    headerClassName: 'super-app-theme--header',
+    flex: 1,
+    minWidth: 130,
+  },
+  {
+    field: 'MobileNo',
+    headerName: 'Mobile No',
+    headerClassName: 'super-app-theme--header',
+    flex: 1,
+    minWidth: 130,
+  },
+  {
+    field: 'Phone',
+    headerName: 'Phone',
+    headerClassName: 'super-app-theme--header',
+    flex: 1,
+    minWidth: 120,
+  },
+  {
+    field: 'AddressLine1',
+    headerName: 'Address Line 1',
+    headerClassName: 'super-app-theme--header',
+    flex: 1.2,
+    minWidth: 160,
+  },
+  {
+    field: 'AddressLine2',
+    headerName: 'Address Line 2',
+    headerClassName: 'super-app-theme--header',
+    flex: 1.2,
+    minWidth: 160,
+  },
+  {
+    field: 'PinCode',
+    headerName: 'Pin Code',
+    headerClassName: 'super-app-theme--header',
+    flex: 0.8,
+    minWidth: 100,
+  },
+  {
+    field: 'Vfreq',
+    headerName: 'Visit Frequency',
+    headerClassName: 'super-app-theme--header',
+    flex: 0.8,
+    minWidth: 120,
+  },
+];
