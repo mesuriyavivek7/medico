@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Navigate, RouterProvider,useNavigate, createBrowserRouter } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import { useSelector, useDispatch } from "react-redux";
 import { loginStart, loginFailure } from "./redux/actions/authActions";
@@ -42,10 +42,29 @@ import AddStourPlan from "./pages/AddStourPlan";
 
 // ProtectedRoute Component
 const ProtectedRoute = ({ children , requiredRole }) => {
-  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const { user, api_token } = useSelector((state) => state.auth);
+
+  //vallidate user 
+  useEffect(()=>{
+      const validateUser = async () =>{
+         dispatch(loginStart())
+         try{
+            await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/verify_token`,{api_token:api_token})
+         }catch(err){
+           console.log(err)
+           dispatch(loginFailure("Validation failed"))
+         }
+      }
+
+      if(api_token){
+        validateUser()
+      }
+
+
+  },[api_token,dispatch])
   
 
-  console.log("protected user ---->",user)
   if (!user) {
     return <Navigate to="/" />;
   }
@@ -59,8 +78,23 @@ const ProtectedRoute = ({ children , requiredRole }) => {
 };
 
 function App() {
-  const { user, api_token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const { user, api_token } = useSelector((state) => state.auth);
+
+  //vallidate user
+  useEffect(()=>{
+    const validateUser = async () =>{
+       dispatch(loginStart())
+       try{
+          await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/verify_token`,{api_token:api_token})
+       }catch(err){
+         console.log(err)
+         dispatch(loginFailure("Validation failed"))
+       }
+    }
+    validateUser()
+   },[])
+  
 
   //Set bearer token
   useEffect(()=>{
@@ -69,19 +103,6 @@ function App() {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
      }
   },[user])
-
-  //vallidate user 
-  useEffect(()=>{
-    const validateUser = async () =>{
-       dispatch(loginStart())
-       try{
-          await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/verify_token`,{api_token:api_token})
-       }catch(err){
-         dispatch(loginFailure("Validation failed"))
-       }
-    }
-    validateUser()
-  },[])
 
   const AppRouter = createBrowserRouter(
     [
