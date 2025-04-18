@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
@@ -33,8 +33,24 @@ function AddMtp() {
 
     const [open,setOpen] = useState(false)
     const [openUser,setOpenUser] = useState(false)
+    
+    const userdropdownref = useRef(null)
  
     let docchem = [...doctors,...chemist]
+
+    const handleClickOutside = (event) => {
+      if (userdropdownref.current && !userdropdownref.current.contains(event.target)) {
+        setOpenUser(false);
+      }
+    };
+
+
+    useEffect(() => {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, []);
 
 
     const [formData,setFormData] = useState({
@@ -55,12 +71,14 @@ function AddMtp() {
         tourType: 0
       }
       try{
-          const [users,doctors,chemists,stps,products] = await Promise.all([api.get('/User/GetAllUsers'),
+          const [users,doctors,chemists,stps,products] = await Promise.all([api.get('/User/GetReportingTo'),
           api.get('/Doctor/GetAllDoctor'),
           api.get('/Chemist/GetAllChemist'),
           api.post('/STPMTP/GetAll',stpObj),
           api.get('/Product')
         ])
+
+        console.log(users.data.data)
       
           setUsers(users.data.data)
           setDoctors(doctors.data.data)
@@ -129,13 +147,15 @@ function AddMtp() {
        if(validateFinaleData()){
         try{
           setLoading(true)
+
+          console.log(mtpRow)
           
           await Promise.all(mtpRow.map(async (mtp)=>{
             let obj = {
               mtpID:0,
               stPid:selectedStp?.tourID,
               docID:mtp.doctor?.drCode || mtp.doctor?.chemistCode,
-              superiorID:mtp.user.map((user)=>user.id),
+              superiorID:mtp.user.map((user)=>user.codeID),
               userID:user.id,
               mtpDate:mtpDate,
               insertDate:new Date(),
@@ -153,6 +173,8 @@ function AddMtp() {
           
           toast.success("Successfully mtp created.")
           setMtpRow([])
+          setSelectedStp(null)
+          setSelectedMtpDate(null)
         }catch(err){
           console.log(err)
           toast.error("Something went wrong.")
@@ -194,10 +216,10 @@ function AddMtp() {
     }
 
     const handleSelectUser = (item) =>{
-       const existUser = formData.user.find((u)=>u.id===item.id)
+       const existUser = formData.user.find((u)=>u.codeID===item.codeID)
 
        if(existUser){
-        let filterUser = formData.user.filter((u)=> u.id !== item.id)
+        let filterUser = formData.user.filter((u)=> u.codeID !== item.codeID)
         setFormData((prevData)=> ({...prevData,user:filterUser}))
        }else{
         if(formData.user.length>=3) return toast.warning("Maximum 3 user are allow to work with you.")
@@ -205,8 +227,6 @@ function AddMtp() {
         setFormData((prev)=>({...prev,user:addUser}))
        }
     } 
-
-    console.log(formData)
   
     
   return (
@@ -272,12 +292,12 @@ function AddMtp() {
                 </div>
                 {
                   openUser && 
-                  <div className='absolute h-24 overflow-scroll w-full shadow bg-white z-40'>
+                  <div ref={userdropdownref} className='absolute h-24 overflow-scroll w-full shadow bg-white z-40'>
                   {
                     users.map((item,index) =>(
                       <div key={index} className='grid p-2 grid-cols-8 items-center gap-2'>
                          <input onChange={()=>handleSelectUser(item)} className='col-span-1' checked={formData.user.includes(item)} type='checkbox'></input>
-                         <span className='text-xs col-span-7'>{item.firstName} {item.lastName}</span>
+                         <span className='text-xs col-span-7'>{item.codeName}</span>
                       </div>
                     ))
                   }
@@ -307,6 +327,7 @@ function AddMtp() {
                <option value={'TRANSIT'}>TRANSIT</option>
                <option value={'STRIKE'}>STRIKE</option>
                <option value={'CAMP'}>CAMP</option>
+               <option value={'CALL'}>CALL</option>
                <option value={'Other'}>Other</option>
              </select>
              {
@@ -314,7 +335,7 @@ function AddMtp() {
              }
           </div>
 
-          <div className='flex w-52 flex-col gap-2'>
+          <div className='flex w-72 flex-col gap-2'>
                <label className='font-medium' htmlFor='allowance'>Products <span className='text-red-500'>*</span></label>
                <div className='relative w-full'>
                 <div onClick={()=>setOpen((prev)=>!prev)} className='p-1.5 cursor-pointer border flex gap-2 justify-between items-center rounded-md '>
@@ -323,7 +344,7 @@ function AddMtp() {
                 </div>
                 {
                   open && 
-                  <div className='absolute h-24 overflow-scroll w-full shadow bg-white z-40'>
+                  <div className='absolute h-36 overflow-scroll w-full shadow bg-white z-40'>
                   {
                     product.map((item,index) =>(
                       <div key={index} className='grid p-2 grid-cols-4 items-center gap-2'>

@@ -22,7 +22,7 @@ export const mtpcolumns = (handleRemove) => [
            <div className='flex items-center gap-2'>
               {
                 params.value.map((user,index)=> (
-                    <span key={index}>{user.firstName} {index!==params.value.length-1 && ','} </span>
+                    <span key={index}>{user.codeName} {index!==params.value.length-1 && ','} </span>
                 ))
               }
            </div>

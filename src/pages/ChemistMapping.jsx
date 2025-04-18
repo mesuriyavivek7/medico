@@ -24,18 +24,32 @@ function ChemistMapping() {
   const [loading,setLoading] = useState(false)
   const [saveLoader,setSaveLoader] = useState(false)
   const [users,setUsers] = useState([])
+  const [filterUsers,setFilterUsers] = useState([])
   const [chemist,setChemist] = useState([])
   const [selectedChemist,setSelectedChemist] = useState([])
+  const [filterChemist,setFilterChemist] = useState([])
   const [selectedEmployee,setSelectedEmployee] = useState([])
   const [selectedEmpIdx,setSelectedEmpIdx] = useState([])
   const [selectedChemIdx,setSelectedChemIdx] = useState([])
+
+  const [headQuater,setHeadQuater] = useState([])
+  const [selectedHeadQuater,setSelectedHeadQuater] = useState('')
+
+
+  const fetchHeadQuater = async () =>{
+      try{
+        const response = await api.get('Headquarters')
+        setHeadQuater(response.data)
+      }catch(err){
+        console.log(err)
+      }
+  }
 
 
   //Get employee mapping data
   const getEmpChemistMapping = async () =>{
     try{
        const response = await api.get(`/ChemistMapping/GetAllByUserID?userID=${selectedEmpIdx[0]}`)
-       console.log('emp chemist mapping--->',response.data.data.result)
        let data = response.data.data.result
 
        setSelectedChemIdx(data.map((item)=>item.chemistCode))
@@ -73,6 +87,7 @@ function ChemistMapping() {
     try{
        const users = await fetchAllUsers()
        setUsers(users)
+       console.log(users)
     }catch(err){
       console.log(err)
       toast.error("Something went wrong while fetching data.")
@@ -86,8 +101,21 @@ function ChemistMapping() {
     fetchData()
   }
 
+
+  useEffect(()=>{
+      if(selectedHeadQuater){
+          setFilterChemist(chemist.filter((item)=>Number(item.headquarter) == selectedHeadQuater))
+          setFilterUsers(users.filter((item)=>Number(item.headQuater) == selectedHeadQuater))
+      }else{
+        setFilterChemist(chemist)
+        setFilterUsers(users)
+      }
+  },[selectedHeadQuater,chemist,users])
+
+
   useEffect(()=>{
      fetchAllData()
+     fetchHeadQuater()
   },[])
 
  const handleSelectChemist = (newChemist) =>{
@@ -97,7 +125,6 @@ function ChemistMapping() {
 
  
  const handleSelectEmployee = (newEmployee) => {
-    console.log('selected employee--->',newEmployee)
     setSelectedEmpIdx(newEmployee)
     setSelectedEmployee(users.find((item, index) => item.id===newEmployee[0]));
 };
@@ -126,6 +153,8 @@ function ChemistMapping() {
      }
  }
 
+ console.log(selectedHeadQuater)
+
   return (
     <div className='flex h-full flex-col gap-3 md:gap-4'>
        <div className="bg-white custom-shadow rounded-md md:py-4 py-3 px-3 flex items-center justify-between">
@@ -133,6 +162,17 @@ function ChemistMapping() {
           Chemist Mapping
         </h1>
         <div className="flex items-center gap-3">
+          <div className='flex items-center gap-2'>
+             <span>HeadQuater:</span>
+             <select onChange={(e)=>setSelectedHeadQuater(e.target.value)} className='rounded-md border-neutral-200 border p-1 outline-none'>
+                <option value=''>All Headquater</option>
+                {
+                  headQuater.map((item)=>(
+                    <option value={item.hqid}>{item.hqName}</option>
+                  ))
+                }
+             </select>
+          </div>
           <span onClick={()=>fetchAllData} className="cursor-pointer md:w-9 md:h-9 w-8 h-8 border border-slate-200 flex justify-center items-center rounded-md">
             <AutorenewIcon></AutorenewIcon>
           </span>
@@ -148,7 +188,7 @@ function ChemistMapping() {
           }}
         >
           <DataGrid
-            rows={users}
+            rows={filterUsers}
             columns={empMapColumns}
             loading={loading}
             initialState={{
@@ -183,7 +223,7 @@ function ChemistMapping() {
           }}
         >
           <DataGrid
-            rows={chemist}
+            rows={filterChemist}
             columns={chemistMapColumns}
             loading={loading}
             initialState={{

@@ -197,10 +197,6 @@ function AddStourPlan() {
               <label htmlFor='tourtype' className='font-bold'>Tour Type <span className='text-red-500'>*</span></label>
               <div className='flex items-center gap-4'>
                <div className='flex items-center gap-2'>
-                <input onChange={()=>setTourType(2)} checked={tourType===2} value={2} type='radio' id='ex-station'></input>
-                <label htmlFor='ex-station'>Ex - Station</label>
-               </div>
-               <div className='flex items-center gap-2'>
                 <input onChange={()=>setTourType(0)} checked={tourType===0} value={0} type='radio' id='local'></input>
                 <label htmlFor='local'>Local</label>
                </div>
