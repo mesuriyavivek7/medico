@@ -35,6 +35,8 @@ function AddMtp() {
     const [openUser,setOpenUser] = useState(false)
     
     const userdropdownref = useRef(null)
+
+    const productdropdownref = useRef(null)
  
     let docchem = [...doctors,...chemist]
 
@@ -42,6 +44,12 @@ function AddMtp() {
       if (userdropdownref.current && !userdropdownref.current.contains(event.target)) {
         setOpenUser(false);
       }
+
+      if (productdropdownref.current && !productdropdownref.current.contains(event.target)) {
+        setOpen(false);
+      }
+    
+      
     };
 
 
@@ -71,7 +79,7 @@ function AddMtp() {
         tourType: 0
       }
       try{
-          const [users,doctors,chemists,stps,products] = await Promise.all([api.get('/User/GetReportingTo'),
+          const [users,doctors,chemists,stps,products] = await Promise.all([api.get('/User/GetReportingToMtp'),
           api.get('/Doctor/GetAllDoctor'),
           api.get('/Chemist/GetAllChemist'),
           api.post('/STPMTP/GetAll',stpObj),
@@ -222,7 +230,7 @@ function AddMtp() {
         let filterUser = formData.user.filter((u)=> u.codeID !== item.codeID)
         setFormData((prevData)=> ({...prevData,user:filterUser}))
        }else{
-        if(formData.user.length>=3) return toast.warning("Maximum 3 user are allow to work with you.")
+        if(formData.user.length>=1) return toast.warning("Maximum 1 user are allow to work with you.")
         let addUser = [...formData.user,item]
         setFormData((prev)=>({...prev,user:addUser}))
        }
@@ -335,7 +343,7 @@ function AddMtp() {
              }
           </div>
 
-          <div className='flex w-72 flex-col gap-2'>
+          <div ref={productdropdownref} className='flex w-72 flex-col gap-2'>
                <label className='font-medium' htmlFor='allowance'>Products <span className='text-red-500'>*</span></label>
                <div className='relative w-full'>
                 <div onClick={()=>setOpen((prev)=>!prev)} className='p-1.5 cursor-pointer border flex gap-2 justify-between items-center rounded-md '>

@@ -153,7 +153,6 @@ function ChemistMapping() {
      }
  }
 
- console.log(selectedHeadQuater)
 
   return (
     <div className='flex h-full flex-col gap-3 md:gap-4'>
