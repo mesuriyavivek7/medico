@@ -120,7 +120,7 @@ function StourPlan() {
                   <div key={index} className='flex rounded-md shadow  flex-col'>
                     <div className='flex bg-neutral-300 items-center text-black justify-between p-3'>
                        <h1>{stp.tourName}</h1>
-                       <span className='bg-green-500 rounded-md text-white font-medium px-2 py-1'>{stp.tourType===0?"Local":"OutStation"}</span>
+                       <span className='bg-green-500 rounded-md text-white font-medium px-2 py-1'>{stp.tourType===0?"Local":stp.tourType===1?"Out Station":"Ex-Station"}</span>
                     </div>
                     <div className='flex gap-3 flex-col p-3 bg-neutral-100'>
                       {

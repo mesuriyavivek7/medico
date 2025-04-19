@@ -23,11 +23,27 @@ function DoctorMapping() {
   const [loading,setLoading] = useState(false)
   const [saveLoader,setSaveLoader] = useState(false)
   const [users,setUsers] = useState([])
+  const [filterUsers,setFilterUsers] = useState([])
   const [doctor,setDoctor] = useState([])
+  const [filterDoctor,setFilterDoctor] = useState([])
   const [selectedDoctor,setSelectedDoctor] = useState([])
   const [selectedEmployee,setSelectedEmployee] = useState(null)
   const [selectedEmpIdx,setSelectedEmpIdx] = useState([])
   const [selctedDocIdx,setSelectedDocIdx] = useState([])
+
+  const [headQuater,setHeadQuater] = useState([])
+  const [selectedHeadQuater,setSelectedHeadQuater] = useState('')
+
+
+  const fetchHeadQuater = async () =>{
+      try{
+        const response = await api.get('Headquarters')
+        setHeadQuater(response.data)
+      }catch(err){
+        console.log(err)
+      }
+  }
+
 
   //Fetch data for get all employees 
  const fetchData = async ()=>{
@@ -59,9 +75,23 @@ const fetchAllDoctors = async ()=>{
   }
 }
 
+
+useEffect(()=>{
+  if(selectedHeadQuater){
+      setFilterDoctor(doctor.filter((item)=>Number(item.headquarter) == selectedHeadQuater))
+      setFilterUsers(users.filter((item)=>Number(item.headQuater) == selectedHeadQuater))
+  }else{
+    setFilterDoctor(doctor)
+    setFilterUsers(users)
+  }
+},[selectedHeadQuater,doctor,users])
+
+
+
 const fetchAllData = () =>{
    fetchAllDoctors()
    fetchData()
+   fetchHeadQuater()
 }
 
 useEffect(()=>{
@@ -113,6 +143,17 @@ const handleSave = async () =>{
        Doctor Mapping
      </h1>
      <div className="flex items-center gap-3">
+         <div className='flex items-center gap-2'>
+             <span>HeadQuater:</span>
+             <select onChange={(e)=>setSelectedHeadQuater(e.target.value)} className='rounded-md border-neutral-200 border p-1 outline-none'>
+                <option value=''>All Headquater</option>
+                {
+                  headQuater.map((item)=>(
+                    <option value={item.hqid}>{item.hqName}</option>
+                  ))
+                }
+             </select>
+          </div>
        <span onClick={()=>fetchAllData} className="cursor-pointer md:w-9 md:h-9 w-8 h-8 border border-slate-200 flex justify-center items-center rounded-md">
          <AutorenewIcon></AutorenewIcon>
        </span>
@@ -128,7 +169,7 @@ const handleSave = async () =>{
        }}
      >
        <DataGrid
-         rows={users}
+         rows={filterUsers}
          columns={empMapColumns}
          loading={loading}
          initialState={{
@@ -157,7 +198,7 @@ const handleSave = async () =>{
        }}
      >
        <DataGrid
-         rows={doctor}
+         rows={filterDoctor}
          columns={docMapColumn}
          loading={loading}
          initialState={{
