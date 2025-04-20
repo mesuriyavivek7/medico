@@ -101,7 +101,7 @@ function Leave() {
   const handleRemoveLeave = async () =>{
     if(selectedId){
      try{
-        await api.delete(`/Leave/${selectedId}`)
+        await api.post(`/Leave/${selectedId}`)
         fetchData()
         handleCloseOpenLeavePopUp()
         toast.success("Leave deleted successfully")

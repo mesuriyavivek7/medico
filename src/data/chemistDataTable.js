@@ -385,7 +385,6 @@ export const getChemistReport = [
       headerClassName: 'super-app-theme--header',
       flex: 1,
       minWidth: 140,
-      valueGetter: (params) => params.row.ContactNumber || 'N/A',
     },
     {
       field: 'MobileNo',
@@ -393,7 +392,6 @@ export const getChemistReport = [
       headerClassName: 'super-app-theme--header',
       flex: 1,
       minWidth: 130,
-      valueGetter: (params) => params.row.MobileNo || 'N/A',
     },
     {
       field: 'Phone',
@@ -401,7 +399,6 @@ export const getChemistReport = [
       headerClassName: 'super-app-theme--header',
       flex: 1,
       minWidth: 120,
-      valueGetter: (params) => params.row.Phone || 'N/A',
     },
     {
       field: 'Gender',
@@ -409,6 +406,9 @@ export const getChemistReport = [
       headerClassName: 'super-app-theme--header',
       flex: 0.5,
       minWidth: 80,
+      renderCell: (params) => (
+        <span>{params.value?params.value==="M"?"Male":"Female":""}</span>
+      )
     },
     {
       field: 'Dob',
@@ -416,7 +416,9 @@ export const getChemistReport = [
       headerClassName: 'super-app-theme--header',
       flex: 1,
       minWidth: 140,
-      valueGetter: (params) => params.row.Dob || 'N/A',
+      renderCell: (params) => (
+        <span>{formateDate(params.value)}</span>
+      )
     },
     {
       field: 'AddressLine1',
@@ -480,7 +482,9 @@ export const getChemistReport = [
       headerClassName: 'super-app-theme--header',
       flex: 0.6,
       minWidth: 100,
-      valueGetter: (params) => (params.row.isActive === 1 ? 'Yes' : 'No'),
+      renderCell: (params) => (
+        <span>{params.row.isActive === 1?"Yes":"No"}</span>
+      )
     },
     {
       field: 'createdDate',
@@ -488,7 +492,9 @@ export const getChemistReport = [
       headerClassName: 'super-app-theme--header',
       flex: 1,
       minWidth: 150,
-      valueGetter: (params) => params.row.createdDate?.split('T')[0] || 'N/A',
+      renderCell: (params) =>(
+        <span>{formateDate(params.value)}</span>
+      )
     },
     {
       field: 'updatedDate',
@@ -496,7 +502,9 @@ export const getChemistReport = [
       headerClassName: 'super-app-theme--header',
       flex: 1,
       minWidth: 150,
-      valueGetter: (params) => params.row.updatedDate?.split('T')[0] || 'N/A',
+      renderCell: (params) =>{
+        <span>{formateDate(params.value)}</span>
+      }
     },
   ];
   

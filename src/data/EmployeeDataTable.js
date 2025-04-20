@@ -364,7 +364,9 @@ export const getUserReport = [
     headerClassName: 'super-app-theme--header',
     flex: 0.6,
     minWidth: 100,
-    valueGetter: (params) => params.row.Gender?.toUpperCase() === 'M' ? 'Male' : 'Female',
+    renderCell: (params) => (
+      <span>{params.value?params.value==="M"?"Male":"Female":""}</span>
+    )
   },
   {
     field: 'Email',
@@ -407,7 +409,9 @@ export const getUserReport = [
     headerClassName: 'super-app-theme--header',
     flex: 0.6,
     minWidth: 100,
-    valueGetter: (params) => (params.row.IsActive ? 'Yes' : 'No'),
+    renderCell: (params) => (
+      <span>{params.row.IsActive? "Yes" :"No"}</span>
+    )
   },
   {
     field: 'PanCard',
@@ -429,7 +433,9 @@ export const getUserReport = [
     headerClassName: 'super-app-theme--header',
     flex: 1.2,
     minWidth: 150,
-    valueGetter: (params) => params.row.CreatedDate?.split('T')[0],
+    renderCell: (params) =>(
+      <span>{formateDate(params.value)}</span>
+    )
   },
   {
     field: 'JoiningDate',
@@ -437,7 +443,9 @@ export const getUserReport = [
     headerClassName: 'super-app-theme--header',
     flex: 1.2,
     minWidth: 150,
-    valueGetter: (params) => params.row.JoiningDate?.split('T')[0],
+    renderCell: (params) =>(
+      <span>{formateDate(params.value)}</span>
+    )
   },
 ];
 
@@ -453,7 +461,7 @@ export const fetchAllUsers = async ()=>{
 
 export const fetchTeam = async ()=>{
   try{
-     const response = await api.get('User/GetAllUsers')
+     const response = await api.get('User/MyTeam')
      console.log(response.data.data)
      return response.data.data
   }catch(err){
