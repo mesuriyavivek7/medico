@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Navigate, RouterProvider,useNavigate, createBrowserRouter } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import { useSelector, useDispatch } from "react-redux";
-import { loginStart, loginFailure } from "./redux/actions/authActions";
+import { loginStart, loginFailure, logout } from "./redux/actions/authActions";
 import axios from 'axios'
 
 //importing General components
@@ -53,7 +53,7 @@ const ProtectedRoute = ({ children , requiredRole }) => {
             await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/verify_token`,{api_token:api_token})
          }catch(err){
            console.log(err)
-           dispatch(loginFailure("Validation failed"))
+           dispatch(logout())
          }
       }
 
@@ -89,7 +89,7 @@ function App() {
           await axios.post(`${process.env.REACT_APP_API_BASE_URL}/User/verify_token`,{api_token:api_token})
        }catch(err){
          console.log(err)
-         dispatch(loginFailure("Validation failed"))
+         dispatch(logout())
        }
     }
     validateUser()
@@ -368,7 +368,7 @@ function App() {
             path:'myteam',
             element:(
               <ProtectedRoute requiredRole="employee">
-                <Employee></Employee>
+                <MyTeam></MyTeam>
               </ProtectedRoute>
             )
           },
@@ -417,6 +417,14 @@ function App() {
             element:(
               <ProtectedRoute requiredRole="employee">
                 <AddLeave></AddLeave>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:'pendingleaves',
+            element:(
+              <ProtectedRoute requiredRole="employee">
+                <PendingLeaves></PendingLeaves>
               </ProtectedRoute>
             )
           },

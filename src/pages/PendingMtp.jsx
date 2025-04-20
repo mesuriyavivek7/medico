@@ -1,16 +1,14 @@
 import React , {useEffect, useState} from 'react'
-import { Link } from 'react-router-dom'
 import api from '../api'
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { useSelector } from 'react-redux';
 
 //importing images
 import NODATA from '../assets/computer.png'
 import Loader from '../assets/loader.svg'
 
 //Importing icons
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import { CalendarCheck2 } from 'lucide-react';
 import { toast } from 'react-toastify'
 
@@ -42,6 +40,7 @@ const FormateDate = (date) =>{
 }
 
 function PendingMtp() {
+  const { user } = useSelector((state) => state.auth);
   const [mtpPlan,setMtpPlan] = useState([])
   const [activeState,setActiveState] = useState('approve')
   const [loading,setLoading] = useState(false)
@@ -49,6 +48,9 @@ function PendingMtp() {
   const [pendingCounts, setPendingCounts] = useState(1);
   const [rejectCounts, setRejectCounts] = useState(1);
   const [openDate,setOpenDate] = useState(false)
+
+  const [approveLoader,setApproveLoader] = useState(false)
+  const [rejectLoader,setRejectLoader] = useState(false)
 
   const [date,setDate] = useState(new Date())
 
@@ -89,6 +91,39 @@ function PendingMtp() {
     getAllTourPlan()
   },[date])
 
+  const approveMtp = async (id) =>{
+    setApproveLoader(true)
+     try{
+       const response = await api.post(`STPMTP/${id}/approve`,{
+        approvedBy: user.id,
+        Description: "string"
+      })
+      getAllTourPlan()
+       toast.success("Mtp approved successfully.")
+     }catch(err){
+      console.log(err)
+     }finally{
+      setApproveLoader(false)
+     }
+  } 
+
+
+  const rejectMtp = async (id) =>{
+    setRejectLoader(true)
+    try{
+      const response = await api.post(`STPMTP/${id}/reject`,{
+        approvedBy: user.id,
+        Description: "string"
+      })
+      getAllTourPlan()
+      toast.success("Mtp rejected successfully.")
+    }catch(err){
+      console.log(err)
+    }finally{
+      setRejectLoader(false)
+    }
+  }
+
   const renderMTP = () =>{
     switch(activeState) {
       case "approve":
@@ -98,8 +133,8 @@ function PendingMtp() {
           
            <div className='bg-white h-80 p-4 flex flex-col gap-3 rounded-md shadow-sm'>
               <div className='bg-neutral-300 flex flex-col p-2 rounded-md'>
-                 <span className='text-lg font-semibold'>new stp</span>
-                 <span className='text-sm'>STP ID: 13 . MTP ID:1</span>
+                 <span className='text-lg font-semibold'>{item?.stpName}</span>
+                 <span className='text-sm'>STP ID: {item?.stpID || 0} . MTP ID:{item?.mtpID}</span>
               </div>
               <div className='flex flex-col gap-2'>
               <div className='flex gap-2 items-center'>
@@ -110,13 +145,13 @@ function PendingMtp() {
                           <span className='text-sm'>MTP Date:</span>
                           <div className='flex items-center gap-2'>
                              <span><CalendarCheck2 className='w-4 h-4'></CalendarCheck2> </span>
-                             <span className='text-sm'>March, 20th 2025</span>
+                             <span className='text-sm'>{FormateDate(item?.mtpDate)}</span>
                           </div>
                        </div>
                        <hr></hr>
                        <div className='flex items-center gap-2'>
                          <span className='text-sm'>is Active:</span>
-                         <span>No</span>
+                         <span>{item?.isActive ? "Yes" : "No"}</span>
                        </div>
                    </div>
                  </div>
@@ -125,12 +160,12 @@ function PendingMtp() {
                    <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
                        <div className='flex items-center gap-2'>
                              <span className='text-sm'>Created By:</span>
-                             <span className='text-sm'>March, 20th 2025</span>
+                             <span className='text-sm'>{item?.insertByName || ""}</span>
                        </div>
                        <hr></hr>
                        <div className='flex items-center gap-2'>
                          <span className='text-sm'>Created Date:</span>
-                         <span>N/A</span>
+                         <span>{FormateDate(item?.insertDate) || "N/A"}</span>
                        </div>
                    </div>
                  </div>
@@ -138,24 +173,24 @@ function PendingMtp() {
               
                 <div className='flex w-full items-center gap-2 rounded-md bg-slate-100 p-2'>
                    <span className='font-medium'>Reporting To: </span>
-                   <span className='text-neutral-500'>Jigar vandariya</span>
+                   <span className='text-neutral-500'>{item?.reportingtoName}</span>
                 </div>
                 <div className='flex w-full flex-col gap-1 rounded-md bg-slate-100 p-2'>
                   <div className='flex items-center gap-2'>
                      <span>Approved By:</span>
-                     <span className='text-neutral-500'>Raj Patle</span>
+                     <span className='text-neutral-500'>{item?.approverName}</span>
                   </div>
                   <div className='flex items-center gap-1'>
                      <span>Approved Date:</span>
-                     <span className='text-neutral-500'>09-03-2024</span>
+                     <span className='text-neutral-500'>{FormateDate(item?.approveDatetime)}</span>
                   </div>
                 
               </div>
               </div>
-              <div className='w-full flex items-center gap-2 justify-center'>
+              {/* <div className='w-full flex items-center gap-2 justify-center'>
                  <button className='bg-themeblue w-28 rounded-md p-1.5 text-white'>Approve</button>
                  <button className='bg-red-500 p-1.5 rounded-md w-28 text-white'>Reject</button>
-              </div>
+              </div> */}
            </div>
         
        ))
@@ -205,7 +240,7 @@ function PendingMtp() {
                     <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
                         <div className='flex items-center gap-2'>
                               <span className='text-sm'>Created By:</span>
-                              <span className='text-sm'>{item?.insertBy || ""}</span>
+                              <span className='text-sm'>{item?.insertByName || ""}</span>
                         </div>
                         <hr></hr>
                         <div className='flex items-center gap-2'>
@@ -221,8 +256,8 @@ function PendingMtp() {
                </div>
                </div>
                <div className='w-full flex items-center gap-2 justify-center'>
-                  <button className='bg-themeblue w-28 rounded-md p-1.5 text-white'>Approve</button>
-                  <button className='bg-red-500 p-1.5 rounded-md w-28 text-white'>Reject</button>
+                  <button disabled={approveLoader} onClick={()=>approveMtp(item.mtpID)} className='bg-themeblue disabled:bg-gray-400 w-28 rounded-md p-1.5 text-white'>Approve</button>
+                  <button disabled={rejectLoader} onClick={()=>rejectMtp(item.mtpID)} className='bg-red-500 disabled:bg-gray-400 p-1.5 rounded-md w-28 text-white'>Reject</button>
                </div>
             </div>
          
@@ -245,8 +280,8 @@ function PendingMtp() {
             
             <div className='bg-white h-80 p-4 flex flex-col gap-3 rounded-md shadow-sm'>
                <div className='bg-neutral-300 flex flex-col p-2 rounded-md'>
-                  <span className='text-lg font-semibold'>new stp</span>
-                  <span className='text-sm'>STP ID: 13 . MTP ID:1</span>
+                  <span className='text-lg font-semibold'>{item?.stpName || ""}</span>
+                  <span className='text-sm'>STP ID: {item?.stpID} . MTP ID:{item?.mtpID}</span>
                </div>
                <div className='flex flex-col gap-2'>
                <div className='flex gap-2 items-center'>
@@ -257,13 +292,13 @@ function PendingMtp() {
                            <span className='text-sm'>MTP Date:</span>
                            <div className='flex items-center gap-2'>
                               <span><CalendarCheck2 className='w-4 h-4'></CalendarCheck2> </span>
-                              <span className='text-sm'>March, 20th 2025</span>
+                              <span className='text-sm'>{FormateDate(item?.mtpDate)}</span>
                            </div>
                         </div>
                         <hr></hr>
                         <div className='flex items-center gap-2'>
                           <span className='text-sm'>is Active:</span>
-                          <span>No</span>
+                          <span>{item?.isActive ? "Yes":"No"}</span>
                         </div>
                     </div>
                   </div>
@@ -272,12 +307,12 @@ function PendingMtp() {
                     <div className='p-2 bg-slate-100 rounded-md flex flex-col gap-1'>
                         <div className='flex items-center gap-2'>
                               <span className='text-sm'>Created By:</span>
-                              <span className='text-sm'>March, 20th 2025</span>
+                              <span className='text-sm'>{item?.insertByName || ""}</span>
                         </div>
                         <hr></hr>
                         <div className='flex items-center gap-2'>
                           <span className='text-sm'>Created Date:</span>
-                          <span>N/A</span>
+                          <span>{FormateDate(item?.insertDate) || "N/A"}</span>
                         </div>
                     </div>
                   </div>
@@ -285,24 +320,24 @@ function PendingMtp() {
                
                  <div className='flex w-full items-center gap-2 rounded-md bg-slate-100 p-2'>
                     <span className='font-medium'>Reporting To: </span>
-                    <span className='text-neutral-500'>Jigar vandariya</span>
+                    <span className='text-neutral-500'>{item?.reportingtoName}</span>
                  </div>
                  <div className='flex w-full flex-col gap-1 rounded-md bg-slate-100 p-2'>
                    <div className='flex items-center gap-2'>
                       <span>Rejected By:</span>
-                      <span className='text-neutral-500'>Raj Patle</span>
+                      <span className='text-neutral-500'>{item?.approverName}</span>
                    </div>
                    <div className='flex items-center gap-1'>
                       <span>Rejected Date:</span>
-                      <span className='text-neutral-500'>09-03-2024</span>
+                      <span className='text-neutral-500'>{FormateDate(item?.approveDatetime)}</span>
                    </div>
                  
                </div>
                </div>
-               <div className='w-full flex items-center gap-2 justify-center'>
+               {/* <div className='w-full flex items-center gap-2 justify-center'>
                   <button className='bg-themeblue w-28 rounded-md p-1.5 text-white'>Approve</button>
                   <button className='bg-red-500 p-1.5 rounded-md w-28 text-white'>Reject</button>
-               </div>
+               </div> */}
             </div>
          
           ))

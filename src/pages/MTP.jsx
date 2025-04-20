@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../api'
 import { useSelector } from 'react-redux'
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 //importing images
-import NODATA from '../assets/computer.png'
 import Loader from '../assets/loader.svg'
 
 //Importing icons
@@ -21,10 +20,14 @@ function MTP() {
    const { user } = useSelector((state) => state.auth);
    const [userDetails,setUserDetails] = useState(null)
    const [mtpPlan,setMtpPlan] = useState([])
+   const [filterMtpPlan,setFilterMtpPlan] = useState([])
+   
    const [loading,setLoading] = useState(false)
    const [openDate,setOpenDate] = useState(false)
 
-   const [date,setDate] = useState(new Date())
+   const [mtpType,setMtpType] = useState('Local')
+
+   const [date, setDate] = useState(new Date())
 
    const getDate = (orgdate) => {
     if (!orgdate) return "";
@@ -71,6 +74,13 @@ function MTP() {
     getAllTourPlan()
    },[date])
 
+
+   useEffect(()=>{
+    setFilterMtpPlan(()=>mtpPlan.filter(item=>item.mtpType==mtpType))
+   },[mtpType,mtpPlan])
+
+
+   console.log(date)
   
   return (
     <div className='flex h-full flex-col gap-3 md:gap-4'>
@@ -82,12 +92,26 @@ function MTP() {
         </div>
 
         <div className="flex items-center gap-3">
+          <div className='flex items-center gap-2'>
+            <span>MTP</span>
+            <select onChange={(e)=>setMtpType(e.target.value)} className='border outline-none border-neutral-200 p-1.5'>
+               <option value={0}>Planed</option>
+               <option value={1}>Reporting</option>
+            </select>
+          </div>
           <div className='relative w-44 border md:p-2 p-1.5 rounded-md'>
              <span onClick={()=>setOpenDate((prev)=>!prev)} className='text-center cursor-pointer'>Date: {getDate(date)}</span>
             {
               openDate && 
-              <div className='absolute -right-16 top-12'>
-                <Calendar onChange={setDate} value={date}></Calendar>
+              <div className='absolute bg-white border rounded-md -right-4 shadow p-4 top-12'>
+                 <DatePicker
+                     selected={date}
+                     onChange={(date) => {
+                       setDate(new Date(date));
+                     }}
+                    dateFormat="MM/yyyy"
+                     showMonthYearPicker
+                  />
               </div>
             }
           </div>
@@ -131,7 +155,7 @@ function MTP() {
           </div>
           <div className='grid grid-cols-3 items-start gap-4'>
             {
-               mtpPlan.map((mtp)=>(
+               filterMtpPlan.map((mtp)=>(
                 <div className='flex p-4 border-t-2 bg-white custom-shadow rounded-md border-[#14b8a6] flex-col gap-4'>
                 <div className='flex justify-between items-center'>
                    <span>{mtp?.drName}</span>

@@ -58,6 +58,9 @@ export const columns = (handleOpenUpdateData,handleOpenConfirmPopUp)=>[
       headerName: 'Gender',
       flex: 0.8,
       minWidth: 120,
+      renderCell: (params) => (
+        <span>{params.value?params.value==="M"?"Male":"Female":""}</span>
+      )
     },
     {
       field: 'routeName',
