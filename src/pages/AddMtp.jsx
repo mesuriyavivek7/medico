@@ -15,6 +15,17 @@ import api from '../api';
 
 import { mtpcolumns } from '../data/mtpTable';
 
+const checkResponse = (response) =>{
+
+  for(let i=0; i<response.length; i++){
+    if(response[i].statusCode==500){
+      toast.error("Mtp is already added for entered date.")
+      return false
+    }
+  }
+
+  return true
+}
 
 function AddMtp() {
     const { user } = useSelector((state) => state.auth);
@@ -158,7 +169,7 @@ function AddMtp() {
 
           console.log(mtpRow)
           
-          await Promise.all(mtpRow.map(async (mtp)=>{
+          const response = await Promise.all(mtpRow.map(async (mtp)=>{
             let obj = {
               mtpID:0,
               stPid:selectedStp?.tourID,
@@ -174,10 +185,16 @@ function AddMtp() {
               prodIDs:mtp.product.map((item)=> item.prodId)
             }
 
-            console.log('finale obj---->',obj)
-            await api.post('/STPMTP/addMTP',obj)
+           const response  = await api.post('/STPMTP/addMTP',obj)
+           
+           return response.data
 
           }))
+
+          let check = checkResponse(response)
+
+          if(!check) return 
+
           
           toast.success("Successfully mtp created.")
           setMtpRow([])
@@ -250,7 +267,7 @@ function AddMtp() {
        <div className='grid md:grid-cols-2 gap-4 grid-cols-1 mb-2 items-center'>
         <div className='flex flex-col gap-2'>
             <label className='font-medium text-gray-700'>Select STP <span className='text-sm text-red-500'>*</span></label>
-             <select name='stp' value={JSON.stringify(formData.stp)} onChange={handleChange} className='p-2 border border-gray-200 outline-none'>
+             <select name='stp' value={JSON.stringify(selectedStp)} onChange={handleChange} className='p-2 border border-gray-200 outline-none'>
                <option value={''}>--Select Stp---</option>
                {
                  stp.map((item, index)=>(
@@ -265,7 +282,7 @@ function AddMtp() {
         </div>
         <div className='flex flex-col gap-2'>
             <label className='font-medium text-gray-700'>Select MTP Date <span className='text-sm text-red-500'>*</span></label>
-            <input name='mtpDate' type='date' onChange={(e)=>setSelectedMtpDate(e.target.value)} value={formData.mtpDate} className='p-2 border border-gray-200 outline-none'></input>
+            <input name='mtpDate' type='date' onChange={(e)=>setSelectedMtpDate(e.target.value)} value={mtpDate} className='p-2 border border-gray-200 outline-none'></input>
             {
                errors.mtpDate && 
                <span className='text-sm text-red-500'>{errors.mtpDate}</span>

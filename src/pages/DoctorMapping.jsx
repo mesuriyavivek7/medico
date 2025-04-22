@@ -43,7 +43,23 @@ function DoctorMapping() {
         console.log(err)
       }
   }
+  
+  //Get employee mapping data with doctor
+  const getEmpDoctorChemistMapping = async () =>{
+    try{
+      const response = await api.get(`/DoctorMapping/GetAllByUserID?userID=${selectedEmpIdx[0]}`)
+      let data = response.data.data.result
+      setSelectedDocIdx(data.map((item)=> item.drCode))
+    }catch(err){
+      console.log(err)
+    }
+  }
 
+  useEffect(()=>{
+    if(selectedEmpIdx.length > 0){
+      getEmpDoctorChemistMapping()
+    }
+  },[selectedEmpIdx])
 
   //Fetch data for get all employees 
  const fetchData = async ()=>{
@@ -65,7 +81,7 @@ const fetchAllDoctors = async ()=>{
   try{
     const data = await getDoctors()
     if(data){
-      setDoctor(data.map((item,index)=>({...item,id:index+1})))
+      setDoctor(data.map((item)=>({...item,id:item.drCode})))
     }
   }catch(err){
     console.log(err)
@@ -105,7 +121,6 @@ const handleSelectDoctors = (newDoctor) =>{
 
  
 const handleSelectEmployee = (newEmployee) => {
-  console.log(newEmployee)
   setSelectedEmpIdx(newEmployee)
   setSelectedEmployee(users.find((item, index) => item.id === newEmployee[0]));
 };
@@ -180,6 +195,12 @@ const handleSave = async () =>{
            },
          }}
          pageSizeOptions={[5,10]}
+         sx={{
+          '& .MuiDataGrid-row.Mui-selected': {
+            backgroundColor: '#c8e6c9', // light green
+            color: '#2e7d32', // darker green text
+          },
+        }}
         //  checkboxSelection
          rowSelectionModel={selectedEmpIdx}
          onRowSelectionModelChange={(newSelected) => {
