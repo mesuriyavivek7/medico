@@ -46,7 +46,7 @@ function ChemistMapping() {
   }
 
 
-  //Get employee mapping data
+  //Get employee mapping data with chemist
   const getEmpChemistMapping = async () =>{
     try{
        const response = await api.get(`/ChemistMapping/GetAllByUserID?userID=${selectedEmpIdx[0]}`)

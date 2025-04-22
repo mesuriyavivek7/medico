@@ -22,7 +22,11 @@ function AddLeave() {
     console.log("data validated")
     try{
       setLoading(true)
-      await api.post(`/Leave`,formData)
+      const response = await api.post(`/Leave`,formData)
+      if(response.data.statusCode==="500"){
+        toast.error("Leave already added for this date.")
+        return 
+      }
       setFormData({
         leaveType:"",
         startDate:"",
