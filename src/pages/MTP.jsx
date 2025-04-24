@@ -25,7 +25,7 @@ function MTP() {
    const [loading,setLoading] = useState(false)
    const [openDate,setOpenDate] = useState(false)
 
-   const [mtpType,setMtpType] = useState('Local')
+   const [mtpType,setMtpType] = useState(0)
 
    const [date, setDate] = useState(new Date())
 
@@ -60,7 +60,7 @@ function MTP() {
    
        console.log(response.data)
        setUserDetails(response.data?.data?.userDetails)
-       setMtpPlan(response.data.data.mtpdetails)
+       setMtpPlan(response.data?.data?.mtpdetails)
        
      }catch(err){
       console.log(err)
@@ -76,11 +76,10 @@ function MTP() {
 
 
    useEffect(()=>{
-    setFilterMtpPlan(()=>mtpPlan.filter(item=>item.mtpType==mtpType))
+    setFilterMtpPlan(()=>mtpPlan.filter(item=>item.mtpType===mtpType))
    },[mtpType,mtpPlan])
 
-
-   console.log(date)
+   console.log(mtpType)
   
   return (
     <div className='flex h-full flex-col gap-3 md:gap-4'>
@@ -92,13 +91,20 @@ function MTP() {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className='flex items-center gap-2'>
+          <div className='flex flex-col'>
             <span>MTP</span>
-            <select onChange={(e)=>setMtpType(e.target.value)} className='border outline-none border-neutral-200 p-1.5'>
-               <option value={0}>Planed</option>
-               <option value={1}>Reporting</option>
-            </select>
+            <div className='flex items-center gap-2'>
+             <div className='flex items-center gap-1'>
+                <input onChange={()=>setMtpType(0)} checked={mtpType===0}  type='radio'></input>
+                <span className='text-sm'>Planed</span>
+             </div>
+             <div className='flex items-center gap-1'>
+                <input onChange={()=>setMtpType(1)} checked={mtpType===1} type='radio'></input>
+                <span className='text-sm'>Reporting</span>
+             </div>
+            </div>
           </div>
+
           <div className='relative w-44 border md:p-2 p-1.5 rounded-md'>
              <span onClick={()=>setOpenDate((prev)=>!prev)} className='text-center cursor-pointer'>Date: {getDate(date)}</span>
             {
