@@ -49,7 +49,7 @@ function StourPlan() {
         reportingTo:0,
         tourType:0
        })
-       setStpPlan(response.data.data)
+      //  setStpPlan(response.data.data)
      }catch(err){
       toast.error("Something went wrong.")
       console.log(err)
@@ -114,9 +114,13 @@ function StourPlan() {
             <img src={Loader} alt="loader" className="w-10 h-10"></img>
           </div>
         ) : (
-          <div className='h-full gap-4 gap-y-4 w-full grid md:grid-cols-3 grid-cols-1 items-start'>
-            {
-              stpPlan.map((stp,index)=>(
+            stpPlan.length===0 ?
+              <div className='flex w-full h-full justify-center items-center'>
+                No Stp Found
+              </div>
+              :
+            <div className='h-full gap-4 gap-y-4 w-full grid md:grid-cols-3 grid-cols-1 items-start'>
+              {stpPlan.map((stp,index)=>(
                   <div key={index} className='flex rounded-md shadow  flex-col'>
                     <div className='flex bg-neutral-300 items-center text-black justify-between p-3'>
                        <h1>{stp.tourName}</h1>
@@ -147,9 +151,8 @@ function StourPlan() {
                       }
                     </div>
                   </div>
-              ))
-            }
-          </div>
+              ))}
+            </div>
         )}
       </div>
     </div>
