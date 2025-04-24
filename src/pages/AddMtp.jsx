@@ -23,7 +23,7 @@ const checkResponse = (response) =>{
       return false
     }
   }
-
+  
   return true
 }
 
@@ -166,36 +166,28 @@ function AddMtp() {
        if(validateFinaleData()){
         try{
           setLoading(true)
-
-          console.log(mtpRow)
-          
-          const response = await Promise.all(mtpRow.map(async (mtp)=>{
-            let obj = {
-              mtpID:0,
-              stPid:selectedStp?.tourID,
-              docID:mtp.doctor?.drCode || mtp.doctor?.chemistCode,
+          let obj = {
+            mtpID:0,
+            stpID:selectedStp.tourID,
+            mtpDate:mtpDate,
+            mtpdetailrequests:mtpRow.map((mtp)=>({
+              prodIDs:mtp.product.map((item)=> item.prodId),
               superiorID:mtp.user.map((user)=>user.codeID),
-              userID:user.id,
-              mtpDate:mtpDate,
-              insertDate:new Date(),
-              ModeOfWork:mtp.modeOfWork,
-              insertBy:user.id,
-              status:"",
-              description:mtp.description,
-              prodIDs:mtp.product.map((item)=> item.prodId)
-            }
+              modeOfWork:mtp.modeOfWork,
+              docID:mtp.doctor?.drCode || mtp.doctor?.chemistCode,
+              description:mtp.description
+            }))
+          }
 
-           const response  = await api.post('/STPMTP/addMTP',obj)
-           
-           return response.data
+          console.log(obj)
 
-          }))
+          const response  = await api.post('/STPMTP/addMTP',obj)
 
-          let check = checkResponse(response)
+          if(response.data.statusCode===500){
+            toast.error("Mtp is already added.")
+            return
+          }
 
-          if(!check) return 
-
-          
           toast.success("Successfully mtp created.")
           setMtpRow([])
           setSelectedStp(null)
