@@ -49,7 +49,7 @@ function StourPlan() {
         reportingTo:0,
         tourType:0
        })
-      //  setStpPlan(response.data.data)
+       setStpPlan(response.data.data)
      }catch(err){
       toast.error("Something went wrong.")
       console.log(err)
