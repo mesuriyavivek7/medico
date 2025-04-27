@@ -11,6 +11,10 @@ import NotificationBar from "../NotificationBar";
 import LOGO from '../../assets/ELVIRA LOGO.png' 
 import PERSON from "../../assets/asset4.jpg";
 
+//import icons
+import { Download } from 'lucide-react';
+
+
 import { useLocation , Outlet, useNavigate} from "react-router-dom";
 
 //importing icons
@@ -31,6 +35,7 @@ import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 import { ClipboardMinus } from 'lucide-react';
 import { Beaker } from 'lucide-react';
 import { ChartColumnBig } from 'lucide-react';
+
 
 
 
@@ -235,6 +240,11 @@ export default function Dashboard() {
                {isMenuOpen && <span className={`${isActive("report") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Report</span>}
             </div>
 
+            <div onClick={()=>handleNavigate('download')} className={`group flex ${isActive("download") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('download') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><Download className="w-5 h-5"></Download></span>
+               {isMenuOpen && <span className={`${isActive("download") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Download Report</span>}
+            </div>
+
  
  
 
@@ -318,6 +328,11 @@ export default function Dashboard() {
             <div onClick={()=>handleNavigate('report')} className={`group flex ${isActive("report") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
                <span className={`${isActive('report') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><ChartColumnBig className="w-5 h-5"></ChartColumnBig></span>
                <span className={`${isActive("report") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Report</span>
+            </div>
+
+            <div onClick={()=>handleNavigate('download')} className={`group flex ${isActive("download") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('download') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><Download className="w-5 h-5"></Download></span>
+               <span className={`${isActive("download") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Download Report</span>
             </div>
 
             

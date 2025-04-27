@@ -15,17 +15,6 @@ import api from '../api';
 
 import { mtpcolumns } from '../data/mtpTable';
 
-const checkResponse = (response) =>{
-
-  for(let i=0; i<response.length; i++){
-    if(response[i].statusCode==500){
-      toast.error("Mtp is already added for entered date.")
-      return false
-    }
-  }
-  
-  return true
-}
 
 function AddMtp() {
     const { user } = useSelector((state) => state.auth);
@@ -191,7 +180,7 @@ function AddMtp() {
           toast.success("Successfully mtp created.")
           setMtpRow([])
           setSelectedStp(null)
-          setSelectedMtpDate(null)
+          setSelectedMtpDate('')
         }catch(err){
           console.log(err)
           toast.error("Something went wrong.")

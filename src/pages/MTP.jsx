@@ -14,13 +14,20 @@ import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import NearMeOutlinedIcon from '@mui/icons-material/NearMeOutlined';
+import { X } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
+
 import { toast } from 'react-toastify'
+
 
 function MTP() {
    const { user } = useSelector((state) => state.auth);
    const [userDetails,setUserDetails] = useState(null)
    const [mtpPlan,setMtpPlan] = useState([])
    const [filterMtpPlan,setFilterMtpPlan] = useState([])
+   const [mtpDetails,setMtpDetails] = useState([])
+   const [openPopUp,setOpenPopUp] = useState(false)
+   const [mtpLoader,setMtpLoader] = useState(false)
    
    const [loading,setLoading] = useState(false)
    const [openDate,setOpenDate] = useState(false)
@@ -79,10 +86,88 @@ function MTP() {
     setFilterMtpPlan(()=>mtpPlan.filter(item=>item.mtpType===mtpType))
    },[mtpType,mtpPlan])
 
-   console.log(mtpType)
-  
+
+  const fetchMTPDetails = async (id) =>{
+    setMtpLoader(true)
+    try{
+       setOpenPopUp(true)
+       const response = await api.post(`/STPMTP/GetAllById?id=${Number(id)}`)
+       setMtpDetails(response.data.data.mtpdetails)
+    }catch(err){
+       toast.error("Something went wrong.")
+    }finally{
+      setMtpLoader(false)
+    }
+  }
+   
   return (
     <div className='flex h-full flex-col gap-3 md:gap-4'>
+      {openPopUp && (
+          <div className="absolute z-50 inset-0 flex justify-center items-center">
+            <div className="w-5/6 z-50 h-5/6 rounded-md overflow-hidden shadow-sm bg-white border">
+              <div className="flex bg-themeblue text-white p-4 border-b border-neutral-200 justify-between items-center">
+                <h1 className="font-medium text-lg">MTP Details</h1>
+                <button
+                  className="text-red-500 hover:text-red-600"
+                  onClick={() => setOpenPopUp(false)}
+                >
+                  <X></X>
+                </button>
+              </div>
+              <div className="h-full overflow-auto bg-neutral-100 p-2">
+                {mtpLoader ? (
+                  <div className="flex justify-center items-center w-full h-full">
+                    <LoaderCircle className="animate-spin"></LoaderCircle>
+                  </div>
+                ) : (
+                  mtpDetails.map((item, index) => (
+                    <div
+                      key={index}
+                      className="grid grid-cols-2 mb-2  md:grid-cols-3 bg-white shadow-sm p-2 rounded-md items-center gap-2"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">Doctor:</span>
+                        <span className="text-neutral-600">
+                          {item?.drName || ""}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">Speciality</span>
+                        <span className="text-neutral-600">
+                          {item?.speciality || ""}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">Qualification</span>
+                        <span className="text-neutral-600">
+                          {item?.qualification || ""}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">MTP Date</span>
+                        <span className="text-neutral-600">
+                          {item?.mtpdate || ""}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">Doctor Area</span>
+                        <span className="text-neutral-600">
+                          {item?.doctorArea || ""}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">Products</span>
+                        <span className="text-neutral-600">
+                          {item?.products}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       <div className="bg-white custom-shadow rounded-md md:py-4 py-3 px-3 flex items-center justify-between">
         <div className="flex flex-col gap-2">
           <h1 className="text-gray-600 text-base md:text-lg font-medium">
@@ -91,8 +176,8 @@ function MTP() {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className='flex flex-col'>
-            <span>MTP</span>
+          <div className='flex items-center gap-2 '>
+            <span className='font-medium'>MTP:</span>
             <div className='flex items-center gap-2'>
              <div className='flex items-center gap-1'>
                 <input onChange={()=>setMtpType(0)} checked={mtpType===0}  type='radio'></input>
@@ -162,7 +247,7 @@ function MTP() {
           <div className='grid grid-cols-3 items-start gap-4'>
             {
                filterMtpPlan.map((mtp)=>(
-                <div className='flex p-4 border-t-2 bg-white custom-shadow rounded-md border-[#14b8a6] flex-col gap-4'>
+                <div onClick={()=>fetchMTPDetails(mtp.mtpid)} className='flex p-4 border-t-2 bg-white custom-shadow rounded-md border-[#14b8a6] flex-col gap-4'>
                 <div className='flex justify-between items-center'>
                    <span>{mtp?.drName}</span>
                    <span className='p-1 px-2 text-sm text-white bg-[#14b8a6] rounded-md font-medium'>

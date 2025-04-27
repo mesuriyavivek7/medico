@@ -186,6 +186,9 @@ export const filterDoctorColumns = (handleOpenUpdateData,handleOpenConfirmPopUp)
     headerName: 'Gender',
     flex: 0.8,
     minWidth: 120,
+    renderCell: (params) => (
+      <span>{params.row.gender==="M"?"Male":"Female"}</span>
+    )
   },
   {
     field: 'routeName',
@@ -242,7 +245,7 @@ export const filterDoctorColumns = (handleOpenUpdateData,handleOpenConfirmPopUp)
     headerName: 'Phone',
     flex: 0.8,
     minWidth: 120,
-  },
+  }
 
 ];
 

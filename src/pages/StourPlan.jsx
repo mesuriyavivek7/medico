@@ -119,7 +119,7 @@ function StourPlan() {
                 No Stp Found
               </div>
               :
-            <div className='h-full gap-4 gap-y-4 w-full grid md:grid-cols-3 grid-cols-1 items-start'>
+            <div className='h-full gap-4 w-full grid md:grid-cols-3 grid-cols-1 items-start'>
               {stpPlan.map((stp,index)=>(
                   <div key={index} className='flex rounded-md shadow  flex-col'>
                     <div className='flex bg-neutral-300 items-center text-black justify-between p-3'>
