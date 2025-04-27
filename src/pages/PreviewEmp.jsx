@@ -18,6 +18,7 @@ function PreviewEmp() {
     if (!location.state) {
       navigate("/admin/employee");
     }
+    console.log('location state----->',location.state)
     setFormData(location.state);
   }, []);
 
@@ -44,10 +45,25 @@ function PreviewEmp() {
           toast.error("Something went wrong.")
         }
       }
+
+      const fetchHeadQuater = async () =>{
+        try{
+          const response = await api.get('/Headquarters')
+          console.log(response.data)
+          let headQuater = response.data.find((item)=>item.hqid==location.state.headQuater)
+          console.log("headquater ---->",headQuater)
+          setFormData((prevData)=>({...prevData,headQuater:headQuater.hqName}))
+        }catch(err){
+          toast.error("Something went wrong.")
+        }
+      }
   
       fetchDesignationData()
       fetchReportingValue()
+      fetchHeadQuater()
   },[])
+
+
 
 
   return (

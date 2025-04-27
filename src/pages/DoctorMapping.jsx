@@ -174,7 +174,7 @@ const handleSave = async () =>{
        </span>
      </div>
    </div>
-   <div className='h-full grid md:grid-cols-2 grid-cols-1 items-center gap-2'>
+   <div className='h-auto grid md:grid-cols-2 grid-cols-1 items-center gap-2'>
       
       <div className='h-full py-4 px-3 custom-shadow rounded-md bg-white'>
       <h1 className='mb-2 font-medium text-lg'>Employee</h1>

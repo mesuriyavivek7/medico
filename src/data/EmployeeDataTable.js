@@ -177,6 +177,20 @@ export const empColumns = (handleNavigateToEdit,handleOpenConfirmPopUp,handleNav
     flex: 0.5, // Proportional width
     minWidth: 140, // Minimum width to prevent shrinking
   },
+  {
+    field:'action',
+    headerClassName: 'super-app-theme--header',
+    headerName: 'Action',
+    flex:0.5,
+    minWidth: 140,
+    renderCell: (params)=>(
+    <div className='flex justify-center items-center w-full h-full'>
+       <button onClick={()=>handleNavigateToPreview(params.row)} className='bg-orange-500 md:text-base text-sm hover:bg-orange-600 flex justify-center items-center rounded-md text-white md:w-10 w-12 h-6 md:h-7'>
+          <RemoveRedEyeOutlinedIcon style={{fontSize:'1.2rem'}}></RemoveRedEyeOutlinedIcon>
+        </button>
+    </div>
+    )
+  }
 
 ]
 

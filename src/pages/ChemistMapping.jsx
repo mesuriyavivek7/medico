@@ -177,7 +177,8 @@ function ChemistMapping() {
           </span>
         </div>
       </div>
-      <div className='h-full grid md:grid-cols-2 grid-cols-1 items-center gap-2'>
+
+      <div className='h-auto grid md:grid-cols-2 grid-cols-1 items-center gap-2'>
          
          <div className='h-full py-4 px-3 custom-shadow rounded-md bg-white'>
          <h1 className='mb-2 font-medium text-lg'>Employee</h1>
@@ -185,7 +186,7 @@ function ChemistMapping() {
           sx={{
             height: "95%",
           }}
-        >
+         >
           <DataGrid
             rows={filterUsers}
             columns={empMapColumns}
@@ -214,6 +215,7 @@ function ChemistMapping() {
           />
          </Box>
          </div>
+
          <div className='h-full py-4 px-3 custom-shadow rounded-md bg-white'>
          <h1 className='mb-2 font-medium text-lg'>Chemist</h1>
          <Box
@@ -239,7 +241,9 @@ function ChemistMapping() {
           />
          </Box>
          </div>
+
       </div>
+
       <div className='flex place-content-center  items-center rounded-md custom-shadow p-2 bg-white'>
             <button  disabled={selectedChemist.length===0 || selectedEmployee.length===0} onClick={handleSave} className={`bg-themeblue disabled:bg-gray-400 disabled:cursor-not-allowed rounded-md hover:bg-blue-800 transition-all duration-300 text-white w-24 p-1`}>
               {
@@ -253,7 +257,7 @@ function ChemistMapping() {
                 )
               }
             </button>
-         </div>
+        </div>
     </div>
   )
 }

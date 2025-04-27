@@ -20,6 +20,7 @@ import AddMtp from "./pages/AddMtp";
 import PreviewEmp from "./pages/PreviewEmp";
 import Report from "./pages/Report";
 import PendingMtp from "./pages/PendingMtp";
+import DownloadReport from "./pages/DownloadReport";
 
 //Importing General Components
 import MyDashboard from "./pages/MyDashboard";
@@ -251,6 +252,14 @@ function App() {
             )
           },
           {
+            path:'myteam/preview',
+            element:(
+              <ProtectedRoute requiredRole='admin'>
+                 <PreviewEmp></PreviewEmp>
+              </ProtectedRoute>
+            )
+          },
+          {
             path:'stpplan',
             element:(
               <ProtectedRoute requiredRole="admin">
@@ -311,6 +320,14 @@ function App() {
             element:(
               <ProtectedRoute requiredRole='admin'>
                 <Report></Report>
+              </ProtectedRoute>
+            )
+          },
+          {
+            path:"download",
+            element:(
+              <ProtectedRoute requiredRole='admin'>
+                <DownloadReport></DownloadReport>
               </ProtectedRoute>
             )
           }
@@ -391,7 +408,7 @@ function App() {
           {
             path:'myteam/preview',
             element:(
-            <ProtectedRoute requiredRole="admin">
+            <ProtectedRoute requiredRole="employee">
               <PreviewEmp></PreviewEmp>
              </ProtectedRoute>
             )

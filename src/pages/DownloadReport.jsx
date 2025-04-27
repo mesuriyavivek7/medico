@@ -1,115 +1,81 @@
+import React , {useEffect, useState} from 'react'
 import api from '../api'
-import React, { useEffect, useState } from 'react'
-import { DataGrid } from '@mui/x-data-grid';
-import Box from '@mui/material/Box';
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
-
-//Importing all columns
-import { getDoctorReport } from '../data/doctorsDataTable';
-import { getChemistReport } from '../data/chemistDataTable'
-import { getUserReport } from '../data/EmployeeDataTable'
-import { getProductReport } from '../data/productDataTable';
-
+//Importing icons
 import { LoaderCircle } from 'lucide-react';
 
+
 const exportToExcel = (data, fileName = "Data") => {
-   const worksheet = XLSX.utils.json_to_sheet(data);
-   const workbook = XLSX.utils.book_new();
-   XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+  
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const fileData = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(fileData, `${fileName}.xlsx`);
+};
  
-   const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-   const fileData = new Blob([excelBuffer], { type: "application/octet-stream" });
-   saveAs(fileData, `${fileName}.xlsx`);
- };
 
-
- const getDataType = (userType) =>{
-    switch(userType){
-      case "DoctorList":
-         return getDoctorReport
-      
-      case "ChemistList":
-         return getChemistReport
-
-      case "EMList":
-         return getUserReport
-
-      case "ProductList":
-         return getProductReport
-
-      default:
-         return []
-    }
- }
-
-
-function Report() {
-  const [reportData,setReportData] = useState([])
+function DownloadReport() {
   const [HeadQuater,setHeadQuater] = useState([])
   const [reportType,setReportType] = useState(null)
   const [fromDate,setFromDate] = useState(null)
   const [toDate,setToDate] = useState(null)
   const [selectedHeadQuater,setSelectedHeadQuater] = useState(null)
-  const [loading,setLoading] = useState(false)
   const [errors,setErrors] = useState({})
-  
+  const [loading,setLoading] = useState(false)
+
   const fetchHeadQuaterData = async ()=>{
-       try{
-          const response = await api.get('/Headquarters')
-          setHeadQuater(response.data)
-       }catch(err){
-        console.log(err)
-       }
+    try{
+       const response = await api.get('/Headquarters')
+       setHeadQuater(response.data)
+    }catch(err){
+     console.log(err)
+    }
   }
 
   useEffect(()=>{
-      fetchHeadQuaterData()
+     fetchHeadQuaterData()
   },[])
 
 
   const validateData = () =>{
-     let newErrors = {}
+    let newErrors = {}
 
-     if(!selectedHeadQuater) newErrors.HeadQuater = 'Please select headquater.'
-     if(!fromDate) newErrors.fromDate = 'Please select from date.'
-     if(!reportType) newErrors.reportType = 'Please select report type.'
+    if(!selectedHeadQuater) newErrors.HeadQuater = 'Please select headquater.'
+    if(!fromDate) newErrors.fromDate = 'Please select from date.'
+    if(!reportType) newErrors.reportType = 'Please select report type.'
 
-     setErrors(newErrors)
+    setErrors(newErrors)
 
-     return Object.keys(newErrors).length===0
-  } 
+    return Object.keys(newErrors).length===0
+ } 
 
-  const fetchReport = async () =>{
-   if(validateData()){
-      setLoading(true)
-     try{
-      const response = await api.get(`/Report/Report?ReportType=${reportType}&HQ=${selectedHeadQuater}&fromDate=${fromDate}`)
-      let data = response.data.data
-      setReportData(data.map((item,index) => ({...item,id:index+1})))
-     }catch(err){
-      console.log(err)
-     }finally{
-      setLoading(false)
-     }
-   }
-  }
+ const fetchReport = async () =>{
+    if(validateData()){
+       setLoading(true)
+      try{
+       const response = await api.get(`/Report/Report?ReportType=${reportType}&HQ=${selectedHeadQuater}&fromDate=${fromDate}`)
+       let data = response.data.data
+       exportToExcel(data,reportType)
+      }catch(err){
+       console.log(err)
+      }finally{
+       setLoading(false)
+      }
+    }
+}
 
-  useEffect(()=>{
-   if(selectedHeadQuater && fromDate){
-      fetchReport()
-   }
-  },[reportType])
 
   return (
     <div className='flex h-full flex-col gap-3 md:gap-4'>
-     <div className='bg-white custom-shadow rounded-md md:py-4 py-3 px-3 flex items-center justify-between'>
+      <div className='bg-white custom-shadow rounded-md md:py-4 py-3 px-3 flex items-center justify-between'>
        <h1 className='text-gray-600 text-base md:text-lg font-medium'>Report</h1>
-       <button disabled={reportData.length===0} onClick={()=>exportToExcel(reportData,reportType)} className='text-white w-32 disabled:cursor-not-allowed disabled:bg-gray-400 flex justify-center items-center p-2 font-medium rounded-md bg-themeblue'>Download</button>
-     </div>
-     
-     <div className='bg-white p-4 custom-shadow rounded-md flex flex-col gap-4'>
+      </div>
+
+      <div className='bg-white p-4 custom-shadow rounded-md flex flex-col gap-4'>
        <h1 className='text-lg font-medium'>Report Details</h1>
        <div className='grid md:grid-cols-2 grid-cols-1 gap-4 items-center'>
           <div className='flex flex-col gap-1'>
@@ -158,34 +124,9 @@ function Report() {
        </div>
      </div>
 
-     <div className=''>
-        {
-          reportData.length > 0 &&
-          (
-          <Box sx={{height:"100%",
-          '& .super-app-theme--header': {
-            backgroundColor: '#edf3fd',
-          },}}>
-           <DataGrid
-            rows={reportData}
-            columns={getDataType(reportType)}
-            loading={loading}
-            initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
-              },
-            },
-           }}
-           pageSizeOptions={[5,10]}
-           disableRowSelectionOnClick
-          />
-         </Box>
-         )
-        }
-      </div>
+     
     </div>
   )
 }
 
-export default Report
+export default DownloadReport

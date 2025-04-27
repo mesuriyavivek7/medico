@@ -113,6 +113,7 @@ export default function MyDashboard() {
     }
   };
 
+
   return (
     <div className="h-full overflow-y-scroll gap-4">
       <div className="grid mb-4 md:grid-cols-3 grid-cols-1 gap-4">
@@ -186,11 +187,19 @@ export default function MyDashboard() {
             return {
               style: {
                 backgroundColor,
-                borderRadius: "5px",
-                opacity: 0.9,
+                borderRadius: "0px",
+                opacity: 1,
                 color: "white",
-                border: "0px",
-                display: "block",
+                border: "none",
+                width: "100%",
+                height: "100%",
+                margin: 0,
+                padding: "4px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: "bold",
+                fontSize: "14px",
               },
             };
           }}

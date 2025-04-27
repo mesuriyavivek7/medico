@@ -51,7 +51,7 @@ function MyTeam() {
   }
 
   const handleNavigateToPreview = (data)=>{
-      navigate('/admin/employee/preview',{state:data})
+      navigate(user.isAdmin?'/admin/employee/preview':'/employee/myteam/preview',{state:data})
   } 
 
   const handleOpenConfirmPopUp = (data) =>{

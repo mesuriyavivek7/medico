@@ -19,7 +19,10 @@ export const getProductReport = [
       headerClassName: 'super-app-theme--header',
       flex: 0.6,
       minWidth: 100,
-      valueGetter: (params) => (params.row.isActive ? 'Yes' : 'No'),
+      // valueGetter: (params) => (params.row.isActive ? 'Yes' : 'No'),
+      renderCell:(params) =>(
+        <span>{params.row.isActive ? 'Yes' : 'No'}</span>
+      )
     },
   ];
   
