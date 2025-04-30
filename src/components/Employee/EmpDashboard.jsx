@@ -27,6 +27,8 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
+import { Download } from 'lucide-react';
+
 
 export default function EmpDashboard() {
   const { user } = useSelector((state) => state.auth);
@@ -201,6 +203,14 @@ export default function EmpDashboard() {
             </div>
             }
 
+            {
+              user.designation!==6 &&
+              <div onClick={()=>handleNavigate('download')} className={`group flex ${isActive("download") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+               <span className={`${isActive('download') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><Download className="w-5 h-5"></Download></span>
+               {isMenuOpen && <span className={`${isActive("download") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Download Report</span>}
+              </div>
+            }
+
         </div>
         {/* sidebar for mobile screen */}
         <div ref={sidebarRef} className={`${isMenuOpen?"-left-96":"left-0"} z-40 w-64 bottom-0 top-0 md:hidden absolute transition-all duration-300 shadow-lg bg-white`}>
@@ -221,7 +231,7 @@ export default function EmpDashboard() {
                <span className={`${isActive("myteam") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>My Team</span>
             </div>
             {
-              user.roleID!==6 ?
+              user.designation!==6 ?
               <div className="relative">
               <div onClick={()=>setOpenLeave((prev)=>!prev)} className={`group flex ${isActive("leaves") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 justify-between`}>
                 <div className="flex items-center gap-2">
@@ -247,7 +257,7 @@ export default function EmpDashboard() {
                <span className={`${isActive("myleaves") && "text-themeblue"} group-hover:text-themeblue font-medium  text-lg`}>Leaves</span>
              </div>
             }
-            { user.roleID !== 6 ?
+            { user.designation !== 6 ?
             <div className="relative">
               <div onClick={()=>setOpenPlan((prev)=>!prev)} className={`group flex ${isActive("plan") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 justify-between`}>
                 <div className="flex items-center gap-2">
@@ -272,7 +282,15 @@ export default function EmpDashboard() {
                <span className={`${isActive('mtpplan') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><BiTrip style={{fontSize:'1.5rem'}}></BiTrip></span>
                <span className={`${isActive("mtpplan") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>MTP Plan</span>
             </div>
-             }
+            }
+            {
+              user.designation !== 6 &&
+               <div onClick={()=>handleNavigate('download')} className={`group flex ${isActive("download") && "bg-blue-50 border-r-2 border-themeblue"} hover:bg-blue-50 py-4 cursor-pointer px-8 items-center gap-2`}>
+                 <span className={`${isActive('download') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><Download className="w-5 h-5"></Download></span>
+                 <span className={`${isActive("download") && "text-themeblue"} group-hover:text-themeblue font-medium text-lg`}>Download Report</span>
+              </div>
+            }
+             
         </div>
         {/* Outlate */}
         <div className="w-full md:px-6 px-4 py-2 md:py-4 overflow-y-auto ">

@@ -54,6 +54,8 @@ function Report() {
   const [selectedHeadQuater,setSelectedHeadQuater] = useState(null)
   const [loading,setLoading] = useState(false)
   const [errors,setErrors] = useState({})
+  const [users,setUsers] = useState([])
+  const [selectedUser,setSelectedUser] = useState(null)
   
   const fetchHeadQuaterData = async ()=>{
        try{
@@ -85,7 +87,8 @@ function Report() {
    if(validateData()){
       setLoading(true)
      try{
-      const response = await api.get(`/Report/Report?ReportType=${reportType}&HQ=${selectedHeadQuater}&fromDate=${fromDate}`)
+      console.log('selected user----->',selectedUser)
+      const response = await api.get(`/Report/Report?ReportType=${reportType}&HQ=${selectedHeadQuater}&fromDate=${fromDate}&userid=${selectedUser}`)
       let data = response.data.data
       setReportData(data.map((item,index) => ({...item,id:index+1})))
      }catch(err){
@@ -95,6 +98,19 @@ function Report() {
      }
    }
   }
+
+  useEffect(()=>{
+   const fetchUser = async () =>{
+      try{
+         const response =await api.get('/User/GetUserReport')
+         setUsers(response.data.data)
+      }catch(err){
+         console.log(err)
+      }
+   }
+
+   fetchUser()
+  },[])
 
   useEffect(()=>{
    if(selectedHeadQuater && fromDate){
@@ -145,6 +161,18 @@ function Report() {
           <div className='flex flex-col gap-1'>
              <label>To Date</label>
              <input value={toDate} onChange={(e)=>setToDate(e.target.value)} type='date' className='p-2 outline-none border rounded-md border-neutral-400'></input>
+          </div>
+
+          <div className='flex flex-col gap-1'>
+             <label>User</label>
+             <select value={selectedUser} onChange={(e)=>setSelectedUser(e.target.value)} className='p-2 outline-none border rounded-md border-neutral-400'>
+               <option value={''}>--- Select User ---</option>
+               {
+                  users.map((item)=>(
+                     <option value={item.codeID}>{item.codeName}</option>
+                  ))
+               }
+             </select>
           </div>
        </div>
        <div className='w-full  flex justify-center items-center'>

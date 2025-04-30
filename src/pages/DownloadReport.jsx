@@ -5,6 +5,7 @@ import { saveAs } from "file-saver";
 
 //Importing icons
 import { LoaderCircle } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 
 const exportToExcel = (data, fileName = "Data") => {
@@ -21,11 +22,14 @@ const exportToExcel = (data, fileName = "Data") => {
 function DownloadReport() {
   const [HeadQuater,setHeadQuater] = useState([])
   const [reportType,setReportType] = useState(null)
+  const [reportTypeData,setReportTypeData] = useState([])
   const [fromDate,setFromDate] = useState(null)
   const [toDate,setToDate] = useState(null)
   const [selectedHeadQuater,setSelectedHeadQuater] = useState(null)
   const [errors,setErrors] = useState({})
   const [loading,setLoading] = useState(false)
+  const [user,setUsers] = useState([])
+  const [selectedUser,setSelectedUser] = useState(null)
 
   const fetchHeadQuaterData = async ()=>{
     try{
@@ -53,13 +57,40 @@ function DownloadReport() {
     return Object.keys(newErrors).length===0
  } 
 
+ useEffect(()=>{
+   const fetchReportTypeData = async () =>{
+      try{
+         const response = await api.get('/Report/ReportTypes')
+         setReportTypeData(response.data.data)
+      }catch(err){
+         console.log(err)
+      }
+    }
+
+    const fetchUserData = async () =>{
+      try{
+         const response = await api.get('/User/GetUserReport')
+         setUsers(response.data.data)
+      }catch(err){
+         console.log(err)
+      }
+    }
+
+    fetchReportTypeData()
+    fetchUserData()
+ },[])
+
  const fetchReport = async () =>{
     if(validateData()){
        setLoading(true)
       try{
        const response = await api.get(`/Report/Report?ReportType=${reportType}&HQ=${selectedHeadQuater}&fromDate=${fromDate}`)
        let data = response.data.data
-       exportToExcel(data,reportType)
+       if(data){
+        exportToExcel(data,reportType)
+       }else{
+         toast.error("There is no any data available.")
+       }
       }catch(err){
        console.log(err)
       }finally{
@@ -87,6 +118,11 @@ function DownloadReport() {
                 <option value={"EMList"}>EMPList</option>
                 <option value={"ProductList"}>ProductList</option>
                 <option value={"DoctorMappingList"}>DoctorMappingList</option>
+                {
+                  reportTypeData.map((item)=> (
+                     <option value={item}>{item}</option>
+                  ))
+                }
              </select>
              {errors.reportType && <span className='text-sm text-red-500'>{errors.reportType}</span>}
           </div>
@@ -111,6 +147,17 @@ function DownloadReport() {
           <div className='flex flex-col gap-1'>
              <label>To Date</label>
              <input value={toDate} onChange={(e)=>setToDate(e.target.value)} type='date' className='p-2 outline-none border rounded-md border-neutral-400'></input>
+          </div>
+          <div className='flex flex-col gap-1'>
+             <label>User</label>
+             <select value={selectedUser} onChange={(e)=>setSelectedUser(e.target.value)} className='p-2 outline-none border rounded-md border-neutral-400'>
+               <option value={''}>--- Select User ---</option>
+               {
+                  user.map((item)=>(
+                     <option value={item.codeID}>{item.codeName}</option>
+                  ))
+               }
+             </select>
           </div>
        </div>
        <div className='w-full  flex justify-center items-center'>
