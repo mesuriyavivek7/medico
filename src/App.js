@@ -469,6 +469,14 @@ function App() {
               </ProtectedRoute>
             )
           },
+          {
+            path:"download",
+            element:(
+              <ProtectedRoute requiredRole='employee'>
+                <DownloadReport></DownloadReport>
+              </ProtectedRoute>
+            )
+          }
         ]
       }
     ]
