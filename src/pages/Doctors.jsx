@@ -26,6 +26,8 @@ export default function Doctors() {
   const [uploadLoading,setUploadLoading] = useState(false)
   const [uploadModal,setUploadModal] = useState(false)
   const [file,setFile] = useState(null)
+  const [headQuater,setHeadQuater] = useState([])
+  const [selectedHeadquater,setSelectedHeadQuater] = useState(null)
 
   const [openConfirmPopUp,setOpenConfirmPopUp] = useState(false)
 
@@ -52,6 +54,20 @@ export default function Doctors() {
   const [errors,setErrors] = useState({})
 
   const [updateLoading,setUpdateLoading] = useState(false)
+
+  const fetchHeadQuater = async () =>{
+    try{  
+      const response = await api.get('/Headquarters')
+      console.log('headquater---->',response.data)
+      setHeadQuater(response.data)
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  useEffect(()=>{
+    fetchHeadQuater()
+  },[])
 
 
   const validateData = () =>{
@@ -210,11 +226,14 @@ export default function Doctors() {
     if(!file){
       return toast.error("Please select any file.")
     }
-     try{ 
+    if(!selectedHeadquater){
+      return toast.error("Please select headquarter.")
+    }
+    try{ 
         setUploadLoading(true)
         let formData = new FormData()
         formData.append('file',file)
-        await api.post('/ExcelFileUpload/UploadExcelForDoctor',formData)
+        await api.post(`/ExcelFileUpload/UploadExcelForDoctor?hqid=${selectedHeadquater}`,formData)
         setFile(null)
         setUploadModal(false)
         toast.success("Your data inserted successfully.")
@@ -224,6 +243,11 @@ export default function Doctors() {
      }finally{
       setUploadLoading(false)
      }
+  }
+
+  const handleCloseUploadModal = () =>{
+    setSelectedHeadQuater(null)
+    setUploadModal(false)
   }
 
   let docColumns = (user.isAdmin)?columns:filterDoctorColumns
@@ -236,9 +260,20 @@ export default function Doctors() {
      <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
        <h2 className="text-lg font-bold mb-4">Upload Excel File</h2>
+       <div className='flex flex-col gap-1'>
+          <label>Select Headquarter <span className='text-sm text-red-500'>*</span></label>
+          <select value={selectedHeadquater} className='w-full p-1 border rounded-md mb-4' onChange={(e)=>setSelectedHeadQuater(e.target.value)}>
+            <option value={''}>--- Select HeadQuaeter ---</option>
+            {
+              headQuater.map((item,index)=>(
+                <option key={index} value={item.hqid}>{item.hqName}</option>
+              ))
+            }
+          </select>
+       </div>
        <input onChange={handleFile} type="file" accept=".xlsx, .xls" />
        <div className="mt-4 flex justify-end space-x-2">
-         <button className="px-4 py-2 bg-gray-500 text-white rounded" onClick={()=>setUploadModal(false)}>
+         <button className="px-4 py-2 bg-gray-500 text-white rounded" onClick={()=>handleCloseUploadModal()}>
            Cancel
          </button>
          <button disabled={updateLoading} onClick={handleUpload} className="px-4 flex justify-center items-center py-2 bg-blue-600 text-white rounded">
@@ -404,7 +439,7 @@ export default function Doctors() {
             <input value={searchQuery} onChange={(e)=>setSearchQuery(e.target.value)} className='outline-none bg-transparent' placeholder='Search Doctors...' type='text'></input>
            </div>
            <span onClick={fetchData} className='cursor-pointer md:w-9 md:h-9 w-8 h-8 border-slate-200 border flex justify-center items-center rounded-md'><AutorenewIcon></AutorenewIcon></span>
-           <Link to={'/admin/doctors/addnew'}><button className='md:p-2 p-1.5 bg-themeblue md:text-base text-sm text-white rounded-md'>Add New Doctor</button></Link>
+           {user.isAdmin && <Link to={'/admin/doctors/addnew'}><button className='md:p-2 p-1.5 bg-themeblue md:text-base text-sm text-white rounded-md'>Add New Doctor</button></Link>}
          </div>
        </div>
        <div className='h-full flex flex-col gap-2 py-4 px-3 custom-shadow rounded-md bg-white'>

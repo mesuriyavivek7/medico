@@ -220,7 +220,7 @@ export default function Dashboard() {
                 </div>
                 <div onClick={()=>handleNavigate('pendingmtp')} className={`group flex ${isActive("pendingmtp") && "text-blue-600"} hover:bg-blue-50 py-2 cursor-pointer px-8 items-center gap-2`}>
                  <span className={`${isActive('pendingmtp') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><HorizontalRuleIcon style={{fontSize:'1.5rem'}}></HorizontalRuleIcon></span>
-                 {isMenuOpen && <span className={`${isActive("pendingmtp") && "text-themeblue"} group-hover:text-themeblue font-medium`}>Pending MTP</span>}
+                 {isMenuOpen && <span className={`${isActive("pendingmtp") && "text-themeblue"} group-hover:text-themeblue font-medium`}>DCR Pending</span>}
                 </div>
               </div>
             </div>
@@ -309,7 +309,7 @@ export default function Dashboard() {
 
                 <div onClick={()=>handleNavigate('pendingmtp')} className={`group flex ${isActive("pendingmtp") && "text-themeblue"} hover:bg-blue-50 py-2 cursor-pointer px-8 items-center gap-2`}>
                   <span className={`${isActive('pendingmtp') ? "text-themeblue" : "text-gray-700 group-hover:text-themeblue"} `}><HorizontalRuleIcon style={{fontSize:'1.5rem'}}></HorizontalRuleIcon></span>
-                  <span className={`${isActive("pendingmtp") && "text-themeblue"} group-hover:text-themeblue font-medium`}>Pending MTP</span>
+                  <span className={`${isActive("pendingmtp") && "text-themeblue"} group-hover:text-themeblue font-medium`}>DCR Pending</span>
                 </div>
 
               </div>

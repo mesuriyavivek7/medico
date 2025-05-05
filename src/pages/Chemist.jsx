@@ -27,6 +27,8 @@ export default function Chemist() {
   const [uploadLoading,setUploadLoading] = useState(false)
   const [uploadModal,setUploadModal] = useState(false)
   const [file,setFile] = useState(null)
+  const [headQuater,setHeadQuater] = useState([])
+  const [selectedHeadQuater,setSelectedHeadQuater] = useState(null)
 
   const [openConfirmPopUp,setOpenConfirmPopUp] = useState(false)
 
@@ -201,6 +203,19 @@ export default function Chemist() {
     }
   };
 
+  const fetchHeadQuater = async () =>{
+    try{
+      const response = await api.get(`/Headquarters`)
+      setHeadQuater(response.data)
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  useEffect(()=>{
+     fetchHeadQuater()
+  },[])
+
   const handleUpload = async () =>{
     if(!file){
       return toast.error("Please select any file.")
@@ -223,6 +238,11 @@ export default function Chemist() {
 
   let filterColumns = (user.isAdmin)?(columns):(empChemistColumn)
 
+  const handleCloseUploadModal = () =>{
+    setUploadModal(false)
+    setSelectedHeadQuater(null)
+  }
+
   return (
     <>
     {
@@ -230,9 +250,20 @@ export default function Chemist() {
      <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
        <h2 className="text-lg font-bold mb-4">Upload Excel File</h2>
+       <div className="flex flex-col gap-1 mb-2">
+         <label>Select Headquarter</label>
+         <select className="p-1 border rounded-md w-full " onChange={(e)=>setSelectedHeadQuater(e.target.value)}>
+           <option value={''}>--- Select HeadQuaeter ---</option>
+           {
+            headQuater.map((item,index)=>(
+              <option key={index} value={item.hqid}>{item.hqName}</option>
+            ))
+           }
+         </select>
+       </div>
        <input onChange={handleFile} type="file" accept=".xlsx, .xls" />
        <div className="mt-4 flex justify-end space-x-2">
-         <button className="px-4 py-2 bg-gray-500 text-white rounded" onClick={()=>setUploadModal(false)}>
+         <button className="px-4 py-2 bg-gray-500 text-white rounded" onClick={()=>handleCloseUploadModal()}>
            Cancel
          </button>
          <button disabled={updateLoading} onClick={handleUpload} className="px-4 flex justify-center items-center py-2 bg-blue-600 text-white rounded">
@@ -402,11 +433,14 @@ export default function Chemist() {
           <span onClick={getChemistData} className="cursor-pointer md:w-9 md:h-9 w-8 h-8 border border-slate-200 flex justify-center items-center rounded-md">
             <AutorenewIcon></AutorenewIcon>
           </span>
-          <Link to={user.isAdmin?"/admin/chemists/addnew":"/employee/chemists/addnew"}>
-            <button className="md:p-2 p-1.5 bg-themeblue md:text-base text-sm text-white rounded-md">
-              Add New Chemist
-            </button>
+         {
+          user.isAdmin && 
+           <Link to={user.isAdmin?"/admin/chemists/addnew":"/employee/chemists/addnew"}>
+           <button className="md:p-2 p-1.5 bg-themeblue md:text-base text-sm text-white rounded-md">
+             Add New Chemist
+           </button>
           </Link>
+         }
         </div>
       </div>
       <div className="h-full py-4 px-3 gap-2 flex flex-col custom-shadow rounded-md bg-white">

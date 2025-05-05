@@ -1,5 +1,6 @@
 import React , {useEffect, useState} from 'react'
 import api from '../api'
+import DataTable from 'react-data-table-component';
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
@@ -9,15 +10,50 @@ import { toast } from 'react-toastify';
 
 
 const exportToExcel = (data, fileName = "Data") => {
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-  
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    const fileData = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(fileData, `${fileName}.xlsx`);
-};
+   const worksheet = XLSX.utils.json_to_sheet(data);
+   const workbook = XLSX.utils.book_new();
+   XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
  
+   const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+   const fileData = new Blob([excelBuffer], { type: "application/octet-stream" });
+   saveAs(fileData, `${fileName}.xlsx`);
+};
+
+
+// Generate columns dynamically
+const generateColumns = (data) => {
+   if (data.length === 0) return [];
+   return Object.keys(data[0]).map((key) => ({
+     name: key.charAt(0).toUpperCase() + key.slice(1),
+     selector: (row) => typeof row[key] === 'object' ? JSON.stringify(row[key]) : row[key],
+     sortable: true,
+   }));
+};
+
+const DynamicDataTable = ( data ) => {
+   const columns = generateColumns(data)
+   return (
+     <div className='mt-4 flex flex-col gap-2'>
+       <div className='flex justify-end mb-2'>
+         <button
+           onClick={() => exportToExcel(data)}
+           className='bg-green-600 text-white px-4 py-2 rounded-md font-medium'
+         >
+           Export to Excel
+         </button>
+       </div>
+       <DataTable
+         columns={columns}
+         data={data}
+         pagination
+         highlightOnHover
+         noDataComponent="No data available"
+       />
+     </div>
+   );
+ };
+
+
 
 function DownloadReport() {
   const [HeadQuater,setHeadQuater] = useState([])
@@ -30,6 +66,7 @@ function DownloadReport() {
   const [loading,setLoading] = useState(false)
   const [user,setUsers] = useState([])
   const [selectedUser,setSelectedUser] = useState(null)
+  const [reportData,setReportData] = useState([])
 
   const fetchHeadQuaterData = async ()=>{
     try{
@@ -87,7 +124,7 @@ function DownloadReport() {
        const response = await api.get(`/Report/Report?ReportType=${reportType}&HQ=${selectedHeadQuater}&fromDate=${fromDate}`)
        let data = response.data.data
        if(data){
-        exportToExcel(data,reportType)
+        setReportData(data)
        }else{
          toast.error("There is no any data available.")
        }
@@ -169,6 +206,10 @@ function DownloadReport() {
          }
          </button>
        </div>
+     </div>
+
+     <div>
+      {reportData.length > 0 && DynamicDataTable(reportData)}
      </div>
 
      

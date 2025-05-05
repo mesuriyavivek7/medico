@@ -357,14 +357,14 @@ function App() {
               </ProtectedRoute>
             ),
           },
-          {
-            path:'doctors/addnew',
-            element:(
-              <ProtectedRoute requiredRole="employee">
-                <AddNewDoc></AddNewDoc>
-              </ProtectedRoute>
-            )
-          },
+          // {
+          //   path:'doctors/addnew',
+          //   element:(
+          //     <ProtectedRoute requiredRole="employee">
+          //       <AddNewDoc></AddNewDoc>
+          //     </ProtectedRoute>
+          //   )
+          // },
           {
             path:'chemists',
             element:(
@@ -373,14 +373,14 @@ function App() {
               </ProtectedRoute>
             )
           },
-          {
-            path:'chemists/addnew',
-            element:(
-              <ProtectedRoute requiredRole="employee">
-                <AddNewChemist></AddNewChemist>
-              </ProtectedRoute>
-            )
-          },
+          // {
+          //   path:'chemists/addnew',
+          //   element:(
+          //     <ProtectedRoute requiredRole="employee">
+          //       <AddNewChemist></AddNewChemist>
+          //     </ProtectedRoute>
+          //   )
+          // },
           {
             path:'myteam',
             element:(
