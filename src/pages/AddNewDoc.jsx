@@ -28,7 +28,8 @@ export default function AddNewDoc() {
     phone:'',
     dob:'',
     isActive:1,
-    createdBy:2
+    createdBy:2,
+    headquarter:''
   })
 
 
@@ -55,6 +56,7 @@ export default function AddNewDoc() {
     if(!formData.vfreq) newErrors.vfreq="Visiting freq is required."
     if(!formData.addressLine2) newErrors.addressLine2 = "Address Line 2 is required."
     if(!formData.pinCode) newErrors.pincode = "Pincode is required."
+    if(!formData.headquarter) newErrors.headQuater = 'Please select headquater.'
 
     setErrors(newErrors)
 
@@ -66,6 +68,7 @@ export default function AddNewDoc() {
     if(validateData()){
      setLoading(true)
      try{
+        console.log(formData)
         const response = await api.post(`/Doctor/AddDoctor`,formData)
         console.log(response.data)
         setFormData(
@@ -86,7 +89,8 @@ export default function AddNewDoc() {
             phone:'',
             dob:'',
             isActive:1,
-            createdBy:2
+            createdBy:2,
+            headquarter:''
           }
         )
         toast.success("Successfully Added.")
@@ -197,8 +201,8 @@ export default function AddNewDoc() {
              {errors.vfreq && <span className='text-sm text-red-400'>{errors.vfreq}</span>}
          </div>
          <div className='flex flex-col gap-2'>
-             <label htmlFor='headQuater' className='font-medium text-gray-700'>HeadQuater <span className='text-red-500'>*</span></label>
-             <select className='border-2 border-gray-200 p-2 outline-none'>
+             <label htmlFor='headquarter' className='font-medium text-gray-700'>HeadQuater <span className='text-red-500'>*</span></label>
+             <select name='headquarter' id='headquarter' value={formData.headquarter} onChange={handleChange} className='border-2 border-gray-200 p-2 outline-none'>
                <option value={''}>--- Select Headquarters ---</option>
                {
                 headQuater.map((hd)=>(
@@ -206,6 +210,7 @@ export default function AddNewDoc() {
                 ))
                }
              </select>
+             {errors.headquarter && <span className='text-sm text-red-500'>{errors.headquarter}</span>}
          </div>
       </div>
        <div className='flex place-content-end bg-white custom-shadow rounded-md py-3 px-3 md:py-4 md:px-4'>

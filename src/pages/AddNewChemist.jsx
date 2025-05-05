@@ -27,7 +27,8 @@ export default function AddNewChemist() {
           dob:'',
           chemistType:'',
           isActive:1,
-          createdBy:0
+          createdBy:0,
+          headquarter:''
   })
   const [headQuater,setHeadQuater] = useState([])
 
@@ -50,6 +51,7 @@ export default function AddNewChemist() {
      if(!formData.vfreq) newErrors.vfreq = 'Pleaes enter visit frequency.'
      if(!formData.dob) newErrors.dob = 'Please enter dob.'
      if(!formData.chemistType) newErrors.chemistType = "Please enter chemist type."
+     if(!formData.headquarter) newErrors.headQuater = "Please select headquater."
  
      setErrors(newErrors)
 
@@ -70,6 +72,7 @@ export default function AddNewChemist() {
   const handleSubmit = async () =>{
     if(validateData()){
       try{
+        console.log(formData)
         await api.post(`/Chemist/AddChemist`,formData)
         setFormData({
           chemistCode:0,
@@ -88,7 +91,8 @@ export default function AddNewChemist() {
           dob:'',
           chemistType:'',
           isActive:1,
-          createdBy:0
+          createdBy:0,
+          headquarter:''
         })
         toast.success("Chemist Details Added.")
       }catch(err){
@@ -182,8 +186,8 @@ export default function AddNewChemist() {
              {errors.vfreq && <span className='text-sm text-red-500'>{errors.vfreq}</span>}
          </div>
          <div className='flex flex-col gap-2'>
-             <label htmlFor='headQuater' className='font-medium text-gray-700'>HeadQuater <span className='text-red-500'>*</span></label>
-             <select className='border-2 border-gray-200 p-2 outline-none'>
+             <label htmlFor='headquarter' className='font-medium text-gray-700'>HeadQuater <span className='text-red-500'>*</span></label>
+             <select name='headquarter' onChange={handleChange} value={formData.headquarter} id='headquarter' className='border-2 border-gray-200 p-2 outline-none'>
                <option value={''}>--- Select Headquarters ---</option>
                {
                 headQuater.map((hd)=>(
@@ -191,6 +195,9 @@ export default function AddNewChemist() {
                 ))
                }
              </select>
+             {
+              errors.headquarter && <span className='text-sm text-red-500'>{errors.headquarter}</span>
+             }
          </div>
          <div className='flex flex-col gap-2'>
              <label htmlFor='dob' className='font-medium text-gray-700'>Date of Birth <span className='text-red-500'>*</span></label>

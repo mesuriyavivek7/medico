@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Box from "@mui/material/Box";
-import { DataGrid } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
 import api from "../api";
 import { useSelector } from "react-redux";
@@ -13,35 +11,32 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import ScienceOutlinedIcon from "@mui/icons-material/ScienceOutlined";
+import { ClipboardMinus } from 'lucide-react';
+import { Beaker } from 'lucide-react';
 
-import { latestColumns, fetchAllUsers } from "../data/EmployeeDataTable";
+
+import { fetchAllUsers } from "../data/EmployeeDataTable";
 import { Link } from "react-router-dom";
 import { LoaderCircle, X } from "lucide-react";
+
+const getMonthYear = () =>{
+  const date = new Date()
+  let month = date.getMonth()+1
+  let year = date.getFullYear()
+
+  return {month, year}
+
+}
 
 export default function MyDashboard() {
   const { user } = useSelector((state) => state.auth);
   const [doctorsCount, setDoctorsCount] = useState(0);
   const [chemistCount, setChemistCount] = useState(0);
   const [myTeamCount, setMyTeamCount] = useState(0);
-
-
-  const [employee, setEmployee] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const getEmployeeData = async () => {
-    try {
-      setLoading(true);
-      const data = await fetchAllUsers();
-      console.log("employee--->",data)
-      setEmployee(
-        data.map((item, index) => ({ ...item, id: index + 1 }))?.slice(0, 5)
-      );
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [dailyAvgDocVisit,setDailyAvgDocVisit] = useState(0)
+  const [dailyAvgChecmist,setDailyAvgChecmist] = useState(0)
+  const [monthlyAvgDocVisit,setMonthlyAvgDocVisit] = useState(0)
+  const [monthlyAvgChecmist,setMonthlyAvgChecmist] = useState(0)
 
   const localizer = momentLocalizer(moment);
   const [events, setEvents] = useState([]);
@@ -49,14 +44,19 @@ export default function MyDashboard() {
   const fetchCalenderData = async () => {
     try {
       const response = await api.post("/User/dashboard", {
-        year: 2025,
-        month: 4,
+        year: getMonthYear().year,
+        month: getMonthYear().month,
       });
       let data = response.data.data.result;
 
       setDoctorsCount(data[0].noofdoc)
       setChemistCount(data[0].noofChemist)
       setMyTeamCount(data[0].noofTeam)
+      setDailyAvgDocVisit(data[0].dailyAvgDocVisit)
+      setDailyAvgChecmist(data[0].dailyAvgChecmist)
+      setMonthlyAvgDocVisit(data[0].monthlyAvgDocVisit)
+      setMonthlyAvgChecmist(data[0].monthlyAvgChecmist)
+
       setEvents(
         data.map((item) => ({
           title: item.daystatus,
@@ -73,7 +73,6 @@ export default function MyDashboard() {
 
   useEffect(() => {
     fetchCalenderData();
-    getEmployeeData()
   }, []);
 
   const [showPopUp, setShowPopUp] = useState(false);
@@ -273,25 +272,45 @@ export default function MyDashboard() {
         )}
       </div>
 
-      <div className="h-full flex flex-col gap-2 py-4 px-3 custom-shadow rounded-md bg-white">
-        <h1 className="font-medium text-lg">My Team</h1>
-        <Box
-          sx={{
-            height: "100%",
-            "& .super-app-theme--header": {
-              backgroundColor: "#edf3fd",
-            },
-          }}
-        >
-          <DataGrid
-            rows={employee}
-            columns={latestColumns}
-            loading={loading}
-            pagination={false}
-            disableRowSelectionOnClick
-          />
-        </Box>
+      <div className="flex flex-col gap-2 py-4 px-3 custom-shadow rounded-md">
+        <h1 className="font-medium text-lg">Key Indicators</h1>
+
+        <div className="grid grid-cols-2 items-center gap-6">
+           <div className="p-4 rounded-md flex flex-col gap-4 bg-gradient-to-r from-blue-200 to-cyan-200">
+               <div className="flex items-center gap-2">
+                 <ClipboardMinus></ClipboardMinus>
+                 <h1 className="text-lg font-bold">Doctor Average</h1>
+               </div>
+               <div className="flex justify-between items-center">
+                 <div className="flex flex-col gap-1">
+                   <span className="font-medium">Daily Average</span>
+                   <h1 className="font-bold text-lg">{dailyAvgDocVisit}</h1>
+                 </div>
+                 <div className="flex flex-col gap-1">
+                  <span className="font-medium">Monthly Average</span>
+                  <h1 className="font-bold text-lg">{monthlyAvgDocVisit}</h1>
+                 </div>
+               </div>
+           </div>
+           <div className="p-4 rounded-md flex flex-col gap-4 bg-gradient-to-r from-teal-200 to-teal-500">
+               <div className="flex items-center gap-2">
+                 <Beaker></Beaker>
+                 <h1 className="text-lg font-bold">Chemist Average</h1>
+               </div>
+               <div className="flex justify-between items-center">
+                 <div className="flex flex-col gap-1">
+                   <span className="font-medium">Daily Average</span>
+                   <h1 className="font-bold text-lg">{dailyAvgChecmist}</h1>
+                 </div>
+                 <div className="flex flex-col gap-1">
+                  <span className="font-medium">Monthly Average</span>
+                  <h1 className="font-bold text-lg">{monthlyAvgChecmist}</h1>
+                 </div>
+               </div>
+           </div>
+        </div>
       </div>
+
     </div>
   );
 }
